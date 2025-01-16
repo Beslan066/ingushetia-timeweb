@@ -1,0 +1,36 @@
+.vectors__wrapper {
+  margin: 28px 20px;
+}
+
+.vectors__title {
+  font-size: var(--font-size-h2);
+  line-height: var(--line-height-h2);
+  color: var(--color-neutral-black);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: 32px;
+}
+
+.vectors {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  gap: 24px;
+}
+
+@media (min-width: 768px) {
+  .vectors {
+    flex-wrap: wrap;
+    flex-direction: row;
+  }
+
+  .vector {
+    flex-basis: calc(50% - 12px);
+  }
+}
+
+@media (min-width: 1240px) {
+  .vectors__wrapper {
+    margin: 40px auto;
+    max-width: 1216px;
+  }
+}

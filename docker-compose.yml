@@ -1,0 +1,17 @@
+version: '3.0'
+services:
+    pgsql:
+        image: postgres:16
+        ports:
+            - '${DB_PORT:-5432}:${DB_PORT:-5432}'
+        command: -p ${DB_PORT:-5432}
+        volumes:
+            - 'pgsql:/var/lib/postgresql/data'
+        environment:
+            PGPASSWORD: '${DB_PASSWORD:-secret}'
+            POSTGRES_DB: '${DB_DATABASE}'
+            POSTGRES_USER: '${DB_USERNAME}'
+            POSTGRES_PASSWORD: '${DB_PASSWORD:-secret}'
+volumes:
+    pgsql:
+

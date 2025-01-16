@@ -1,0 +1,11 @@
+export default function ReturnSvg() {
+    return (
+        <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+                d="M5.5 9L15.75 9C18.3734 9 20.5 11.1266 20.5 13.75V13.75C20.5 16.3734 18.3734 18.5 15.75 18.5L13 18.5"
+                stroke="white" strokeWidth="2"/>
+            <path d="M10.5 4L5.5 9L10.5 14" stroke="white" strokeWidth="2"/>
+        </svg>
+
+    )
+}

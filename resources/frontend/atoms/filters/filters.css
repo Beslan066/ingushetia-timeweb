@@ -1,0 +1,18 @@
+.filter {
+  display: inline-block;
+  padding: 16px 20px;
+  color: var(--color-neutral-black);
+  background: var(--color-neutral-lightest);
+  flex: 1;
+  min-width: 0;
+}
+
+.filter::placeholder {
+  color: var(--color-neutral-dark);
+}
+
+.filter--date::-webkit-calendar-picker-indicator,
+.filter--date::-webkit-inner-spin-button {
+  display: none;
+  -webkit-appearance: none;
+}

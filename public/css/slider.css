@@ -1,0 +1,105 @@
+.slider {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+.slides {
+    display: flex;
+    transition: transform 0.5s ease-in-out; /* Плавное перемещение слайдов */
+}
+
+.slide {
+    min-width: 100%;
+    box-sizing: border-box;
+    transition: opacity 0.5s ease-in-out; /* Плавное изменение прозрачности */
+}
+.slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+
+.prev, .next {
+    position: absolute;
+    top: 50%;
+    padding: 16px;
+    margin-top: -22px;
+    color: white;
+    width: 52px;
+    height: 52px;
+    border: none;
+    cursor: pointer;
+    border-radius: 100px;
+    font-size: 24px;
+    user-select: none;
+    opacity: 0; /* Скрываем кнопки по умолчанию */
+    transition: opacity 0.3s ease; /* Плавное появление/исчезновение кнопок */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.prev {
+    left: 10px;
+}
+
+.next {
+    right: 10px;
+}
+
+.slider:hover .prev,
+.slider:hover .next {
+    opacity: 1; /* Показываем кнопки при наведении */
+}
+
+.slider-buttons button {
+    background-color: white;
+    border: 1px solid #fff;
+    width: 12px;
+    height: 12px;
+    margin: 0 4px;
+    cursor: pointer;
+}
+
+.slide .info{
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.6) 35%, #000 100%);
+  padding: 40px 20px 20px 20px;
+}
+
+.slider-buttons button.active {
+    background-color: white;
+    border: #07A267;
+}
+
+.slider {
+  height: calc(100vh - 64px);
+}
+
+.slides {
+  height: 100%;
+}
+
+.slide {
+  height: 100%;
+}
+
+@media (min-width: 1200px) {
+  .slider {
+    height: auto;
+  }
+
+  .slide .info {
+    padding: 3rem;
+  }
+
+  .slides {
+    height: auto;
+  }
+
+  .slide {
+    height: auto;
+    max-height: 480px;
+  }
+}

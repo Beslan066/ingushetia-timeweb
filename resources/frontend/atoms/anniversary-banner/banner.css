@@ -1,0 +1,86 @@
+.anniversary-banner {
+  background-image: url('/img/banner100.png');
+  background-size: cover;
+  background-position: center;
+}
+
+.anniversary__content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.anniversary__logo {
+  width: 220px;
+  height: 100px;
+}
+
+.anniversary__logo > img {
+  width: 100%;
+  height: 100%;
+}
+
+.anniversary__description {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.anniversary__title {
+  font-size: var(--font-size-h3);
+  line-height: var(--line-height-h3);
+  color: var(--color-primary-darkest);
+  font-weight: var(--font-weight-bold);
+}
+
+.anniversary__text {
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
+  color: var(--color-neutral-black);
+  font-weight: var(--font-weight-regular);
+}
+
+@media (min-width: 768px) {
+  .anniversary__content {
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 40px;
+    padding: 24px 20px;
+  }
+
+  .anniversary__description {
+    margin: 0;
+    text-align: left;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .anniversary__logo {
+    flex-shrink: 0;
+    width: 183px;
+    height: 80px;
+  }
+
+  .anniversary__text {
+    font-size: var(--font-size-body);
+    line-height: var(--line-height-body);
+  }
+}
+
+@media (min-width: 1440px){
+  .anniversary__content {
+    margin: 0 auto;
+    max-width: 1212px;
+  }
+  .anniversary__logo {
+    width: 313px;
+    height: 140px;
+  }
+}
+

@@ -1,0 +1,11 @@
+.label {
+  padding: 4px 12px;
+  display: inline-block;
+
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
+  color: var(--color-neutral-black);
+  font-weight: var(--font-weight-regular);
+
+  background-color: var(--color-neutral-lightest);
+}

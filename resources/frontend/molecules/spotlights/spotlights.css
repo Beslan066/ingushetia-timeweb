@@ -1,0 +1,29 @@
+.spotlight-sidebar {
+  margin: 0 20px;
+}
+
+.spotlight-sidebar--gray {
+  background-color: var(--color-neutral-lightest);
+  padding: 20px 16px;
+}
+
+.spotlight-sidebar--desktop {
+  display: none;
+}
+
+.spotlight__link {
+  display: flex;
+  margin-top: 16px;
+}
+
+@media (min-width: 768px) {
+}
+
+@media (min-width: 1440px) {
+  .spotlight-sidebar {
+    margin: 0;
+  }
+  .spotlight-sidebar--desktop {
+    display: block;
+  }
+}

@@ -1,0 +1,56 @@
+.regions-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.regions-nav ul, .regions-nav li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.regions-nav__link {
+  padding: 16px 20px;
+  display: block;
+  width: 100%;
+  background: var(--color-neutral-lightest);
+  border-bottom: 1px solid var(--color-neutral-light);
+
+  font-weight: var(--font-weight-regular);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+}
+
+.regions-nav__link + ul .regions-nav__link {
+  padding: 16px 20px 16px 40px;
+}
+
+.regions-nav__link:visited, .regions-nav__link {
+  color: var(--color-neutral-black);
+}
+
+.regions-nav__link.active {
+  color: var(--color-neutral-white);
+  background-color: var(--color-primary-medium);
+  border-bottom: 1px solid var(--color-primary-dark);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .regions-nav__link:hover {
+    color: var(--color-neutral-white);
+    background-color: var(--color-primary-medium);
+    border-bottom: 1px solid var(--color-primary-dark);
+  }
+}
+
+.regions-nav__link:active {
+  color: var(--color-neutral-white);
+  background-color: var(--color-primary-dark);
+}
+
+.regions-nav li:last-child .regions-nav__link {
+  border-bottom: none;
+}

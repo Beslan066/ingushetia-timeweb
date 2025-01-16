@@ -1,0 +1,27 @@
+.downloadable {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.downloadable__icon-container {
+  flex-shrink: 0;
+}
+
+.downloadable__title {
+  font-size: var(--font-size-h4);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-h4);
+  color: var(--color-neutral-black);
+
+  margin-bottom: 4px;
+}
+
+.downloadable__description {
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-caption);
+  color: var(--color-neutral-dark);
+  margin-bottom: 4px;
+}

@@ -1,0 +1,27 @@
+.activities {
+  margin: 60px 20px 0;
+}
+
+.activities__title {
+  margin-bottom: 32px;
+}
+
+.activities__container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+@media (min-width: 768px) {
+  .activities {
+    margin: 60px 24px;
+  }
+}
+
+@media (min-width: 1260px) {
+  .activities {
+    width: 1212px;
+    margin: 80px auto;
+  }
+}

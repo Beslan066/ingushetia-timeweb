@@ -1,0 +1,14 @@
+.municipality-element {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  background-color: var(--color-neutral-lightest);
+}
+
+.municipality-element__population {
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-caption);
+  color: var(--color-primary-medium);
+}

@@ -1,0 +1,104 @@
+.mountain-slider__pagination {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-top: 28px;
+}
+
+.page-counter {
+  font-size: var(--font-size-h4);
+  line-height: var(--line-height-h4);
+  color: var(--color-neutral-black);
+  font-weight: var(--font-weight-bold);
+}
+
+.mountains__title {
+  font-size: var(--font-size-h2);
+  line-height: var(--line-height-h2);
+  color: var(--color-neutral-black);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: 32px;
+}
+
+.mountains__wrapper {
+  margin: 28px 20px;
+}
+
+.mountains__slider {
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+  transition: transform 0.5s ease-in-out;
+  display: flex;
+}
+
+.mountain__slide {
+  min-width: 100%;
+  box-sizing: border-box;
+  transition: opacity 0.5s ease-in-out; /* Плавное изменение прозрачности */
+  position: relative;
+  background-color: var(--color-neutral-lightest);
+}
+
+.mountain__image {
+  width: 100%;
+  height: 220px;
+  overflow: hidden;
+}
+
+.mountain__image > img {
+  min-width: 100%;
+  min-height: 100%;
+  object-fit: cover;
+}
+
+.mountain__body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.mountain__title {
+  font-size: var(--font-size-h3);
+  line-height: var(--line-height-h3);
+  color: var(--color-neutral-black);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: 16px;
+}
+
+.mountain__text {
+  height: 192px;
+  text-overflow: ellipsis;
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  color: var(--color-neutral-black);
+  font-weight: var(--font-weight-regular);
+}
+
+@media (min-width: 768px) {
+  .mountain__slide {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .mountain__image, .mountain__body {
+    flex-basis: 50%;
+  }
+
+  .mountain__image {
+    height: 400px;
+    width: auto;
+  }
+}
+
+@media (min-width: 1440px) {
+  .mountains__wrapper {
+    margin: 28px auto;
+    max-width: 1212px;
+  }
+  .mountain__image {
+    height: 520px;
+  }
+}

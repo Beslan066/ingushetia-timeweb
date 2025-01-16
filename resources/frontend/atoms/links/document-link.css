@@ -1,0 +1,26 @@
+.document-link__wrapper {
+  padding: 12px 20px;
+  background-color: var(--color-neutral-lightest);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.document-link__teleport {
+  flex-shrink: 0;
+}
+
+.document-link__title {
+  font-size: var(--font-size-h4);
+  line-height: var(--line-height-h4);
+  color: var(--color-neutral-black);
+  font-weight: var(--font-weight-semibold);
+}
+
+.document-link__category {
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
+  color: var(--color-primary-medium);
+  font-weight: var(--font-weight-regular);
+}

@@ -1,0 +1,53 @@
+.filters__wrapper {
+  height: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: .35s ease;
+}
+
+.filters__wrapper--opened {
+  margin: 28px 0;
+  height: auto;
+  max-height: 100vh;
+}
+
+.filters__date {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filters__action {
+  display: flex;
+  gap: 12px;
+}
+
+.filters__action > button {
+  flex: 1;
+}
+
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+@media (min-width: 768px) {
+  .filters {
+    flex-direction: row;
+    justify-content: flex-start;
+  }
+
+  .filters__date {
+    display: inline-flex;
+    flex-grow: 0;
+    max-width: 50%;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .filters__date > input {
+    display: block;
+    max-width: 49%;
+  }
+}

@@ -1,0 +1,458 @@
+.page-head p {
+    line-height: 24px;
+    font-size: 16px;
+    margin-bottom: 24px !important;
+}
+
+.region-links {
+    background-color: #F6F6F6;
+}
+
+/* Accordion section */
+
+.region-accordion {
+    width: 100%;
+}
+
+.drawer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+    background-color: #F6F6F6;
+}
+
+.drawer-content {
+    padding: 20px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #DFDFDF;
+}
+
+.accordion-header {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px;
+    background-color: #fff;
+    border-top: 1px solid #DFDFDF;
+}
+
+.accordion-header span {
+    font-weight: 600;
+}
+
+.accordion-header .icon {
+    transition: transform 0.3s;
+}
+
+.drawer-content {
+    padding-bottom: 24px;
+    margin-bottom: 20px;
+}
+
+.drawer-second-content {
+    padding: 20px;
+}
+
+.drawer-second-content p {
+    margin-bottom: 24px !important;
+}
+
+.drawer-content p {
+    font-size: 16px;
+    line-height: 24px;
+    margin-bottom: 24px !important;
+}
+
+.drawer ul li {
+    list-style: disc;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+    /* Region page list */
+
+.region-pager {
+    padding: unset !important;
+}
+
+.region-pager li {
+    list-style: none;
+    font-size: 16px;
+    line-height: 24px;
+    padding: 16px 20px;
+
+    border-bottom: 1px solid #DFDFDF;
+}
+
+.region-pager li:last-child {
+    border-bottom: unset;
+}
+
+
+.region-pager li a {
+    color: black;
+}
+
+
+
+.region-pager li.active {
+    color: #fff;
+    background-color: #07A267;
+}
+
+.region-pager li.active a{
+    color: #fff;
+
+}
+
+
+
+/* Republic history */
+
+
+
+.tab {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .tab > input[type="radio"] {
+    display: none;
+    color: #000000;
+  }
+
+  .tab-content {
+    display: none;
+    width: 100%;
+    margin-top: 1rem;
+    transition: transform 0.3s;
+
+  }
+
+  #tab-btn-1:checked ~ #content-1,
+  #tab-btn-2:checked ~ #content-2,
+  #tab-btn-3:checked ~ #content-3,
+  #tab-btn-4:checked ~ #content-4,
+  #tab-btn-5:checked ~ #content-5 {
+      display: block;
+  }
+
+.tab > label {
+    display: block;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: color .15s ease-in-out,
+    background-color .15s ease-in-out,
+    border-color .15s ease-in-out;
+    text-decoration: none;
+    color: #000000;
+    border: 0;
+    background: 0 0;
+}
+
+.tab > input[type="radio"]:checked + label {
+    cursor: default;
+    color: #000000;
+    border-bottom: 2px solid #07A267;
+}
+
+.tab   p {
+    margin-bottom: 24px !important;
+    font-size: 16px;
+    line-height: 24px;
+}
+
+
+/* Economic page */
+table {
+    margin-bottom: 32px;
+}
+
+table thead {
+    background-color: #DFDFDF;
+}
+
+tbody, td, tfoot, th, thead, tr {
+    padding: 12px !important;
+    font-size: 16px !important;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #DFDFDF;
+}
+
+.economic-page {
+    margin-bottom: 32px;
+}
+
+iframe {
+    width: 100%;
+    height: auto;
+    min-height: 520px;
+}
+
+/* Municipalties Page */
+
+.cities ul {
+    list-style: none;
+    padding: unset !important;
+    margin: unset !important;
+
+
+}
+
+.cities li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #F6F6F6;
+    margin-bottom: 16px;
+    padding: 12px 20px !important;
+    cursor: pointer;
+}
+
+.cities h4 {
+    font-size: 16px;
+}
+
+.cities span {
+    color: #07A267;
+    font-size: 13px;
+}
+
+.municipalities-items ul {
+    list-style: none;
+    padding: unset !important;
+    margin: unset !important;
+
+
+}
+
+.municipalities-items li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #F6F6F6;
+    margin-bottom: 16px;
+    padding: 12px 20px !important;
+    cursor: pointer;
+}
+
+.municipalities-items h4 {
+    font-size: 16px;
+}
+
+.municipalities-items span {
+    color: #07A267;
+    font-size: 12px;
+}
+
+/* Region modal */
+
+.region-modal {
+    display: none;
+    position: fixed;
+    top: -300px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70%;
+    height: auto !important; /* Установите фиксированную высоту */
+    overflow-y: auto; /* Добавьте вертикальную прокрутку */
+    background: #fff;
+    box-shadow: 12px 12px 40px 0px rgba(0, 0, 0, 0.16);
+    z-index: 1000;
+}
+
+.region-modal.active {
+    display: block;
+    animation: slideUp 0.5s ease-out;  /* Добавляем анимацию */
+}
+
+.region-content {
+    padding: 20px;
+    width: 100%;
+    position: fixed;
+    transform: translateY(100%);  /* Начальное положение для анимации */
+}
+
+@keyframes slideUp {
+    from {
+        transform: translate(-50%, 100%); /* Начальная точка анимации */
+    }
+    to {
+        transform: translate(-50%, 0); /* Конечная точка анимации */
+    }
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+/* Блокировка прокрутки основного содержимого */
+.fixed-body {
+    overflow: hidden;
+    margin-right: 15px;
+
+
+}
+
+.city-bio p {
+    font-size: 16px;
+    line-height: 24px;
+    max-width: 80%;
+}
+
+.city-bio p:not(:last-child) {
+    margin-bottom: 24px !important;
+}
+
+.city-stat {
+  margin-bottom: 24px;
+}
+
+.stat-item {
+    background-color: #F6F6F6;
+    padding: 24px;
+}
+
+.stat-item  p {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.stat-item span {
+    font-size: 12px;
+    color: #6C6C6C;
+}
+
+.city-head {
+    background-color: #F6F6F6;
+    padding: 8px;
+    margin-bottom: 32px;
+}
+
+.head-person-image {
+  max-width: 200px;
+  flex-grow: 0;
+}
+
+.head-person-image img {
+    width: 100%;
+}
+
+.head-person-info h3 {
+    font-size: 20px;
+}
+
+.head-person-info span {
+    color: #6C6C6C;
+    font-size: 12px;
+}
+
+.head-bio {
+    font-size: 16px;
+    line-height: 24px;
+}
+
+.municipality-gallery {
+    padding-bottom: 24px;
+    border-bottom: 2px solid #F6F6F6;
+}
+
+.city-contacts {
+    margin-bottom: 40px;
+}
+
+.city-contacts h4 {
+    font-size: 16px;
+}
+
+.city-contacts p {
+    font-size: 16px;
+    margin-bottom: 5px !important;
+}
+
+.city-contacts a {
+    color: #07A267;
+}
+
+.city-contacts a:hover {
+    color: #07A267;
+}
+
+
+/*  Authority page */
+.pravitelstvo-info h4{
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    margin-bottom: 24px;
+}
+
+.pravitelstvo-info div {
+    margin-bottom: 35px;
+}
+
+.pravitelstvo-info p {
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.government-head {
+    padding: 12px;
+}
+
+.government-img {
+    min-width: 160px !important;
+    height: 160px !important;
+}
+.government-img img {
+    width: 100%;
+    height: 100%;
+}
+
+.government-man {
+    max-width: 436px;
+    display: flex;
+    margin-bottom: 32px;
+    padding: 12px;
+}
+
+.government-text {
+    padding: 10px 20px;
+}
+
+.government-text h2 {
+    font-size: 24px;
+    width: 100% !important;
+    cursor: pointer;
+
+}
+
+.government-text h3 {
+    font-size: 20px !important;
+    line-height: 28px;
+    cursor: pointer;
+
+}
+
+.government-text span {
+    font-size: 13px;
+    color: #6C6C6C;
+}
+
+.government-head span {
+    font-size: 16px;
+    color: #6C6C6C;
+}
+
+.image-desc {
+    font-size: 13px !important;
+    font-weight: 400;
+    color: #6C6C6C;
+}

@@ -1,0 +1,29 @@
+.news-item-wrapper {
+  gap: 32px;
+  display: flex;
+  flex-direction: column;
+}
+
+.news {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 24px;
+  overflow-x: auto;
+  width: 100%;
+}
+
+.news > .news-card {
+  min-width: 280px;
+}
+
+@media (min-width: 768px) {
+  .news {
+    overflow-x: unset;
+  }
+
+  .news > .news-card {
+    min-width: auto;
+    flex-basis: calc(33% - (24px / 3));
+  }
+}

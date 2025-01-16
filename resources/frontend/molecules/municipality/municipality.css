@@ -1,0 +1,33 @@
+.municipalities__section-title {
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
+  color: var(--color-neutral-dark);
+  font-weight: var(--font-weight-regular);
+  text-transform: uppercase;
+
+  margin-bottom: 20px;
+}
+
+.municipalities__section {
+  margin-bottom: 40px;
+}
+
+.municipalities__section:last-child {
+  margin-bottom: 0;
+}
+
+.municipalities__list {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 1440px) {
+  .municipalities__section-title {
+    font-size: var(--font-size-h3);
+    line-height: var(--line-height-h3);
+    color: var(--color-neutral-black);
+    font-weight: var(--font-weight-semibold);
+
+    text-transform: none;
+  }
+}

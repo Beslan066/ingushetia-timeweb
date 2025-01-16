@@ -1,0 +1,22 @@
+.package {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background-color: var(--color-neutral-lightest);
+  text-align: left;
+  padding: 20px 24px;
+}
+
+.package__title {
+  font-size: var(--font-size-h4);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-h4);
+  color: var(--color-neutral-black);
+}
+
+.package__description {
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-body);
+  color: var(--color-neutral-dark);
+}

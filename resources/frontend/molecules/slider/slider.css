@@ -1,0 +1,56 @@
+.slider {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  height: 400px;
+}
+
+@media (min-width: 768px) {
+  .slider {
+    height: 480px;
+  }
+}
+
+.slides {
+  display: flex;
+  transition: transform 0.5s ease-in-out; /* Плавное перемещение слайдов */
+  height: 100%;
+  z-index: 1;
+}
+
+.prev, .next {
+  position: absolute;
+  top: 50%;
+  margin-top: -22px;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 24px;
+  user-select: none;
+  opacity: 0; /* Скрываем кнопки по умолчанию */
+  transition: opacity 0.3s ease; /* Плавное появление/исчезновение кнопок */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0,0,0,0.7);
+  border-radius: 50%;
+  padding: 14px;
+}
+
+.prev > svg, .next > svg {
+  width: 24px;
+  height: 24px;
+}
+
+.prev {
+  left: 10px;
+}
+
+.next {
+  right: 10px;
+}
+
+.slider:hover .prev,
+.slider:hover .next {
+  opacity: 1; /* Показываем кнопки при наведении */
+}

@@ -1,0 +1,31 @@
+.slider__pages {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  position: absolute;
+  bottom: 20px;
+  z-index: 100;
+  width: 100%;
+}
+
+.slider__page {
+  display: block;
+  width: 8px;
+  height: 8px;
+  background-color: var(--color-neutral-lightest);
+  transition: .2s ease-in-out background-color;
+}
+
+.slider__page--active {
+  background-color: var(--color-primary-medium);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .slider__page:hover {
+    background-color: var(--color-primary-dark);
+  }
+}
+
+ .slider__page:active {
+  background-color: var(--color-primary-dark);
+}
