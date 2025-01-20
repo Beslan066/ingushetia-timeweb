@@ -73,11 +73,12 @@ class HomeController extends Controller
       return $post;
     });
 
-    $agencies = Agency::query()->where('id', '!=', 5)->get();
+    $agencies = Agency::query()->whereNotIn('id', [5,2])->get();
     $agencyNews = News::query()
-      ->where('agency_id', '!=', 5)
+      ->whereNotIn('agency_id', [5, 2])  // Исключаем новости с agency_id 5 и 2
       ->with('category')  // Добавляем связку с категориями
       ->get();
+
 
     $relatedPostIds = $agencyNews->pluck('id');
     $relatedPosts = News::query()
