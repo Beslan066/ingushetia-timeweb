@@ -30,10 +30,18 @@
   }
 }
 
+.filter-dropdown {
+  max-width: 100%;
+}
+
 #document-filter {
   border: 1px solid #07a267 !important;
   padding: 5px !important;
   outline: none !important;
+  max-width: 100% !important;
 }
 
-#document-filter option { color: #07a267; }
+#document-filter option {
+  max-width: 100% !important;
+  color: #07a267;
+}
