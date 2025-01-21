@@ -14,7 +14,7 @@ export default function FederalAuthority() {
   let {federalAuthorities} = usePage().props;
 
   console.log(federalAuthorities);
-  
+
 
   return (
     <>
@@ -23,8 +23,8 @@ export default function FederalAuthority() {
       <div className="page-content__wrapper">
         <div className="page-content__content">
 
-          {federalAuthorities && 
-          
+          {federalAuthorities &&
+
 
           federalAuthorities.map((item) => (
             <div className="external-resource__wrapper external-resource__wrapper--inline" style={{marginBottom: '20px'}}>
@@ -40,15 +40,10 @@ export default function FederalAuthority() {
             </div>
         </div>
           ))
-      
+
           }
 
       </div>
-
-
-        <div>
-          <DocumentsNavigation />
-        </div>
       </div>
       <AppFooter/>
     </>

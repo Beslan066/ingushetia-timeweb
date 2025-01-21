@@ -20,9 +20,6 @@ export default function Konkurs({ konkurses }) {
             }
           </div>
         </div>
-        <div>
-          <DocumentsNavigation />
-        </div>
       </div>
       <AppFooter/>
     </>

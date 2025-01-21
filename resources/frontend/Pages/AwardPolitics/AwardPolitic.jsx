@@ -50,9 +50,6 @@ export default function AwardPolitic({ documents, types }) {
             ))}
           </div>
         </div>
-        <div>
-          <DocumentsNavigation />
-        </div>
       </div>
       <AppFooter />
     </>

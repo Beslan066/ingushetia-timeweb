@@ -55,13 +55,6 @@ export default function Smi() {
             </div>
           </div>
       </div>
-
-      
-
-
-        <div>
-          <DocumentsNavigation />
-        </div>
       </div>
       <AppFooter/>
     </>

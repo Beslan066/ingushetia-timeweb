@@ -117,9 +117,9 @@ class HomeController extends Controller
       }
     }
 
-  
+
     return Inertia::render('Index', [
-      'posts' => $posts->items(),      
+      'posts' => $posts->items(),
       'categories' => $categories,
       'mainPosts' => $mainPosts,
       'resources' => $resources,
@@ -272,7 +272,7 @@ class HomeController extends Controller
 
   public function managmentReserves()
   {
-    
+
     $documentTypes = ManagmentReserve::getTypes();
     $documentTypes = collect($documentTypes)->mapWithKeys(function ($type) {
       return [$type['id'] => $type];
@@ -288,12 +288,12 @@ class HomeController extends Controller
   }
 
   public function judicialAuthorities() {
-    
+
     return Inertia::render('JudicialAuthorities/JudicialAuthority');
   }
 
   public function federalAuthorities() {
-    
+
 
     $federalAuthorities = FederalAuthority::all();
 
@@ -314,12 +314,13 @@ class HomeController extends Controller
       return $document;
     });
 
+
     return Inertia::render('Antinars/Antinar', compact('documents'));
 
   }
 
   public function smi() {
-    
+
     return Inertia::render('Smi/Smi');
   }
 
@@ -336,7 +337,7 @@ class HomeController extends Controller
 
     // Получаем все типы
     $types = AwardPolitic::getTypes();
-    
+
     return Inertia::render('AwardPolitics/AwardPolitic', [
       'documents' => $documents,
       'types' => $types,

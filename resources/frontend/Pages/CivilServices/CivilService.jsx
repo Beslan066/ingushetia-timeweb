@@ -50,9 +50,6 @@ export default function CivilService({ documents, types }) {
             ))}
           </div>
         </div>
-        <div>
-          <DocumentsNavigation />
-        </div>
       </div>
       <AppFooter />
     </>

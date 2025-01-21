@@ -14,9 +14,6 @@ export default function GloryTour() {
       <div className="page-content__wrapper">
         <div className="page-content__content">
           <iframe width="100%" src="http://openkavkaz.com/3d/?ing-magas-adm-head-gloryhall-4&iframe#,-153.4,-0.4,130.0"  style={{minHeight: '500px'}} frameborder="0" marginheight="0" marginwidth="0" scrolling="no" framespacing="0" allowfullscreen></iframe>        </div>
-        <div>
-          <DocumentsNavigation />
-        </div>
       </div>
       <AppFooter/>
     </>

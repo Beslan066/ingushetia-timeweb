@@ -42,11 +42,6 @@ export default function JudicialAuthority() {
             </div>
         </div>
       </div>
-
-
-        <div>
-          <DocumentsNavigation />
-        </div>
       </div>
       <AppFooter/>
     </>

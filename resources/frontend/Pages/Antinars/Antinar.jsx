@@ -7,7 +7,7 @@ import './antinar.css';
 import DocumentsNavigation from "#/molecules/navigation/documents-navigation.jsx";
 
 export default function Antinar({ documents }) {
-  
+
   return (
     <>
       <AppHeader anniversary={ false }/>
@@ -20,9 +20,6 @@ export default function Antinar({ documents }) {
                 <Downloadable title={ document.title } description={ document.type } key={ document.id } link={ `/storage/${ document.file }` }/>)
             }
           </div>
-        </div>
-        <div>
-          <DocumentsNavigation />
         </div>
       </div>
       <AppFooter/>

@@ -34,7 +34,7 @@ export default function Simvols() {
               Между большим и малым кругами надпись: вверху — Республика Ингушетия, внизу — Г1алг1ай Мохк.
             </p>
           </div>
-          
+
           <div className={'mb-4'} style={{borderBottom: '1px solid #dfdfdf'}}>
             <img src={'img/flag.png'} alt="" style={{width: '200px', height: '140px', marginBottom: '20px'}}/>
             <p>
@@ -110,9 +110,6 @@ export default function Simvols() {
               </p>
             </div>
           </div>
-        </div>
-        <div>
-          <DocumentsNavigation />
         </div>
       </div>
       <AppFooter/>

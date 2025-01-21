@@ -8,7 +8,7 @@ import DocumentsNavigation from "#/molecules/navigation/documents-navigation.jsx
 
 export default function ManagmentReserve({ documents }) {
 
-  
+
   return (
     <>
       <AppHeader anniversary={ false }/>
@@ -21,9 +21,6 @@ export default function ManagmentReserve({ documents }) {
                 <Downloadable title={ document.title } description={ document.type } key={ document.id } link={ `/storage/${ document.file }` }/>)
             }
           </div>
-        </div>
-        <div>
-          <DocumentsNavigation />
         </div>
       </div>
       <AppFooter/>
