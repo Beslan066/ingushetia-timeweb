@@ -28,6 +28,10 @@ class Document extends Model
             [
                 'id' => 3,
                 'title' => 'Указы'
+            ],
+            [
+                'id' => 4,
+                'title' => 'Распоряжения'
             ]
         ];
     }
