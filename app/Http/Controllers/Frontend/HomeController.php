@@ -218,29 +218,41 @@ class HomeController extends Controller
   }
 
   public function documents()
-{
+  {
     $documentTypes = Document::getTypes();
-    $documentTypes = collect($documentTypes)->mapWithKeys(function ($type) {
-        return [$type['id'] => $type];
-    })->all();
+    $documentTypes = collect($documentTypes)->mapWithKeys(fn($type) => [$type['id'] => $type])->toArray();
 
-    $documents = Document::query()->orderBy('published_at', 'desc');
+    $query = Document::query()->orderBy('published_at', 'desc');
 
-    // Проверка фильтрации по type_id
     if (request()->has('type_id')) {
-        $documents->where('type', request()->input('type_id'));
+      $query->where('type', request()->input('type_id'));
     }
 
-    $documents = $documents->get()->map(function ($document) use ($documentTypes) {
-        $document->type = $documentTypes[$document->type]['title'];
-        return $document;
+    // Пагинация по 15 записей
+    $documents = $query->paginate(15)->through(function ($document) use ($documentTypes) {
+      return [
+        'id' => $document->id,
+        'title' => $document->title,
+        'type' => $documentTypes[$document->type]['title'],
+        'published_at' => $document->published_at,
+        'file' => $document->file,
+        'size' => $this->getFileSize($document->file), // Размер в байтах
+      ];
     });
 
     return Inertia::render('Documents/Documents', [
-        'documents' => $documents,
-        'documentTypes' => array_values($documentTypes),
+      'documents' => $documents, // Отдаём всю пагинацию
+      'documentTypes' => array_values($documentTypes),
     ]);
-}
+  }
+
+// Функция для получения размера файла в байтах
+  private function getFileSize($filePath)
+  {
+    $fullPath = storage_path("app/public/{$filePath}");
+    return file_exists($fullPath) ? filesize($fullPath) : null;
+  }
+
 
 
   public function konkurs() {
