@@ -38,7 +38,7 @@
   border: 1px solid #07a267 !important;
   padding: 5px !important;
   outline: none !important;
-  max-width: 100% !important;
+  width: 100% !important;
 }
 
 #document-filter option {

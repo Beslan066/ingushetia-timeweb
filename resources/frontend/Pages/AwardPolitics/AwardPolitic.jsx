@@ -1,18 +1,39 @@
+import React, { useState, useEffect } from "react";
 import AppHeader from "#/molecules/header/header.jsx";
 import PageTitle from "#/atoms/texts/PageTitle.jsx";
 import Downloadable from "#/atoms/downloadable/downloadable.jsx";
 import AppFooter from "#/organisms/footer/footer.jsx";
-import React, { useState } from "react";
+import AwardNavigation from "#/molecules/navigation/award-navigation.jsx";
+import { usePage, router } from "@inertiajs/react";
 import './awardpol.css';
-import DocumentsNavigation from "#/molecules/navigation/documents-navigation.jsx";
 
-export default function AwardPolitic({ documents, types }) {
-  const [selectedType, setSelectedType] = useState(null);
+export default function AwardPolitic({ documents: initialDocuments }) {
+  const { props, url } = usePage();
+  const documentTypes = props?.documentTypes || [];
+  const [documents, setDocuments] = useState(initialDocuments.data);
+  const [nextPage, setNextPage] = useState(initialDocuments.next_page_url);
+  const [loading, setLoading] = useState(false);
 
-  // Фильтрация документов
-  const filteredDocuments = selectedType !== null
-    ? documents.filter((document) => document.type === selectedType)
-    : documents;
+  useEffect(() => {
+    setDocuments(initialDocuments.data);
+    setNextPage(initialDocuments.next_page_url);
+  }, [initialDocuments]);
+
+  const loadMore = () => {
+    if (!nextPage || loading) return;
+
+    setLoading(true);
+    router.get(nextPage, {}, {
+      preserveState: true,
+      preserveScroll: true,
+      only: ["documents"],
+      onSuccess: ({ props }) => {
+        setDocuments((prev) => [...prev, ...props.documents.data]);
+        setNextPage(props.documents.next_page_url);
+        setLoading(false);
+      },
+    });
+  };
 
   return (
     <>
@@ -20,36 +41,24 @@ export default function AwardPolitic({ documents, types }) {
       <PageTitle title="Наградная политика"/>
       <div className="page-content__wrapper">
         <div className="page-content__content">
-          {/* Выпадающий список для фильтра */}
-          <div className="filter-dropdown">
-            <select
-              id="document-filter"
-              value={selectedType || ""}
-              onChange={(e) =>
-                setSelectedType(e.target.value ? Number(e.target.value) : null)
-              }
-            >
-              <option value="">Все</option>
-              {types.map(({ id, title }) => (
-                <option key={id} value={id}>
-                  {title}
-                </option>
-              ))}
-            </select>
-          </div>
-
           {/* Отфильтрованные документы */}
           <div className="downloadable__documents">
-            {filteredDocuments.map((document) => (
+            {documents.map((document) => (
               <Downloadable
-                title={document.title}
-                description={types.find((type) => type.id === document.type)?.title}
                 key={document.id}
+                title={document.title}
+                description={document.type}
                 link={`/storage/${document.file}`}
               />
             ))}
           </div>
+          {nextPage && (
+            <button className="load-more-button" onClick={loadMore} disabled={loading}>
+              {loading ? "Загрузка..." : "Показать ещё"}
+            </button>
+          )}
         </div>
+        <AwardNavigation />
       </div>
       <AppFooter />
     </>

@@ -337,41 +337,56 @@ class HomeController extends Controller
   }
 
 
-  public function awardPolitic(Request $request) {
+  public function awardPolitic(Request $request)
+  {
+    $awardTypes = AwardPolitic::getTypes();
+    $awardTypes = collect($awardTypes)->mapWithKeys(fn($type) => [$type['id'] => $type])->toArray();
 
+    $query = AwardPolitic::query()->orderBy('created_at', 'desc');
 
-    $filterType = $request->input('type');
+    if ($request->has('type_id')) {
+      $query->where('type', $request->input('type_id'));
+    }
 
-    // Получаем документы с учетом фильтра
-    $documents = AwardPolitic::when($filterType !== null, function ($query) use ($filterType) {
-        $query->where('type', $filterType);
-    })->get();
-
-    // Получаем все типы
-    $types = AwardPolitic::getTypes();
+    $documents = $query->paginate(15)->through(function ($document) use ($awardTypes) {
+      return [
+        'id' => $document->id,
+        'title' => $document->title,
+        'type' => $awardTypes[$document->type]['title'],
+        'file' => $document->file,
+      ];
+    });
 
     return Inertia::render('AwardPolitics/AwardPolitic', [
       'documents' => $documents,
-      'types' => $types,
-      'filterType' => $filterType, // Передаем текущий фильтр
-  ]);
+      'awardTypes' => array_values($awardTypes), // Передаём типы наград
+    ]);
   }
 
+
+
   public function civilService(Request $request) {
-    $filterType = $request->input('type');
+    $civilServiceTypes = CivilService::getTypes();
+    $civilServiceTypes = collect($civilServiceTypes)->mapWithKeys(fn($type) => [$type['id'] => $type])->toArray();
 
-    // Получаем документы с учетом фильтра
-    $documents = CivilService::when($filterType !== null, function ($query) use ($filterType) {
-        $query->where('type', $filterType);
-    })->get();
+    $query = CivilService::query()->orderBy('created_at', 'desc');
 
-    // Получаем все типы
-    $types = CivilService::getTypes();
+    if ($request->has('type_id')) {
+      $query->where('type', $request->input('type_id'));
+    }
+
+    $documents = $query->paginate(15)->through(function ($document) use ($civilServiceTypes) {
+      return [
+        'id' => $document->id,
+        'title' => $document->title,
+        'type' => $civilServiceTypes[$document->type]['title'],
+        'file' => $document->file,
+      ];
+    });
 
     return Inertia::render('CivilServices/CivilService', [
-        'documents' => $documents,
-        'types' => $types,
-        'filterType' => $filterType, // Передаем текущий фильтр
+      'documents' => $documents,
+      'civilServiceTypes' => array_values($civilServiceTypes), // Передаём типы наград
     ]);
 }
 

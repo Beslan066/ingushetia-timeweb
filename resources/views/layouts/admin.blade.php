@@ -54,6 +54,13 @@
             line-height: 20px;
             cursor: pointer;
         }
+
+        .page-link {
+          border-radius: 5px !important;
+        }
+        li.page-item {
+          margin-right: 10px;
+        }
     </style>
 </head>
 
