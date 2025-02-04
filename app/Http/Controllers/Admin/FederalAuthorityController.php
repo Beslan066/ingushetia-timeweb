@@ -24,7 +24,7 @@ class FederalAuthorityController extends Controller
     {
 
 
-        $federalAuthorities = FederalAuthority::query()->where('agency_id', auth()->user()->agency_id)->with('user')->orderBy('id', 'desc')->get();
+        $federalAuthorities = FederalAuthority::query()->where('agency_id', auth()->user()->agency_id)->with('user')->orderBy('id', 'desc')->paginate(10);
 
         return view('admin.federal-authorities.index', compact('federalAuthorities', ));
     }

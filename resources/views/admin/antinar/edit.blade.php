@@ -6,14 +6,14 @@
         <div class="col-12">
             <div class="card">
 
-                <form action="{{route('admin.antinars.update', $document->id)}}" method="post" enctype="multipart/form-data">
+                <form action="{{route('admin.antinars.update', $antinar->id)}}" method="post" enctype="multipart/form-data">
                     @csrf
                     @method('patch')
                     <div class="card-body">
                         <div>
                             <div class="form-group w-50">
                                 <label for="">Заголовок</label>
-                                <input class="form-control form-control-lg mb-3" type="text" placeholder="Введите заголовок" name="title" value="{{$document->title}}">
+                                <input class="form-control form-control-lg mb-3" type="text" placeholder="Введите заголовок" name="title" value="{{$antinar->title}}">
                             </div>
 
 
@@ -24,8 +24,8 @@
 
                                             <h4 class="card-title">Файл</h4>
                                             <input type="file" class="dropify" data-height="300" name="file" multiple
-                                                   @if($document->file)
-                                                       data-default-file="{{ asset('storage/' . $document->file) }}"
+                                                   @if($antinar->file)
+                                                       data-default-file="{{ asset('storage/' . $antinar->file) }}"
                                                 @endif
                                             />
 
@@ -41,7 +41,7 @@
                             <select class="form-control" id="exampleFormControlSelect1" name="type">
                                 <option value="">Выберите тип документа</option>
                                 @foreach($types as $type)
-                                    <option value="{{ $type['id'] }}" {{ $document->type == $type['id'] ? 'selected' : '' }}>
+                                    <option value="{{ $type['id'] }}" {{ $antinar->type == $type['id'] ? 'selected' : '' }}>
                                         {{ $type['title'] }}
                                     </option>
                                 @endforeach
@@ -62,7 +62,7 @@
 
                         <div class="form-group w-50">
                             <input type="datetime-local" class="datetime_input" name="published_at" style="color: #495057; width: 250px; border: 1px solid #ced4da; padding: 5px !important; "
-                                   value="{{ $document->published_at ? date('Y-m-d\TH:i', strtotime($document->published_at)) : '' }}">
+                                   value="{{ $antinar->published_at ? date('Y-m-d\TH:i', strtotime($antinar->published_at)) : '' }}">
                         </div>
 
                         <div class="btn-group">

@@ -24,7 +24,7 @@ class ResourceController extends Controller
     {
 
 
-        $resources = Resource::query()->where('agency_id', auth()->user()->agency_id)->with('user')->orderBy('id', 'desc')->get();
+        $resources = Resource::query()->where('agency_id', auth()->user()->agency_id)->with('user')->orderBy('id', 'desc')->paginate(10);
 
         return view('admin.resource.index', compact('resources', ));
     }

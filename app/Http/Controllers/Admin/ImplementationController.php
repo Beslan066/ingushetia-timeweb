@@ -15,7 +15,7 @@ class ImplementationController extends Controller
     public function index()
     {
 
-        $implementations = Implementation::query()->orderBy('id', 'desc')->get();
+        $implementations = Implementation::query()->orderBy('id', 'desc')->paginate(10);
         return view('admin.implementation.index', [
             'implementations' => $implementations
         ]);

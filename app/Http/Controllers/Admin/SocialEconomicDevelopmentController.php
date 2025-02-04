@@ -14,7 +14,7 @@ class SocialEconomicDevelopmentController extends Controller
     public function index()
     {
 
-        $socialEconomicDevelopment = SocialEconomicDevelopment::query()->orderBy('id', 'desc')->get();
+        $socialEconomicDevelopment = SocialEconomicDevelopment::query()->orderBy('id', 'desc')->paginate(10);
         return view('admin.social-economic-development.index', [
             'socialEconomicDevelopment' => $socialEconomicDevelopment
         ]);
