@@ -23,7 +23,7 @@ class UpdateRequest extends FormRequest
     {
         return [
             'title' => 'required|string',
-            'file' => 'nullable|file|mimes:pdf,docx',
+            'file' => 'nullable|file|mimes:pdf,docx,doc,xlsx',
             'type' => 'required|integer',
             'published_at' => 'required|date_format:Y-m-d\TH:i',
             'agency_id' => 'required',
