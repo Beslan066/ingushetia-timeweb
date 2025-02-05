@@ -12,6 +12,8 @@ import AppFooter from "#/organisms/footer/footer.jsx";
 import AnniversaryBanner from "#/atoms/anniversary-banner/banner.jsx";
 import AgencyNews from "#/molecules/news/agency-news.jsx";
 
+import { usePage } from '@inertiajs/inertia-react';
+
 export default function Index({
                                 mainPosts: slides,
                                 categories,
@@ -24,7 +26,12 @@ export default function Index({
                                 agencies,
                                 agencyNews,
                                 anniversary,
+                                showNews: openedNews, // Данные о новости, переданные из контроллера
                               }) {
+  const url = new URL(window.location.href);
+  if (url.searchParams.has('anniversary')) {
+    localStorage.setItem('anniversary', JSON.stringify(!anniversary));
+  }
   const vectors = [
     {
       image: '/img/content/vectors/image 7.png',
@@ -52,23 +59,23 @@ export default function Index({
     },
   ]
 
-  const url = new URL(window.location.href);
-  if (url.searchParams.has('anniversary')) {
-    localStorage.setItem('anniversary', JSON.stringify(!anniversary));
-  }
-
   return (
     <>
-      <AppHeader anniversary={ anniversary }/>
-      <Hero categories={ categories } slides={ slides } news={ news }/>
-      <Vectors vectors={ vectors }/>
-      <AgencyNews agencies={ agencies } posts={ agencyNews }/>
-      <Districts settlements={ settlements } districts={ districts }/>
-      <MediaCollection media={ media }/>
-      { anniversary ? <AnniversaryBanner/> : '' }
-      <Mountains mountains={ mountains }/>
-      <ExternalResources resources={ resources }/>
-      <AppFooter/>
+      <AppHeader anniversary={anniversary} />
+      <Hero
+        categories={categories}
+        slides={slides}
+        news={news}
+        openedNews={openedNews} // Передаем данные о новости в Hero
+      />
+      <Vectors vectors={vectors} />
+      <AgencyNews agencies={agencies} posts={agencyNews} />
+      <Districts settlements={settlements} districts={districts} />
+      <MediaCollection media={media} />
+      {anniversary ? <AnniversaryBanner /> : ''}
+      <Mountains mountains={mountains} />
+      <ExternalResources resources={resources} />
+      <AppFooter />
     </>
-  )
+  );
 }

@@ -11,22 +11,18 @@ export default function PostContent({ post }) {
     return null;
   }
 
-  const newsDate = new Date(post.published_at); // создаём объект Date для работы с датой
-  const currentYear = new Date().getFullYear(); // получаем текущий год
-
-  // Форматируем дату без года, с использованием русской локали
+  const newsDate = new Date(post.published_at);
+  const currentYear = new Date().getFullYear();
   const formattedDate = format(newsDate, 'HH:mm, d MMMM', { locale: ru });
-
-  // Форматируем дату с добавлением года, если год не текущий
   const displayDate =
     newsDate.getFullYear() === currentYear
-      ? formattedDate // если год совпадает с текущим, показываем только дату без года
-      : `${formattedDate}, ${newsDate.getFullYear()}`; // иначе добавляем год
+      ? formattedDate
+      : `${formattedDate}, ${newsDate.getFullYear()}`;
 
   return (
     <div className="post-content">
       <div className="post__meta">
-        <div className="post-meta__date">{displayDate}</div> {/* Выводим отформатированную дату */}
+        <div className="post-meta__date">{displayDate}</div>
         <div className="post-meta__category">{post.category?.title}</div>
       </div>
       <div className="post__header">
@@ -43,7 +39,9 @@ export default function PostContent({ post }) {
       <div className="tags__wrapper">
         <div className="tags__title">Теги:</div>
         <div className="tags">
-          {(post?.tags ?? ['Спорт', 'Культура', 'Машины']).map((tag) => <Tag key={tag} tag={tag} />)}
+          {(post?.tags ?? ['Спорт', 'Культура', 'Машины']).map((tag) => (
+            <Tag key={tag} tag={tag} />
+          ))}
         </div>
       </div>
       <div className="share__wrapper">
@@ -56,7 +54,7 @@ export default function PostContent({ post }) {
           <a href="" type="button"><img src="/img/icons/social/Link.png" alt="" /></a>
         </div>
       </div>
-      {post?.relatedPosts && post.relatedPosts.length && Array.isArray(post.relatedPosts) ? (
+      {post?.relatedPosts && post.relatedPosts.length > 0 && (
         <div className="related">
           <h2 className="related__title">Смотрите также</h2>
           <div className="related__posts">
@@ -72,7 +70,7 @@ export default function PostContent({ post }) {
             ))}
           </div>
         </div>
-      ) : ''}
+      )}
     </div>
   );
 }

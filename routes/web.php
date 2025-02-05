@@ -14,6 +14,7 @@ use Inertia\Inertia;
 
 
 Route::get('/', [HomeController::class, 'index']);
+Route::get('/post/{url}', [HomeController::class, 'index'])->name('post.show');
 
 Route::get('/search', [SearchController::class, 'searchResults'])->name('search.results');
 

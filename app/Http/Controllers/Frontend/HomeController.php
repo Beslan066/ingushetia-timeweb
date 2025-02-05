@@ -97,24 +97,25 @@ class HomeController extends Controller
     });
 
     $openedNews = null;
-    if ($request->route('id')) {
-      $type = is_int($request->route('id')) ? 'id' : 'url';
-
+    if ($request->route('url')) {
       $openedNews = News::query()
         ->with('category', 'video', 'reportage')
-        ->where($type, $request->route('id'))
+        ->where('url', $request->route('url')) // Ищем по URL
         ->first();
 
-      if ($openedNews) {
-        $relatedPosts = News::query()
-          ->with('category')  // Подгружаем категорию для связанных новостей
-          ->where('agency_id', '!=', 5)
-          ->where('category_id', $openedNews->category_id)
-          ->where('id', '!=', $openedNews->id)
-          ->take(3)
-          ->get();
-        $openedNews->relatedPosts = $relatedPosts;
+      if (!$openedNews) {
+        abort(404); // Если новость не найдена, возвращаем 404
       }
+
+      // Получаем похожие посты по категории
+      $relatedPosts = News::query()
+        ->with('category')
+        ->where('category_id', $openedNews->category_id)
+        ->where('id', '!=', $openedNews->id) // Исключаем текущий пост
+        ->take(3)
+        ->get();
+
+      $openedNews->relatedPosts = $relatedPosts;
     }
 
 
@@ -133,6 +134,7 @@ class HomeController extends Controller
       'agencyNews' => $agencyNewsWithRelated,
       'showNews' => $openedNews,
       'anniversary' => config('app.anniversary'),
+
     ]);
   }
 
