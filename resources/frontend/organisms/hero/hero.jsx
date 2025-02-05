@@ -28,7 +28,7 @@ export default function Hero({ categories, slides, news, openedNews }) {
     if (post) {
       setCurrentPost(post); // Устанавливаем текущий пост
       setIsModalOpen(true); // Открываем модальное окно
-      Inertia.visit(`/${post.url}`, { preserveState: true }); // Используем Inertia.visit
+      Inertia.visit(`/news/${post.url}`, { preserveState: true }); // Используем Inertia.visit
     }
   };
 
