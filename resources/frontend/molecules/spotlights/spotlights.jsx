@@ -9,13 +9,22 @@ export default function Spotlights({ news, onPost }) {
         {
           news.map((item) => {
             return (
-              <Spotlight key={ item.id } id={ item.id } title={ item.title } category={ item?.category?.title } date={ item.published_at } hasVideo={ item.video } onPost={ onPost }/>
-            )
+              <Spotlight
+                key={ item.id }
+                id={ item.id }
+                title={ item.title }
+                url={ item.url }
+                category={ item?.category?.title }
+                date={ item.published_at }
+                hasVideo={ item.video }
+                onPost={ onPost }
+              />
+            );
           })
         }
       </div>
 
       <AppLink to="/news" title="Еще новости" className="spotlight__link"/>
     </div>
-  )
+  );
 }

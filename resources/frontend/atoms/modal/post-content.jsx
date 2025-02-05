@@ -4,7 +4,7 @@ import React from "react";
 import AgencyNewsItem from "#/atoms/news/agency-news-item.jsx";
 import Gallery from "#/atoms/gallery/gallery.jsx";
 import { format } from 'date-fns';
-import { ru } from 'date-fns/locale'; // подключаем локаль для русского языка
+import { ru } from 'date-fns/locale';
 
 export default function PostContent({ post }) {
   if (!post) {

@@ -8,6 +8,7 @@ export default function News({ news, handlePost }) {
         news.map((item) => {
           return <AgencyNewsItem key={ item.id }
                                  id={ item.id }
+                                 url={ item.url }
                                  category={ item?.category?.title }
                                  image={ item?.image_main }
                                  date={ item.published_at }

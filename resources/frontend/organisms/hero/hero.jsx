@@ -8,14 +8,12 @@ import Spotlights from "#/molecules/spotlights/spotlights.jsx";
 import Important from "#/atoms/important/important.jsx";
 import Modal from "#/atoms/modal/modal.jsx";
 import PostContent from "#/atoms/modal/post-content.jsx";
-import useModal from "#/hooks/useModal.js";
-
-
 import { Inertia } from '@inertiajs/inertia';
 
 export default function Hero({ categories, slides, news, openedNews }) {
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [slide, isOpen, setSlide] = useModal(openedNews);
+  const [isModalOpen, setIsModalOpen] = useState(false); // Состояние модального окна
+  const [currentPost, setCurrentPost] = useState(null); // Текущий пост для модального окна
 
   const onCategorySwitch = (category) => {
     setSelectedCategory(category);
@@ -25,25 +23,26 @@ export default function Hero({ categories, slides, news, openedNews }) {
     ? news.filter((post) => post.category_id === selectedCategory).slice(0, 3)
     : news.slice(0, 3);
 
-
-
+  // Обработчик открытия модального окна
   const handlePost = (post) => {
     if (post) {
-      setSlide(post);
-      Inertia.visit(`/post/${post.url}`); // Используем URL вместо ID
+      setCurrentPost(post); // Устанавливаем текущий пост
+      setIsModalOpen(true); // Открываем модальное окно
+      Inertia.visit(`/${post.url}`, { preserveState: true }); // Используем Inertia.visit
     }
   };
 
-  const handleNews = (post) => {
-    if (post) {
-      setSlide(post);
-      Inertia.visit(`/post/${post.url}`); // Используем URL вместо ID
-    }
+  const handleCloseModal = () => {
+    setIsModalOpen(false); // Закрываем модальное окно
+    setCurrentPost(null); // Сбрасываем текущий пост
+    Inertia.get('/', {}, { preserveState: true }); // Возвращаемся на главную страницу
   };
 
+// При изменении openedNews открываем модальное окно
   useEffect(() => {
     if (openedNews) {
-      setSlide(openedNews); // Открываем модальное окно, если есть openedNews
+      setCurrentPost(openedNews); // Устанавливаем текущий пост
+      setIsModalOpen(true); // Открываем модальное окно
     }
   }, [openedNews]);
 
@@ -54,25 +53,23 @@ export default function Hero({ categories, slides, news, openedNews }) {
           <MainSlider slides={slides} onPost={handlePost} />
           <div className="news-wrapper">
             <Tabs tabs={categories} onTab={onCategorySwitch} selected={selectedCategory} />
-            <News news={filteredArticles} handlePost={handleNews} />
+            <News news={filteredArticles} handlePost={handlePost} />
             <AppLink to="/news" title="Все новости" />
           </div>
         </div>
         <div className="hero__sidebar-wrapper">
-          <Spotlights news={news} onPost={handleNews} />
+          <Spotlights news={news} onPost={handlePost} />
           <Important />
         </div>
       </div>
 
+      {/* Модальное окно */}
       <Modal
-        breadcrumbs={[{ title: 'Главная' }, { title: 'Новости' }, { title: slide?.title }]}
-        isOpen={isOpen}
-        handleClose={() => {
-          setSlide(false);
-          Inertia.visit('/'); // Возвращаемся на главную страницу
-        }}
+        breadcrumbs={[{ title: 'Главная' }, { title: 'Новости' }, { title: currentPost?.title }]}
+        isOpen={isModalOpen}
+        handleClose={handleCloseModal}
       >
-        <PostContent post={slide} />
+        <PostContent post={currentPost} />
       </Modal>
     </>
   );

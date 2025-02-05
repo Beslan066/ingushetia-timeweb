@@ -1,9 +1,9 @@
-import './spotlight.css'
+import './spotlight.css';
 import VideoIcon from "#/atoms/icons/video.jsx";
 import React from "react";
 import { format } from "#/utilities/date.js";
 
-export default function Spotlight({ id, date, category, title, onPost, hasVideo = false }) {
+export default function Spotlight({ id, date, category, title, url, onPost, hasVideo = false }) {
   const formattedDate = format(date);
   return (
     <div className="spotlight">
@@ -12,9 +12,12 @@ export default function Spotlight({ id, date, category, title, onPost, hasVideo 
         <div className="spotlight__category">{ category }</div>
         { hasVideo ? <div className="spotlight__video"><VideoIcon/></div> : '' }
       </div>
-      <a onClick={ () => onPost(id) }>
+      <div
+        onClick={() => onPost({ id, date, category, title, url, hasVideo })}
+        style={{ cursor: 'pointer' }} // Добавьте стиль для указания, что элемент кликабельный
+      >
         <h2 className="spotlight__title">{ title }</h2>
-      </a>
+      </div>
     </div>
-  )
+  );
 }
