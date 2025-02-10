@@ -97,6 +97,7 @@ class HomeController extends Controller
     });
 
     $openedNews = null;
+
     if ($request->route('url')) {
       $openedNews = News::query()
         ->with('category', 'video', 'reportage')
@@ -104,7 +105,7 @@ class HomeController extends Controller
         ->first();
 
       if (!$openedNews) {
-        abort(404);
+        return response()->json(['error' => 'Новость не найдена'], 404);
       }
 
       $relatedPosts = News::query()
@@ -116,15 +117,15 @@ class HomeController extends Controller
 
       $openedNews->relatedPosts = $relatedPosts;
 
-      // Если запрос сделан через Inertia, возвращаем только данные для модального окна
-      if ($request->inertia()) {
+      // 💡 Если это AJAX-запрос, отдаем JSON
+      if ($request->expectsJson()) {
         return response()->json([
           'openedNews' => $openedNews,
         ]);
       }
     }
 
-
+    //  Для обычного запроса отдаем страницу
     return Inertia::render('Index', [
       'posts' => $posts->items(),
       'categories' => $categories,
@@ -140,8 +141,18 @@ class HomeController extends Controller
       'agencyNews' => $agencyNewsWithRelated,
       'showNews' => $openedNews,
       'anniversary' => config('app.anniversary'),
-
     ]);
+  }
+
+  public function show($url, Request $request)
+  {
+    $news = News::where('url', $url)->with('category', 'video', 'reportage')->firstOrFail();
+
+    if ($request->wantsJson()) {
+      return response()->json(['openedNews' => $news]);
+    }
+
+    return view('news.show', compact('news'));
   }
 
   public function nationalProjects()

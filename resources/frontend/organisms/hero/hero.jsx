@@ -1,51 +1,60 @@
+import React, { useEffect, useState } from "react";
 import MainSlider from "#/molecules/slider/slider.jsx";
 import Tabs from "#/atoms/tabs/tabs.jsx";
-import './hero.css';
-import React, { useEffect, useState } from "react";
 import News from "#/molecules/news/news.jsx";
 import AppLink from "#/atoms/buttons/link.jsx";
 import Spotlights from "#/molecules/spotlights/spotlights.jsx";
 import Important from "#/atoms/important/important.jsx";
 import Modal from "#/atoms/modal/modal.jsx";
 import PostContent from "#/atoms/modal/post-content.jsx";
-import { Inertia } from '@inertiajs/inertia';
+import './hero.css';
 
 export default function Hero({ categories, slides, news, openedNews }) {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPost, setCurrentPost] = useState(null);
+  const [previousUrl, setPreviousUrl] = useState("/");
 
-  const onCategorySwitch = (category) => {
-    setSelectedCategory(category);
-  };
+  useEffect(() => {
+    const path = window.location.pathname;
+    if (path.startsWith("/news/")) {
+      fetchPostByUrl(path.replace("/news/", ""));
+    }
+  }, []);
+
+  const onCategorySwitch = (category) => setSelectedCategory(category);
 
   const filteredArticles = selectedCategory
     ? news.filter((post) => post.category_id === selectedCategory).slice(0, 3)
     : news.slice(0, 3);
 
+  const fetchPostByUrl = (url) => {
+    fetch(`/news/${url}`, { headers: { Accept: "application/json" } })
+      .then((res) => res.json())
+      .then((data) => {
+        setPreviousUrl(window.location.pathname);
+        window.history.pushState({ postUrl: url }, "", `/news/${url}`);
+        setCurrentPost(data.openedNews);
+        setIsModalOpen(true);
+      })
+      .catch(console.error);
+  };
+
   const handlePost = (post) => {
-    if (post) {
-      Inertia.get(`/news/${post.url}`, {}, {
-        only: ['openedNews'],
-        onSuccess: (page) => {
-          setCurrentPost(page.props.openedNews);
-          setIsModalOpen(true);
-        }
-      });
-    }
+    if (post) fetchPostByUrl(post.url);
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setCurrentPost(null);
+    window.history.pushState(null, "", previousUrl);
   };
 
   useEffect(() => {
-    if (openedNews) {
-      setCurrentPost(openedNews);
-      setIsModalOpen(true);
-    }
-  }, [openedNews]);
+    const handlePopState = () => handleCloseModal();
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
 
   return (
     <>
@@ -65,7 +74,7 @@ export default function Hero({ categories, slides, news, openedNews }) {
       </div>
 
       <Modal
-        breadcrumbs={[{ title: 'Главная' }, { title: 'Новости' }, { title: currentPost?.title }]}
+        breadcrumbs={[{ title: "Главная" }, { title: "Новости" }, { title: currentPost?.title }]}
         isOpen={isModalOpen}
         handleClose={handleCloseModal}
       >
