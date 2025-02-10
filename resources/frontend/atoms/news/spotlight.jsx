@@ -14,7 +14,7 @@ export default function Spotlight({ id, date, category, title, url, onPost, hasV
       </div>
       <div
         onClick={() => onPost({ id, date, category, title, url, hasVideo })}
-        style={{ cursor: 'pointer' }} // Добавьте стиль для указания, что элемент кликабельный
+        style={{ cursor: 'pointer' }}
       >
         <h2 className="spotlight__title">{ title }</h2>
       </div>

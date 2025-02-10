@@ -100,22 +100,28 @@ class HomeController extends Controller
     if ($request->route('url')) {
       $openedNews = News::query()
         ->with('category', 'video', 'reportage')
-        ->where('url', $request->route('url')) // Ищем по URL
+        ->where('url', $request->route('url'))
         ->first();
 
       if (!$openedNews) {
-        abort(404); // Если новость не найдена, возвращаем 404
+        abort(404);
       }
 
-      // Получаем похожие посты по категории
       $relatedPosts = News::query()
         ->with('category')
         ->where('category_id', $openedNews->category_id)
-        ->where('id', '!=', $openedNews->id) // Исключаем текущий пост
+        ->where('id', '!=', $openedNews->id)
         ->take(3)
         ->get();
 
       $openedNews->relatedPosts = $relatedPosts;
+
+      // Если запрос сделан через Inertia, возвращаем только данные для модального окна
+      if ($request->inertia()) {
+        return response()->json([
+          'openedNews' => $openedNews,
+        ]);
+      }
     }
 
 

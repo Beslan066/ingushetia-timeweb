@@ -12,8 +12,8 @@ import { Inertia } from '@inertiajs/inertia';
 
 export default function Hero({ categories, slides, news, openedNews }) {
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false); // Состояние модального окна
-  const [currentPost, setCurrentPost] = useState(null); // Текущий пост для модального окна
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentPost, setCurrentPost] = useState(null);
 
   const onCategorySwitch = (category) => {
     setSelectedCategory(category);
@@ -23,26 +23,27 @@ export default function Hero({ categories, slides, news, openedNews }) {
     ? news.filter((post) => post.category_id === selectedCategory).slice(0, 3)
     : news.slice(0, 3);
 
-  // Обработчик открытия модального окна
   const handlePost = (post) => {
     if (post) {
-      setCurrentPost(post); // Устанавливаем текущий пост
-      setIsModalOpen(true); // Открываем модальное окно
-      Inertia.visit(`/news/${post.url}`, { preserveState: true }); // Используем Inertia.visit
+      Inertia.get(`/news/${post.url}`, {}, {
+        only: ['openedNews'],
+        onSuccess: (page) => {
+          setCurrentPost(page.props.openedNews);
+          setIsModalOpen(true);
+        }
+      });
     }
   };
 
   const handleCloseModal = () => {
-    setIsModalOpen(false); // Закрываем модальное окно
-    setCurrentPost(null); // Сбрасываем текущий пост
-    Inertia.get('/', {}, { preserveState: true }); // Возвращаемся на главную страницу
+    setIsModalOpen(false);
+    setCurrentPost(null);
   };
 
-// При изменении openedNews открываем модальное окно
   useEffect(() => {
     if (openedNews) {
-      setCurrentPost(openedNews); // Устанавливаем текущий пост
-      setIsModalOpen(true); // Открываем модальное окно
+      setCurrentPost(openedNews);
+      setIsModalOpen(true);
     }
   }, [openedNews]);
 
@@ -63,7 +64,6 @@ export default function Hero({ categories, slides, news, openedNews }) {
         </div>
       </div>
 
-      {/* Модальное окно */}
       <Modal
         breadcrumbs={[{ title: 'Главная' }, { title: 'Новости' }, { title: currentPost?.title }]}
         isOpen={isModalOpen}
