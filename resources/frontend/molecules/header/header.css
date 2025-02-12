@@ -29,12 +29,13 @@
   display: none;
 }
 
-.top-menu__name {
+.top-menu__name h1{
   font-size: var(--font-size-h4);
   font-weight: var(--font-weight-semibold);
   line-height: var(--line-height-h4);
   color: var(--color-neutral-black);
 }
+
 
 .top-menu__caption {
   font-size: var(--font-size-caption);

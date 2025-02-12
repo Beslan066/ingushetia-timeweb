@@ -225,6 +225,7 @@
 
                 @if(auth()->user()->role == 10 )
                         <li><a href="{{route('admin.categories.index')}}" class=" waves-effect"><i class="bx bx-tag"></i><span>Категории</span></a></li>
+                        <li><a href="{{route('admin.ministers.index')}}" class=" waves-effect"><i class="bx bxs-user-badge"></i><span>Состав правительства</span></a></li>
                         <li><a href="{{route('admin.supervisors.index')}}" class=" waves-effect"><i class="bx bxs-user-badge"></i><span>Руководители</span></a></li>
                         <li><a href="{{route('admin.municipalities.index')}}" class=" waves-effect"><i class="bx bxs-city"></i><span>Муниципальные образования</span></a></li>
                         <li><a href="{{route('admin.agencies.index')}}" class=" waves-effect"><i class="bx bx-buildings"></i><span>Министерства</span></a></li>

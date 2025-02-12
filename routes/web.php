@@ -329,6 +329,17 @@ Route::group(['namespace' => 'Admin', 'middleware' => \App\Http\Middleware\Admin
 
     });
 
+  Route::group(['namespace' => 'Minister', 'prefix' => 'admin'], function () {
+    Route::get('/ministers', [App\Http\Controllers\Admin\MinisterController::class, 'index'])->name('admin.ministers.index');
+
+    Route::get('/ministers/create', [App\Http\Controllers\Admin\MinisterController::class, 'create'])->name('admin.ministers.create');
+    Route::post('/ministers/store', [App\Http\Controllers\Admin\MinisterController::class, 'store'])->name('admin.ministers.store');
+    Route::get('/ministers/{minister}/edit', [App\Http\Controllers\Admin\MinisterController::class, 'edit'])->name('admin.ministers.edit');
+    Route::patch('/ministers/{minister}', [App\Http\Controllers\Admin\MinisterController::class, 'update'])->name('admin.ministers.update');
+    Route::delete('/ministers/{minister}', [App\Http\Controllers\Admin\MinisterController::class, 'destroy'])->name('admin.ministers.delete');
+
+  });
+
     Route::group(['namespace' => 'Municipality', 'prefix' => 'admin'], function () {
         Route::get('/municipalities', [App\Http\Controllers\Admin\MunicipalityController::class, 'index'])->name('admin.municipalities.index');
 

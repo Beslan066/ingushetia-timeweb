@@ -10,7 +10,9 @@
   width: 100%;
   overflow-y: auto;
   transition: .15s ease opacity, .2s ease-in top;
-  height: 100vh;
+  min-height: 100vh;
+  height: auto;
+
 }
 
 @media (min-width: 1366px) {
@@ -67,7 +69,6 @@ body:has(.modal--opened) {
 
 @media (min-width: 1366px) {
   .modal {
-    height: auto;
     width: 60%;
     left: calc((100vw - 60% + 10px) / 2);
   }

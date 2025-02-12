@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\Supervisor\UpdateRequest;
-use App\Http\Requests\Admin\Supervisor\StoreRequest;
+use App\Http\Requests\Admin\Minister\UpdateRequest;
+use App\Http\Requests\Admin\Minister\StoreRequest;
 use App\Models\Agency;
 use App\Models\Category;
-use App\Models\Supervisor;
+use App\Models\Minister;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 
-class SupervisorController extends Controller
+class MinisterController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -24,9 +24,9 @@ class SupervisorController extends Controller
     {
 
 
-        $peoples = Supervisor::query()->orderBy('id', 'desc')->paginate(10);
+        $ministers = Minister::query()->orderBy('id', 'desc')->paginate(10);
 
-        return view('admin.supervisor.index', compact('peoples', ));
+        return view('admin.minister.index', compact('ministers', ));
     }
 
     /**
@@ -35,7 +35,7 @@ class SupervisorController extends Controller
     public function create()
     {
 
-        return view('admin.supervisor.create');
+        return view('admin.minister.create');
     }
 
     /**
@@ -53,9 +53,9 @@ class SupervisorController extends Controller
         $data['image_main'] = $path ?? null;
 
 
-        $supervisors = Supervisor::create($data);
+        $ministers = Minister::create($data);
 
-        return redirect()->route('admin.supervisors.index');
+        return redirect()->route('admin.ministers.index');
     }
 
     /**
@@ -69,18 +69,18 @@ class SupervisorController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Supervisor $supervisor)
+    public function edit(Minister $minister)
     {
 
-        return view('admin.supervisor.edit', [
-            'supervisor' => $supervisor
+        return view('admin.minister.edit', [
+            'minister' => $minister
         ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateRequest $request, Supervisor $supervisor)
+    public function update(UpdateRequest $request, Minister $minister)
     {
         $data = $request->validated();
 
@@ -90,20 +90,21 @@ class SupervisorController extends Controller
           $data['image_main'] = str_replace('images/', '', $data['image_main']);
         } else {
           // если изображение не загружено, используем старое значение
-          $data['image_main'] = $supervisor->image_main;
+          $data['image_main'] = $minister->image_main;
         }
-        $supervisor->update($data);
 
-        return redirect()->route('admin.supervisors.index')->with('success', 'Supervisor updated successfully');
+        $minister->update($data);
+
+        return redirect()->route('admin.ministers.index')->with('success', 'Minister updated successfully');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Supervisor $supervisor)
+    public function destroy(Minister $minister)
     {
-        $supervisor->delete();
+        $minister->delete();
 
-        return to_route('admin.supervisors.index');
+        return to_route('admin.ministers.index');
     }
 }

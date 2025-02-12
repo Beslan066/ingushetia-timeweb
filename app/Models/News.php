@@ -34,8 +34,10 @@ class News extends Model
     ];
 
     protected $dates = ['deleted_at'];
+    protected $appends = ['related_posts'];
 
-    public function translate()
+
+  public function translate()
     {
         return $this->belongsTo(NewsIng::class, 'translate_id', 'id');
     }
@@ -79,6 +81,11 @@ class News extends Model
       if ($dateTo) {
         $query->where('published_at', '<=', $dateTo);
       }
+    }
+
+    public function getRelatedPostsAttribute()
+    {
+      return $this->relatedPosts ?? [];
     }
 
     public function scopeFilterCategory(Builder $query, $category)

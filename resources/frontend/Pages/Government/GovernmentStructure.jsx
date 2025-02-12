@@ -9,7 +9,7 @@ import Modal from "#/atoms/modal/modal.jsx";
 import MilitaryContent from "#/atoms/modal/military-content.jsx";
 import MemberContent from "#/atoms/modal/member-content.jsx";
 
-export default function GovernmentStructure() {
+export default function GovernmentStructure({ministers}) {
   const [modal, setModal] = useState(false)
 
   return (
@@ -20,10 +20,11 @@ export default function GovernmentStructure() {
         <div className="page-content__content">
           <div className="government-team__wrapper">
             <GovernmentMember isHead={true} name="Сластенин Владимир Владимирович" avatar="/img/man.png" position="Председатель правительства Республики Ингушетия" onClick={ () => setModal(true) } />
-            <GovernmentMember isHead={false} name="Евлоев Магомед Мусаевич" avatar="/img/man.png" position="Первый заместитель Председателя Правительства Республики Ингушетия" onClick={ () => setModal(true) } />
-            <GovernmentMember isHead={false} name="Фурсов Олег Борисович" avatar="/img/man.png" position="Первый заместитель Председателя Правительства Республики Ингушетия" onClick={ () => setModal(true) } />
-            <GovernmentMember isHead={false} name="Фаттахов Тимур Наильевич" avatar="/img/man.png" position="Заместитель Председателя Правительства Республики Ингушетия" onClick={ () => setModal(true) } />
-            <GovernmentMember isHead={false} name="Сагова Индира Муратовна" avatar="/img/man.png" position="Первый заместитель Председателя Правительства Республики Ингушетия" onClick={ () => setModal(true) } />
+            {ministers &&
+              ministers.map((minister) => {
+                return <GovernmentMember isHead={false} name={minister.name} avatar={`/storage/${minister.image_main}`} position={minister.position} onClick={ () => setModal(true) } />
+              })
+            }
           </div>
         </div>
         <div className="page-content__navigation">

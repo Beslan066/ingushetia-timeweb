@@ -49,7 +49,11 @@ export default function AppHeader({ anniversary, logo, title }) {
           <div className="top-menu__site-name">
             { anniversary ? <AnniversaryLogoImage/> : <LogoImage logo={logo ?? "/img/logo.svg"}/> }
             <Link className={ `top-menu__title ${ anniversary ? 'top-menu__title--anniversary' : '' }` } href="/">
-              <div className="top-menu__name">{ title ?? 'Республика Ингушетия' }</div>
+              <div className="top-menu__name">
+                <h1>
+                  { title ?? 'Республика Ингушетия' }
+                </h1>
+              </div>
               <div className="top-menu__caption">Официальный портал</div>
             </Link>
           </div>
@@ -64,7 +68,7 @@ export default function AppHeader({ anniversary, logo, title }) {
                   </button>
                   <ul className="submenu">
                     <li className="menu-item"><Link href="/government">Глава Республики</Link></li>
-                    <li className="menu-item"><Link href="/government/directories">Правительство</Link></li>
+                    <li className="menu-item"><Link href="/government/">Правительство</Link></li>
                     <li className="menu-item"><Link href="#">Федеральные органы власти</Link></li>
                     <li className="menu-item"><Link href={ route('agencies.index') }>Министерства</Link></li>
                   </ul>

@@ -51,10 +51,12 @@ export default function Hero({ categories, slides, news, openedNews }) {
   };
 
   useEffect(() => {
-    const handlePopState = () => handleCloseModal();
-    window.addEventListener("popstate", handlePopState);
-    return () => window.removeEventListener("popstate", handlePopState);
-  }, []);
+    const path = window.location.pathname;
+    if (path.startsWith("/news/") && !isModalOpen) {
+      // Если открыта прямая ссылка - показываем и модалку, и фоновую страницу
+      fetchPostByUrl(path.replace("/news/", ""));
+    }
+  }, [isModalOpen]);
 
   return (
     <>
