@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { usePage } from "@inertiajs/react";
+import { Inertia } from "@inertiajs/inertia";
 import MainSlider from "#/molecules/slider/slider.jsx";
 import Tabs from "#/atoms/tabs/tabs.jsx";
 import News from "#/molecules/news/news.jsx";
@@ -7,56 +9,32 @@ import Spotlights from "#/molecules/spotlights/spotlights.jsx";
 import Important from "#/atoms/important/important.jsx";
 import Modal from "#/atoms/modal/modal.jsx";
 import PostContent from "#/atoms/modal/post-content.jsx";
-import './hero.css';
+import "./hero.css";
 
-export default function Hero({ categories, slides, news, openedNews }) {
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentPost, setCurrentPost] = useState(null);
-  const [previousUrl, setPreviousUrl] = useState("/");
+export default function Hero({ categories, slides, news, showNews }) {
+  const { props } = usePage();
+  const [isModalOpen, setIsModalOpen] = useState(!!showNews);
+  const [currentPost, setCurrentPost] = useState(showNews || null);
 
-  useEffect(() => {
-    const path = window.location.pathname;
-    if (path.startsWith("/news/")) {
-      fetchPostByUrl(path.replace("/news/", ""));
-    }
-  }, []);
-
-  const onCategorySwitch = (category) => setSelectedCategory(category);
-
-  const filteredArticles = selectedCategory
-    ? news.filter((post) => post.category_id === selectedCategory).slice(0, 3)
-    : news.slice(0, 3);
-
-  const fetchPostByUrl = (url) => {
-    fetch(`/news/${url}`, { headers: { Accept: "application/json" } })
-      .then((res) => res.json())
-      .then((data) => {
-        setPreviousUrl(window.location.pathname);
-        window.history.pushState({ postUrl: url }, "", `/news/${url}`);
-        setCurrentPost(data.openedNews);
-        setIsModalOpen(true);
-      })
-      .catch(console.error);
-  };
-
+  // Открытие поста (Inertia.visit меняет URL и передает post)
   const handlePost = (post) => {
-    if (post) fetchPostByUrl(post.url);
+    Inertia.visit(`/news/${post.url}`, { preserveScroll: true });
   };
 
+  // Если `showNews` обновился, открываем модалку
+  useEffect(() => {
+    if (props.showNews) {
+      setCurrentPost(props.showNews);
+      setIsModalOpen(true);
+    }
+  }, [props.showNews]);
+
+  // Закрытие модалки (только сброс состояния, без Inertia.visit)
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setCurrentPost(null);
-    window.history.pushState(null, "", previousUrl);
+    window.history.pushState({}, "", "/"); // Меняем URL без запроса
   };
-
-  useEffect(() => {
-    const path = window.location.pathname;
-    if (path.startsWith("/news/") && !isModalOpen) {
-      // Если открыта прямая ссылка - показываем и модалку, и фоновую страницу
-      fetchPostByUrl(path.replace("/news/", ""));
-    }
-  }, [isModalOpen]);
 
   return (
     <>
@@ -64,8 +42,8 @@ export default function Hero({ categories, slides, news, openedNews }) {
         <div className="hero__slider-wrapper">
           <MainSlider slides={slides} onPost={handlePost} />
           <div className="news-wrapper">
-            <Tabs tabs={categories} onTab={onCategorySwitch} selected={selectedCategory} />
-            <News news={filteredArticles} handlePost={handlePost} />
+            <Tabs tabs={categories} />
+            <News news={news.slice(0, 3)} handlePost={handlePost} />
             <AppLink to="/news" title="Все новости" />
           </div>
         </div>
@@ -80,7 +58,7 @@ export default function Hero({ categories, slides, news, openedNews }) {
         isOpen={isModalOpen}
         handleClose={handleCloseModal}
       >
-        <PostContent post={currentPost} />
+        {currentPost ? <PostContent post={currentPost} /> : <div>Загрузка...</div>}
       </Modal>
     </>
   );

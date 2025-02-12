@@ -99,32 +99,17 @@ class HomeController extends Controller
     $openedNews = null;
 
     if ($request->route('url')) {
-      $openedNews = News::query()
-        ->with('category', 'video', 'reportage')
-        ->where('url', $request->route('url'))
-        ->first();
+      $openedNews = News::where('url', $request->route('url'))
+        ->with(['category', 'video', 'reportage'])
+        ->firstOrFail();
 
-      if (!$openedNews) {
-        return response()->json(['error' => 'Новость не найдена'], 404);
-      }
-
-      $relatedPosts = News::query()
-        ->with('category')
-        ->where('category_id', $openedNews->category_id)
+      // Добавляем related posts
+      $openedNews->relatedPosts = News::where('category_id', $openedNews->category_id)
         ->where('id', '!=', $openedNews->id)
-        ->take(3)
+        ->limit(3)
         ->get();
 
-      $openedNews->relatedPosts = $relatedPosts;
-
-      // 💡 Если это AJAX-запрос, отдаем JSON
-      if ($request->expectsJson()) {
-        return response()->json([
-          'openedNews' => $openedNews,
-        ]);
-      }
     }
-
     //  Для обычного запроса отдаем страницу
     return Inertia::render('Index', [
       'posts' => $posts->items(),
@@ -144,16 +129,7 @@ class HomeController extends Controller
     ]);
   }
 
-  public function show($url, Request $request)
-  {
-    $news = News::where('url', $url)->with('category', 'video', 'reportage')->firstOrFail();
 
-    if ($request->wantsJson()) {
-      return response()->json(['openedNews' => $news]);
-    }
-
-    return view('news.show', compact('news'));
-  }
 
   public function nationalProjects()
   {

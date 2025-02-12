@@ -65,6 +65,8 @@ body:has(.modal--opened) {
 
 .modal__content-wrapper {
   margin: 0 20px;
+  max-height: 80vh; /* Ограничение по высоте */
+  overflow-y: auto; /* Включаем прокрутку внутри */
 }
 
 @media (min-width: 1366px) {
@@ -94,7 +96,6 @@ body:has(.modal--opened) {
   }
 
   body:has(.modal--opened) {
-    height: auto;
-    overflow: auto;
+    overflow: auto; /* Позволяем прокрутку */
   }
 }

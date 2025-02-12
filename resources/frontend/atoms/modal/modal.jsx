@@ -10,7 +10,11 @@ export default function Modal({ children, breadcrumbs, handleClose, isOpen }) {
   const [open, setOpen] = useState(isOpen);
 
   useEffect(() => {
-    setOpen(isOpen);
+    if (isOpen) {
+      document.body.classList.add('modal-open');
+    } else {
+      document.body.classList.remove('modal-open');
+    }
   }, [isOpen]);
 
   useClickOutside(modal, () => {
@@ -18,7 +22,7 @@ export default function Modal({ children, breadcrumbs, handleClose, isOpen }) {
   });
 
   return (
-    <div className={`modal modal--${isOpen ? "opened" : "closed"}`} ref={modal}>
+    <div className={`modal ${isOpen ? 'modal--opened' : 'modal--closed'}`} ref={modal}>
       <div className="modal__header">
         {breadcrumbs?.length ? <Breadcrumbs breadcrumbs={breadcrumbs} /> : <div></div>}
         <div className="actions">

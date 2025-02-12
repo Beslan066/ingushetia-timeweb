@@ -6,23 +6,16 @@ import Gallery from "#/atoms/gallery/gallery.jsx";
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 
+
 export default function PostContent({ post }) {
   if (!post) {
     return null;
   }
 
-  const newsDate = new Date(post.published_at);
-  const currentYear = new Date().getFullYear();
-  const formattedDate = format(newsDate, 'HH:mm, d MMMM', { locale: ru });
-  const displayDate =
-    newsDate.getFullYear() === currentYear
-      ? formattedDate
-      : `${formattedDate}, ${newsDate.getFullYear()}`;
 
   return (
     <div className="post-content">
       <div className="post__meta">
-        <div className="post-meta__date">{displayDate}</div>
         <div className="post-meta__category">{post.category?.title}</div>
       </div>
       <div className="post__header">
