@@ -58,7 +58,7 @@ export default function Hero({ categories, slides, news, showNews }) {
         isOpen={isModalOpen}
         handleClose={handleCloseModal}
       >
-        {currentPost ? <PostContent post={currentPost} /> : <div>Загрузка...</div>}
+        {currentPost ? <PostContent post={currentPost}/> : <div>Загрузка...</div>}
       </Modal>
     </>
   );

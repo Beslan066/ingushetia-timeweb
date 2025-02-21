@@ -18,7 +18,7 @@ class SearchController extends Controller
 
         // Поиск новостей
         $news = News::whereRaw('LOWER(title) LIKE ?', ["%{$query}%"])
-            ->orderBy('created_at', 'desc')
+            ->orderBy('published_at', 'desc')
             ->get()
             ->map(function ($item) {
                 $item->category = 'Новость';
@@ -28,7 +28,7 @@ class SearchController extends Controller
         // Поиск фоторепортажей
         $photoReportages = PhotoReportage::whereRaw('LOWER(title) LIKE ?', ["%{$query}%"])
             ->orWhereRaw('LOWER(lead) LIKE ?', ["%{$query}%"])
-            ->orderBy('created_at', 'desc')
+            ->orderBy('published_at', 'desc')
             ->get()
             ->map(function ($item) {
                 $item->category = 'Фоторепортаж';
@@ -38,7 +38,7 @@ class SearchController extends Controller
         // Поиск видео
         $videos = Video::whereRaw('LOWER(title) LIKE ?', ["%{$query}%"])
             ->orWhereRaw('LOWER(lead) LIKE ?', ["%{$query}%"])
-            ->orderBy('created_at', 'desc')
+            ->orderBy('published_at', 'desc')
             ->get()
             ->map(function ($item) {
                 $item->category = 'Видео';
@@ -47,7 +47,7 @@ class SearchController extends Controller
 
         // Поиск документов
         $documents = Document::whereRaw('LOWER(title) LIKE ?', ["%{$query}%"])
-            ->orderBy('created_at', 'desc')
+            ->orderBy('published_at', 'desc')
             ->get()
             ->map(function ($item) {
                 $item->category = 'Документ';

@@ -110,6 +110,7 @@ class HomeController extends Controller
         ->get();
 
     }
+
     //  Для обычного запроса отдаем страницу
     return Inertia::render('Index', [
       'posts' => $posts->items(),
