@@ -43,7 +43,7 @@ export default function Hero({ categories, slides, news, showNews }) {
           <MainSlider slides={slides} onPost={handlePost} />
           <div className="news-wrapper">
             <Tabs tabs={categories} />
-            <News news={news.slice(0, 3)} handlePost={handlePost} />
+            <News news={news.slice(0, 3)} onPost={handlePost} />
             <AppLink to="/news" title="Все новости" />
           </div>
         </div>
@@ -58,7 +58,7 @@ export default function Hero({ categories, slides, news, showNews }) {
         isOpen={isModalOpen}
         handleClose={handleCloseModal}
       >
-        {currentPost ? <PostContent post={currentPost}/> : <div>Загрузка...</div>}
+        {currentPost ? <PostContent post={currentPost} onPost={handlePost}/> : <div>Загрузка...</div>}
       </Modal>
     </>
   );

@@ -1,7 +1,7 @@
 import AgencyNewsItem from "#/atoms/news/agency-news-item.jsx";
 import './news.css';
 
-export default function News({ news, handlePost }) {
+export default function News({ news, onPost }) {
   return (
     <div className="news">
       {
@@ -13,7 +13,7 @@ export default function News({ news, handlePost }) {
                                  image={ item?.image_main }
                                  date={ item.published_at }
                                  title={ item.title }
-                                 onPost={ handlePost }
+                                 onPost={ onPost }
           />
         })
       }

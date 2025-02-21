@@ -7,7 +7,7 @@ import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 
 
-export default function PostContent({ post }) {
+export default function PostContent({ post, onPost }) {
   if (!post) {
     return null;
   }
@@ -52,12 +52,15 @@ export default function PostContent({ post }) {
           <h2 className="related__title">Смотрите также</h2>
           <div className="related__posts">
             {post.relatedPosts.map((related) => (
+
               <AgencyNewsItem
                 title={related.title}
                 image={related.image_main}
                 category={related?.category?.title}
                 id={related.id}
                 key={related.id}
+                onPost={onPost}
+                url={related.url}
                 date={related.published_at}
               />
             ))}

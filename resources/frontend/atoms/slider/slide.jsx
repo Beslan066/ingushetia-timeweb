@@ -1,7 +1,7 @@
 import './slide.css';
 import { format } from "#/utilities/date.js";
 
-export default function Slide({ title, category, date, image, id, onPost, style }) {
+export default function Slide({ title, category, date, image, id, onPost, style, url }) {
   const formattedDate = format(date);
   return (
     <div className="slide" style={style}>
@@ -11,7 +11,7 @@ export default function Slide({ title, category, date, image, id, onPost, style 
           <div className="slide-info__date">{ formattedDate }</div>
           <div className="slide-info__category">{ category }</div>
         </div>
-        <a onClick={ () => onPost(id) } className="slide-info__title">{ title }</a>
+        <a onClick={() => onPost({ id, title, url: url || `/news/${id}` })} className="slide-info__title">{ title }</a>
       </div>
     </div>
   )

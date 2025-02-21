@@ -83,6 +83,7 @@ export default function MainSlider({ slides, onPost, slideChangeInterval = 8000 
                        transition: `transform 0.5s ease-in-out, opacity 0.5s ease-in-out`
                      } }
                      id={ slide.id }
+                     url={slide.url}
                      onPost={ onPost }
               />
             )

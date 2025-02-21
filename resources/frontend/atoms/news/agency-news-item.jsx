@@ -2,7 +2,7 @@ import './agency-item.css';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale'; // подключаем локаль для русского языка
 
-export default function AgencyNewsItem({ id, date, category, title, image, onPost }) {
+export default function AgencyNewsItem({ id, date, category, title, image, onPost, url }) {
   const newsDate = new Date(date); // создаём объект Date для работы с датой
   const currentYear = new Date().getFullYear(); // получаем текущий год
 
@@ -16,7 +16,7 @@ export default function AgencyNewsItem({ id, date, category, title, image, onPos
       : `${formattedDate}, ${newsDate.getFullYear()}`; // иначе добавляем год
 
   return (
-    <a onClick={() => onPost(id)} className="news-card">
+    <a onClick={() => onPost({ id, title, url: url || `/news/${id}` })} className="news-card">
       {image && (
         <div className="news-card__preview">
           <img src={`/storage/${image}`} alt={title + ' превью фото'} />
@@ -28,7 +28,8 @@ export default function AgencyNewsItem({ id, date, category, title, image, onPos
           <div className="news-card__date">{displayDate}</div>
           <div className="news-card__category">{category}</div>
         </div>
-        <div className="news-card__title">{title}</div>
+
+          <div className="news-card__title">{title}</div>
       </div>
     </a>
   );
