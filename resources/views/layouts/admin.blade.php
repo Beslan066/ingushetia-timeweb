@@ -199,8 +199,7 @@
                 <!-- Left Menu Start -->
                 <ul class="metismenu list-unstyled" id="side-menu">
                     <li>
-                        <a href="{{route('admin')}}" class="waves-effect"><i class='bx bx-home-smile'></i><span
-                            class="badge badge-pill badge-primary float-right">7</span><span>Дашборд</span></a>
+                        <a href="{{route('admin')}}" class="waves-effect"><i class='bx bx-home-smile'></i><span>Дашборд</span></a>
                     </li>
 
                     <li><a href="{{route('admin.news.index')}}" class=" waves-effect"><i class="bx bx-news"></i><span>Новости</span></a></li>
@@ -339,14 +338,7 @@
     <footer class="footer">
       <div class="container-fluid">
         <div class="row">
-          <div class="col-sm-6">
-            2020 © Lunoz.
-          </div>
-          <div class="col-sm-6">
-            <div class="text-sm-right d-none d-sm-block">
-              Design & Develop by Myra
-            </div>
-          </div>
+
         </div>
       </div>
     </footer>

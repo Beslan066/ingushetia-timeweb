@@ -26,7 +26,7 @@
                         </div>
 
                             <div class="form-group w-50">
-                                <label for="image_main">Изображение новости</label>
+                                <label for="image_main">Главное изображение</label>
                                 <input type="file" id="image_main" name="image_main" class="dropify" data-height="300"/>
                             </div>
 
@@ -50,16 +50,6 @@
                         @error('published_at')
                         <div class="text-danger">{{ $message }}</div>
                         @enderror
-
-                        <div class="form-group w-50">
-                            <label for="exampleFormControlSelect1">Новость для репортажа</label>
-                            <select class="form-control" id="exampleFormControlSelect1" name="news_id">
-                                <option value="">Выберите новость или оставьте пустой, если у фоторепортажа нет новости</option>
-                                @foreach($news as $item)
-                                    <option value="{{$item->id}}">{{$item->title}}</option>
-                                @endforeach
-                            </select>
-                        </div>
 
                         <div class="form-group w-50">
                             <label for="exampleFormControlSelect1">Автор</label>

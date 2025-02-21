@@ -36,12 +36,11 @@ class PhotoReportageController extends Controller
     {
 
 
-        $news = News::query()->orderBy('id', 'desc')->get();
         $categories = Category::all();
         $authors = User::query()->where('role', 10)->get();
 
 
-        return view('admin.photo-reportage.create', compact('authors', 'categories', 'news'));
+        return view('admin.photo-reportage.create', compact('authors', 'categories'));
     }
 
     /**
@@ -101,11 +100,10 @@ class PhotoReportageController extends Controller
     public function edit(PhotoReportage $reportage)
     {
 
-        $news = News::all();
         $categories = Category::all();
         $authors = User::query()->where('role', 10)->get();
 
-        return view('admin.photo-reportage.edit', compact('reportage', 'categories', 'authors', 'news'));
+        return view('admin.photo-reportage.edit', compact('reportage', 'categories', 'authors'));
     }
 
     /**

@@ -2,7 +2,8 @@ import SearchIcon from "#/atoms/icons/search.jsx";
 import BarsIcon from "#/atoms/icons/bars.jsx";
 import AnniversaryLogoImage from "#/atoms/logos/anniversary.jsx";
 import LogoImage from "#/atoms/logos/default.jsx";
-
+import Modal from "#/atoms/modal/modal.jsx";
+import PostContent from "#/atoms/modal/post-content.jsx";
 import './header.css';
 import React, { useEffect, useRef, useState } from "react";
 import Button from "#/atoms/buttons/button.jsx";
@@ -16,31 +17,52 @@ export default function AppHeader({ anniversary, logo, title }) {
   const [menuOpened, setMenuOpened] = useState(false);
   const [results, setResults] = useState([]);
   const [query, setQuery] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentPost, setCurrentPost] = useState(null);
 
   useEffect(() => {
-    if (query.length > 2) {
-      axios.get(route('search.results', { query: query.trim().toLowerCase() })) // trim() для удаления лишних пробелов
-        .then(response => {
-          const combinedResults = [
-            ...response.data.news,
-            ...response.data.photoReportages,
-            ...response.data.videos,
-            ...response.data.documents,
-          ];
-          setResults(combinedResults);
-        })
-        .catch(error => {
-          console.error("There was an error fetching the search results!", error);
-        });
-    } else {
-      setResults([]);
-    }
+    const delayDebounceFn = setTimeout(() => {
+      if (query.length > 1) {
+        axios.get(route('search.results', { query: query.trim().toLowerCase() }))
+          .then(response => {
+            const combinedResults = [
+              ...response.data.news,
+              ...response.data.photoReportages,
+              ...response.data.videos,
+              ...response.data.documents,
+            ];
+            setResults(combinedResults);
+          })
+          .catch(console.error);
+      } else {
+        setResults([]);
+      }
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
   }, [query]);
 
   const toggleMenu = () => {
     setMenuOpened(!menuOpened)
     document.querySelector('body')
   }
+
+
+  //   Открытие модального окна
+  const handlePost = (post) => {
+    setCurrentPost(post);
+    setIsModalOpen(true);
+    window.history.pushState({}, "", `/news/${post.id}`);
+  };
+
+  // Закрытие модального окна
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setCurrentPost(null);
+    window.history.back();
+  };
+
+
 
   return (
     <>
@@ -105,10 +127,18 @@ export default function AppHeader({ anniversary, logo, title }) {
         !!results?.length ? (
           <div className="search-results">
             <div className="results">
-              {
-                results.slice(0, 5).map((result) => (
-                  <div className="result" key={result.id}>
-                    <Link className="result__title" to={ "/news/" + result.id }>{ result.title }</Link>
+              {results.slice(0, 5).map((result) => (
+                <div className="result" key={result.id}>
+                  <Link
+                    className="result__title"
+                    to={ "/news/" + result.id }
+                    onClick={(e) => {
+                      e.preventDefault(); // Предотвращаем переход по ссылке
+                      handlePost(result);
+                    }}
+                  >
+                    {result.title}
+                  </Link>
                     <div className="result__footer">
                       <div className="result__date">{ new Date(result.created_at).toLocaleDateString() }</div>
                       <div className="result__category">{ result.category }</div>
@@ -156,6 +186,18 @@ export default function AppHeader({ anniversary, logo, title }) {
           </ul>
         </div>
       </div>
+
+
+      <Modal
+        isOpen={isModalOpen}
+        handleClose={handleCloseModal}
+        breadcrumbs={[
+          { title: "Поиск", path: "/search" },
+          { title: currentPost?.title }
+        ]}
+      >
+        {currentPost && <PostContent post={currentPost} />}
+      </Modal>
     </>
   )
 }

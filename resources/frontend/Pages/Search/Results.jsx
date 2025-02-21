@@ -8,35 +8,49 @@ import Button from "#/atoms/buttons/button.jsx";
 import Tabs from "#/atoms/tabs/tabs.jsx";
 import './results.css'
 import FilterButton from "#/atoms/filters/filter-button.jsx";
+import { Inertia } from '@inertiajs/inertia';
+import Modal from "#/atoms/modal/modal.jsx";
+import PostContent from "#/atoms/modal/post-content.jsx";
 
-export default function Results() {
+
+
+export default function Results({post}) {
   const { query } = usePage().props; // Получаем query из URL параметров
   const [results, setResults] = useState({});
   const [activeFilter, setActiveFilter] = useState(null); // Активный фильтр по умолчанию 'all'
   const [visibleCount, setVisibleCount] = useState(11); // Количество отображаемых элементов по умолчанию 11
   const [isFiltersOpened, setFiltersOpened] = useState(false);
   const [inputQuery, setInputQuery] = useState(query);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(!!post);
+  const [currentPost, setCurrentPost] = useState(post || null);
+
+
+
+
 
   useEffect(() => {
-    // Загрузка результатов поиска
-    axios.get(route('search.results', { query }))
+    if (!query) return;
+
+    axios.get(route('search.results', { query: query.trim().toLowerCase() }))
       .then(response => {
-        console.log("Response data:", response.data); // Логирование данных от сервера
-        setResults(response.data);
-        setVisibleCount(11); // Сбрасываем видимое количество элементов при новом запросе
+        setResults({
+          news: response.data.news,
+          documents: response.data.documents,
+          videos: response.data.videos,
+          photoReportages: response.data.photoReportages
+        });
       })
-      .catch(error => {
-        console.error("There was an error fetching the search results!", error);
-      });
+      .catch(console.error);
   }, [query]);
 
   // Мемоизация отфильтрованных результатов
   const filteredResults = useMemo(() => {
-    if (activeFilter === '' || activeFilter === undefined || activeFilter === null) {
+    if (!activeFilter || activeFilter === 'all') {
       return Object.values(results).flat();
-    } else {
-      return results[activeFilter] || [];
     }
+    return results[activeFilter] || [];
   }, [results, activeFilter]);
 
   const filterResults = (category) => {
@@ -47,6 +61,38 @@ export default function Results() {
   const loadMore = () => {
     setVisibleCount(prevCount => prevCount + 11); // Увеличиваем видимое количество элементов на 11
   };
+
+
+  const handlePost = (post) => {
+    Inertia.get(route('post.show', {
+      url: post.url
+    }), {
+      // Передаем параметры поиска обратно
+      data: {
+        search_query: query
+      },
+      preserveScroll: true
+    });
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setCurrentPost(null);
+    window.history.back();
+  };
+
+
+  // Функция для формирования ссылки
+  const getResultLink = (result) => {
+    switch(result.category) {
+      case 'Новость': return `/news/${result.id}`;
+      case 'Документ': return `/documents/${result.id}`;
+      case 'Видео': return `/videos/${result.id}`;
+      case 'Фоторепортаж': return `/photo-reportages/${result.id}`;
+      default: return '#';
+    }
+  };
+
 
   const tabs = [
     {title: 'Новости', id: 'news'},
@@ -61,13 +107,22 @@ export default function Results() {
       <PageTitle title="Результаты поиска"/>
       <div className={ `search search--opened` }>
         <div className="search-input">
-          <input type="text" placeholder="Найти на сайте" value={ inputQuery } onChange={ (e) => setInputQuery(e.target.value) }/>
+          <input
+            type="text"
+            value={inputQuery}
+            onChange={(e) => {
+              setInputQuery(e.target.value);
+              // Обновляем URL без перезагрузки страницы
+              Inertia.replace(route('search.page', { query: e.target.value }));
+            }}
+          />
           <SearchIcon color="neutral-dark" size={ 24 } className="input-icon"/>
         </div>
-        <Button handleClick={ () => {
-          window.location.href = `/search/page?query=${ query }`
-        } }>
-          <span className="search__text">Найти</span>
+        <Button handleClick={() => {
+          Inertia.get(route('search.page', { query: inputQuery }));
+        }}>
+
+        <span className="search__text">Найти</span>
           <SearchIcon color="neutral-white" size={ 24 } className="search__icon"/>
         </Button>
       </div>
@@ -82,9 +137,18 @@ export default function Results() {
           <div className="results">
             {
               filteredResults.length > 0 ? (
-              filteredResults.slice(0, visibleCount).map((result, index) => (
-                <div className="result" key={ index }>
-                  <Link className="result__title" href={ "/news/" + result.id }>{ result.title }</Link>
+                filteredResults.slice(0, visibleCount).map((result, index) => (
+                  <div className="result" key={index}>
+                    <Link
+                      className="result__title"
+                      href={getResultLink(result)}
+                      onClick={(e) => {
+                        e.preventDefault(); // Предотвращаем переход по ссылке
+                        handlePost(result);
+                      }}
+                    >
+                      {result.title}
+                    </Link>
                   <div className="result__footer">
                     <div className="result__date">{ new Date(result.created_at).toLocaleDateString() }</div>
                     <div className="result__category">{ result.category }</div>
@@ -101,6 +165,17 @@ export default function Results() {
         ) }
       </div>
       <AppFooter/>
+
+      <Modal
+        isOpen={isModalOpen}
+        handleClose={handleCloseModal}
+        breadcrumbs={[
+          { title: "Поиск", path: `/search/page?query=${query}` },
+          { title: currentPost?.title }
+        ]}
+      >
+        {currentPost && <PostContent post={currentPost} />}
+      </Modal>
     </>
   )
 }

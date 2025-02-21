@@ -42,22 +42,13 @@
                         <div class="text-danger">{{ $message }}</div>
                         @enderror
 
-                        <div class="form-group w-50">
-                            <label for="exampleFormControlSelect1">Новость для репортажа</label>
-                            <select class="form-control" id="exampleFormControlSelect1" name="news_id">
-                                <option value="">Выберите новость или оставьте пустой, если у репортажа нет новости</option>
-                                @foreach($news as $item)
-                                    <option value="{{$item->id}}">{{$item->title}}</option>
-                                @endforeach
-                            </select>
-                        </div>
 
                             <div class="row w-50">
                                 <div class="col-12">
                                     <div class="card">
                                         <div class="card-body">
 
-                                            <h4 class="card-title">Изображение новости</h4>
+                                            <h4 class="card-title">Превью для видео</h4>
                                             <input type="file" class="dropify" data-height="300" name="image_main" multiple/>
 
                                         </div>

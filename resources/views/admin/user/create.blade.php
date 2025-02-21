@@ -36,7 +36,7 @@
                                     <div class="card">
                                         <div class="card-body">
 
-                                            <h4 class="card-title">Изображение новости</h4>
+                                            <h4 class="card-title">Аватар</h4>
                                             <input type="file" class="dropify" data-height="300" name="avatar" multiple/>
 
                                         </div>

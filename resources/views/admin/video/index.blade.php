@@ -8,7 +8,7 @@
         <div class="card-body">
           <div class="mb-2 d-flex justify-content-between">
             <div>
-              <h2>видео</h2>
+              <h2>Видео</h2>
             </div>
 
             <div>

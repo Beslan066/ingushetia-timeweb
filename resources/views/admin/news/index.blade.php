@@ -20,25 +20,7 @@
 
 
           <div id="selection-datatable_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
-            <div class="row">
-              <div class="col-sm-12 col-md-6">
-                <div class="dataTables_length" id="selection-datatable_length"><label>Показать <select
-                      name="selection-datatable_length" aria-controls="selection-datatable"
-                      class="custom-select custom-select-sm form-control form-control-sm">
-                      <option value="10">10</option>
-                      <option value="25">25</option>
-                      <option value="50">50</option>
-                      <option value="100">100</option>
-                    </select> записей</label></div>
-              </div>
-              <div class="col-sm-12 col-md-6">
-                <div id="selection-datatable_filter" class="dataTables_filter"><label>Search:<input type="search"
-                                                                                                    class="form-control form-control-sm"
-                                                                                                    placeholder=""
-                                                                                                    aria-controls="selection-datatable"></label>
-                </div>
-              </div>
-            </div>
+
             <div class="row">
               <div class="col-sm-12">
                 <table id="selection-datatable"
@@ -61,9 +43,9 @@
                     <th class="sorting" tabindex="0" aria-controls="selection-datatable" rowspan="1" colspan="1"
                         style="width: 200px;" aria-label="Office: activate to sort column ascending">Видеорепортаж
                     </th>
-                    <th class="sorting" tabindex="0" aria-controls="selection-datatable" rowspan="1" colspan="1"
-                        style="width: 107px; " aria-label="Age: activate to sort column ascending">Перевод
-                    </th>
+{{--                    <th class="sorting" tabindex="0" aria-controls="selection-datatable" rowspan="1" colspan="1"--}}
+{{--                        style="width: 107px; " aria-label="Age: activate to sort column ascending">Перевод--}}
+{{--                    </th>--}}
                     <th class="sorting_asc" tabindex="0" aria-controls="selection-datatable" rowspan="1" colspan="1"
                         style="width: 193px;" aria-label="Start date: activate to sort column descending"
                         aria-sort="ascending">Опубликованно
@@ -84,22 +66,29 @@
                           <td class="" tabindex="0">{{mb_substr($item->title, 0, 80)}}</td>
                           <td>{{$item->user->name}}</td>
 
+                          <td>
+                            @if(isset($item->category))
+                              {{$item->category->title}}
+                            @else
+                              Нет категории
+                            @endif
+                          </td>
+
                           @if($item->video)
                             <td class="">{{$item->category->title}}</td>
                           @endif
                           <td class="">
                             @if($item->video)
-                              Есть
+                              {{$item->video->title}}
                             @else
-                              Нет
+                              Нет видео
                             @endif
                           </td>
-                          <td style="display: none;">Нет</td>
                           <td class="sorting_1">{{$item->published_at}}</td>
                           <td style="">
                             <div class="btn-group">
-                              <button type="button" class="btn btn-outline-success waves-effect waves-light">Перевод
-                              </button>
+{{--                              <button type="button" class="btn btn-outline-success waves-effect waves-light">Перевод--}}
+{{--                              </button>--}}
                               <a href="{{route('admin.news.edit', $item->id)}}"
                                  class="btn btn-outline-primary waves-effect waves-light">Редактировать</a>
                               <form action="{{route('admin.news.delete', $item->id)}}" method="post">

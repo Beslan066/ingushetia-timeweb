@@ -11,57 +11,77 @@ export default function PostContent({ post, onPost }) {
   if (!post) {
     return null;
   }
+// Форматирование даты
+  const formatDate = (dateString) => {
+    try {
+      return format(new Date(dateString), 'd MMMM yyyy', { locale: ru });
+    } catch {
+      return dateString;
+    }
+  };
 
 
   return (
     <div className="post-content">
       <div className="post__meta">
         <div className="post-meta__category">{post.category?.title}</div>
+        <div className="post-meta__date">{formatDate(post.created_at)}</div>
       </div>
+
+      {/* Заголовок и изображение */}
       <div className="post__header">
         <h2 className="post__title">{post.title}</h2>
-        <div className="post__image">
-          <img src={`/storage/${post.image_main}`} alt="" />
-          {post.image_description && <div className="image__description">{post.image_description}</div>}
-        </div>
+        {post.image_main && (
+          <div className="post__image">
+            <img src={`/storage/${post.image_main}`} alt={post.title} />
+            {post.image_description && (
+              <div className="image__description">{post.image_description}</div>
+            )}
+          </div>
+        )}
       </div>
+
+      {/* Контент с учетом типа */}
       <div className="content">
-        <div dangerouslySetInnerHTML={{ __html: post.content }}></div>
-        {post.reportage && <Gallery gallery={post.reportage.slides} />}
+        {post.type === 'video' && (
+          <div className="video-embed" dangerouslySetInnerHTML={{__html: post.content}} />
+        )}
+
+        {post.type === 'document' && (
+          <div className="document-content" dangerouslySetInnerHTML={{__html: post.content}} />
+        )}
+
+        {!['video', 'document'].includes(post.type) && (
+          <>
+            <div dangerouslySetInnerHTML={{ __html: post.content }}></div>
+            {post.reportage && <Gallery gallery={post.reportage.slides} />}
+          </>
+        )}
       </div>
+
+      {/* Теги */}
       <div className="tags__wrapper">
         <div className="tags__title">Теги:</div>
         <div className="tags">
-          {(post?.tags ?? ['Спорт', 'Культура', 'Машины']).map((tag) => (
+          {post.tags?.map((tag) => (
             <Tag key={tag} tag={tag} />
           ))}
         </div>
       </div>
-      <div className="share__wrapper">
-        <div className="share__title">Поделиться:</div>
-        <div className="share__buttons">
-          <a href="" type="button"><img src="/img/icons/social/telegram (1).png" alt="" /></a>
-          <a href="" type="button"><img src="/img/icons/social/VK.png" alt="" /></a>
-          <a href="" type="button"><img src="/img/icons/social/ok.png" alt="" /></a>
-          <a href="" type="button"><img src="/img/icons/social/Whatsapp.png" alt="" /></a>
-          <a href="" type="button"><img src="/img/icons/social/Link.png" alt="" /></a>
-        </div>
-      </div>
-      {post?.relatedPosts && post.relatedPosts.length > 0 && (
+
+      {/* Блок "Смотрите также" */}
+      {post.relatedPosts?.length > 0 && (
         <div className="related">
           <h2 className="related__title">Смотрите также</h2>
           <div className="related__posts">
             {post.relatedPosts.map((related) => (
-
               <AgencyNewsItem
+                key={related.id}
                 title={related.title}
                 image={related.image_main}
-                category={related?.category?.title}
-                id={related.id}
-                key={related.id}
-                onPost={onPost}
-                url={related.url}
+                category={related.category?.title}
                 date={related.published_at}
+                onPost={() => onPost(related)}
               />
             ))}
           </div>

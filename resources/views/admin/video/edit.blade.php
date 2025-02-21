@@ -37,7 +37,7 @@
                                         <source src="{{ Storage::url($video->video) }}" type="video/mp4">
                                         Ваш браузер не поддерживает видео.
                                     </video>
-                                    
+
                                 </div>
                                 <input type="hidden" name="remove_video" id="removeVideoInput" value="0">
                             @endif
@@ -57,23 +57,14 @@
                         <div class="text-danger">{{ $message }}</div>
                         @enderror
 
-                        <!-- Новость для репортажа -->
-                        <div class="form-group w-50">
-                            <label for="exampleFormControlSelect1">Новость для репортажа</label>
-                            <select class="form-control" id="exampleFormControlSelect1" name="news_id">
-                                <option value="">Выберите новость или оставьте пустой</option>
-                                @foreach($news as $item)
-                                    <option value="{{ $item->id }}" {{ $video->news_id == $item->id ? 'selected' : '' }}>{{ $item->title }}</option>
-                                @endforeach
-                            </select>
-                        </div>
+
 
                         <!-- Изображение новости -->
                         <div class="row w-50">
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-body">
-                                        <h4 class="card-title">Изображение новости</h4>
+                                        <h4 class="card-title">Превью для видео</h4>
                                         <input type="file" class="dropify" data-height="300" name="image_main" multiple />
                                     </div>
                                 </div>

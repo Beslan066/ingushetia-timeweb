@@ -39,9 +39,8 @@ class VideoController extends Controller
 
 
         $authors = User::query()->where('role', 10)->get();
-        $news = News::query()->orderBy('id', 'desc')->get();
 
-        return view('admin.video.create', compact('authors', 'news'));
+        return view('admin.video.create', compact('authors'));
     }
 
     /**
@@ -80,7 +79,6 @@ class VideoController extends Controller
     public function edit(Video $video)
     {
 
-        $news = News::query()->orderBy('id', 'desc')->get();
         $authors = User::query()->where('role', 10)->get();
 
         // Преобразуем строку в объект Carbon
@@ -88,7 +86,7 @@ class VideoController extends Controller
             $video->published_at = Carbon::parse($video->published_at);
         }
 
-        return view('admin.video.edit', compact('video', 'news', 'authors'));
+        return view('admin.video.edit', compact('video', 'authors'));
     }
 
     /**
