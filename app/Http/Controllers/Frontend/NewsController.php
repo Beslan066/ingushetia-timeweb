@@ -75,10 +75,9 @@ class NewsController extends Controller
     // Получаем заголовок категории
     $categoryTitle = Category::where('id', $categoryId)->value('title');
 
-    return Inertia::render('News/NewsCategory', [
+    return Inertia::render('News/NewsByCategory', [
       'news' => $news,
       'categories' => $categories,
-      'categoryId' => $categoryId,
       'categoryTitle' => $categoryTitle,
     ]);
   }

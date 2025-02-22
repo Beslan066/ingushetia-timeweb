@@ -60,7 +60,7 @@ export default function NewsComponent({ news, baseUrl, selectedCategory, selecte
                         {displayedNews.map((newsItem) => (
                             <div className="filtered-news-item cols-1 cols-md-2 cols-lg-3 cols-xl-4" key={newsItem.id}>
                                 <div className="news-image">
-                                    <img src={`${baseUrl}/storage/${newsItem.image_main}`} alt="" className="w-100 h-100 clean-image" />
+                                    <img src={`/storage/${newsItem.image_main}`} alt="" className="w-100 h-100 clean-image" />
                                 </div>
                                 <div className="news-text">
                                     <p className="news-date">

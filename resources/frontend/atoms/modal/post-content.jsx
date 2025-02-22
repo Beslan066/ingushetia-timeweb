@@ -5,6 +5,7 @@ import AgencyNewsItem from "#/atoms/news/agency-news-item.jsx";
 import Gallery from "#/atoms/gallery/gallery.jsx";
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
+import {Link} from "@inertiajs/react";
 
 
 export default function PostContent({ post, onPost }) {
@@ -24,7 +25,9 @@ export default function PostContent({ post, onPost }) {
   return (
     <div className="post-content">
       <div className="post__meta">
-        <div className="post-meta__category">{post.category?.title}</div>
+        <Link href={route('posts.by.tag', post.category.id)}>
+          <div className="post-meta__category">{post.category?.title}</div>
+        </Link>
         <div className="post-meta__date">{formatDate(post.created_at)}</div>
       </div>
 
