@@ -70,6 +70,7 @@ class NewsController extends Controller
       ->where('agency_id', 5)
       ->where('category_id', $categoryId)
       ->orderBy('id', 'desc')
+      ->limit(50)
       ->get();
 
     // Получаем заголовок категории

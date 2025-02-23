@@ -2,88 +2,55 @@ import React from 'react';
 import Guest from "@/Layouts/GuestLayout.jsx";
 import { usePage } from "@inertiajs/react";
 import NewsComponent from "@/Components/News/NewsComponent.jsx";
+import AppHeader from "#/molecules/header/header.jsx";
+import AppFooter from "#/organisms/footer/footer.jsx";
+import './news.css';
+import PageTitle from "#/atoms/texts/PageTitle.jsx";
+import PopularSpotlights from "#/molecules/spotlights/popular-spotlights.jsx";
+import MainSlider from "#/molecules/slider/slider.jsx";
+import Tabs from "#/atoms/tabs/tabs.jsx";
+import FilterButton from "#/atoms/filters/filter-button.jsx";
+import Filters from "#/molecules/filters/filters.jsx";
+import AgencyNewsItem from "#/atoms/news/agency-news-item.jsx";
+import MediaNews from "#/atoms/news/media.jsx";
+import AppLink from "#/atoms/buttons/link.jsx";
+import Modal from "#/atoms/modal/modal.jsx";
+import PostContent from "#/atoms/modal/post-content.jsx";
+import ReportageContent from "#/atoms/modal/reportage-content.jsx";
+
 
 export default function NewsByCategory() {
   const { news, categoryTitle } = usePage().props;
-  const baseUrl = import.meta.env.VITE_APP_URL;
 
   return (
-    <Guest>
-      <main className="mt-xl-40">
-        <div className="container">
-          <h2 className="mb-32">{categoryTitle}</h2>
-        </div>
-        <div className="container d-flex w-full col-xxl-12 news-page main-materials-section">
-          <div className="main-left col-xxl-9">
-            <div className="main-materials">
-              <div className="filtered-news w-full d-flex mt-xl-40 flex-column">
-                <NewsComponent
-                  news={news}
-                  baseUrl={baseUrl}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="main-right">
-            <div className="d-flex flex-column news-sidebar p-2 m-0">
-              <h4>Популярное</h4>
-              <div className="news-item">
-                <div className="news-date d-flex">
-                  <div>
-                    09:22, 5 июня <span className="news-category">Образование</span>
-                  </div>
+    <>
+      <AppHeader anniversary={ false }/>
+      <PageTitle title={categoryTitle}/>
+      <div className="news-hero">
+        <div className="news-hero__slider-wrapper">
+          <div className="news-hero__news-wrapper">
+            {
+              news && !!news[0] && (
+                <div className="news-feed">
+                  {
+                    news && news.map((item) =>
+                      <AgencyNewsItem key={ item.id } id={ item.id } category={ item.category?.title } date={ item?.published_at } title={ item.title } image={ item.image_main }/>)
+                  }
                 </div>
-                <h2 onClick={() => setModal(true)}>В с.п. Сурхахи открылась новая школа на 320 мест</h2>
-              </div>
-
-              <div className="news-item">
-                <div className="news-date d-flex">
-                  <div>
-                    11:34, 2 июля <span className="news-category">Образование</span>
-                  </div>
-                  <img src="/img/icons/video-icon.svg" alt=""/>
-                </div>
-                <h2 onClick={() => setModal(true)}>В Яндаре по программе «Развитие образования» построили новый детский сад-ясли</h2>
-              </div>
-
-              <div className="news-item">
-                <div className="news-date d-flex">
-                  <div>
-                    18:15, 29 июня <span className="news-category">Общество</span>
-                  </div>
-                </div>
-                <h2 onClick={() => setModal(true)}>Ингушетия снова в тройке лидеров по ожидаемой продолжительности жизни</h2>
-              </div>
-
-              <div className="news-item">
-                <div className="news-date d-flex">
-                  <div>
-                    21:57, 28 июня <span className="news-category">Общество</span>
-                  </div>
-                </div>
-                <h2 onClick={() => setModal(true)}>М-А. Калиматов проверил ход восстановительных работ в Карабулаке</h2>
-              </div>
-
-              <div className="news-item">
-                <div className="news-date d-flex">
-                  <div>
-                    13:45, 8 июля <span className="news-category">Проекты</span>
-                  </div>
-                  <img src="/img/icons/video-icon.svg" alt=""/>
-                </div>
-                <h2 onClick={() => setModal(true)}>Ингушетия снова в тройке лидеров по ожидаемой продолжительности жизни</h2>
-              </div>
-
-              <div className="more-news">
-                <a href="" className="d-flex">
-                  <span>Смотреть все</span>
-                  <img src="/img/icons/longarrow.svg" alt="" className="pl-3"/>
-                </a>
-              </div>
-            </div>
+              )
+            }
           </div>
         </div>
-      </main>
-    </Guest>
-  );
+      </div>
+
+
+      <Modal breadcrumbs={ [{ title: 'Новости' }] }  >
+        <PostContent/>
+      </Modal>
+      <Modal breadcrumbs={ [{ title: 'Новости' }] }>
+        <ReportageContent />
+      </Modal>
+      <AppFooter/>
+    </>
+  )
 }
