@@ -27,7 +27,7 @@
 
                             <div class="form-group w-50">
                                 <label for="image_main">Главное изображение</label>
-                                <input type="file" id="image_main" name="image_main" class="dropify" data-height="300"/>
+                                <input type="file" id="image_main" name="image_main" class="dropify" data-height="300" multiple/>
                             </div>
 
 

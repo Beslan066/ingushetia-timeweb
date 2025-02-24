@@ -123,14 +123,17 @@
           <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right p-0"
                aria-labelledby="page-header-search-dropdown">
 
-            <form class="p-3">
+            <form class="p-3" action="{{ route('admin.search') }}" method="GET">
               <div class="form-group m-0">
                 <div class="input-group">
-                  <input type="text" class="form-control" placeholder="Search ..."
-                         aria-label="Recipient's username">
+                  <input type="text" class="form-control"
+                         name="query"
+                         placeholder="Search ..."
+                         value="{{ request('query') }}">
                   <div class="input-group-append">
-                    <button class="btn btn-primary" type="submit"><i
-                        class="mdi mdi-magnify"></i></button>
+                    <button class="btn btn-primary" type="submit">
+                      <i class="mdi mdi-magnify"></i>
+                    </button>
                   </div>
                 </div>
               </div>

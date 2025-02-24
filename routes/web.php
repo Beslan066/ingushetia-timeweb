@@ -90,6 +90,9 @@ Route::group(['namespace' => 'Admin', 'middleware' => \App\Http\Middleware\Admin
     Route::get('/admin', [\App\Http\Controllers\Admin\IndexController::class, 'index'])->middleware(['auth', 'verified'])->name('admin');
 
 
+
+    Route::get('/search', [App\Http\Controllers\Admin\SearchController::class, 'index'])->name('admin.search');
+
     Route::group(['namespace' => 'News', 'prefix' => 'admin'], function () {
         Route::get('/news', [App\Http\Controllers\Admin\NewsController::class, 'index'])->name('admin.news.index');
         Route::get('/news/create', [App\Http\Controllers\Admin\NewsController::class, 'create'])->name('admin.news.create');
