@@ -7,7 +7,6 @@ use App\Http\Controllers\Frontend\GovernmentController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\NewsController;
 use App\Http\Controllers\Frontend\RegionController;
-use App\Http\Controllers\Frontend\SearchController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -15,9 +14,9 @@ use Inertia\Inertia;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/news/{url}', [HomeController::class, 'index'])->name('post.show');
-Route::get('/search', [SearchController::class, 'searchResults'])->name('search.results');
+Route::get('/search', [App\Http\Controllers\Frontend\SearchController::class, 'searchResults'])->name('search.index');
 
-Route::get('/search/page', [SearchController::class, 'searchPage'])->name('search.page');
+Route::get('/search/page', [App\Http\Controllers\Frontend\SearchController::class, 'searchPage'])->name('search.page');
 Route::get('/national-projects', [HomeController::class, 'nationalProjects'])->name('natProjects');
 Route::get('/military-support', [HomeController::class, 'svoSupport'])->name('svoSupport');
 Route::get('/contacts', [HomeController::class, 'contacts'])->name('contacts');
@@ -90,8 +89,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => \App\Http\Middleware\Admin
     Route::get('/admin', [\App\Http\Controllers\Admin\IndexController::class, 'index'])->middleware(['auth', 'verified'])->name('admin');
 
 
-
-    Route::get('/search', [App\Http\Controllers\Admin\SearchController::class, 'index'])->name('admin.search');
+    Route::get('/admin/search', [App\Http\Controllers\Admin\SearchController::class, 'index'])->name('admin.search');
 
     Route::group(['namespace' => 'News', 'prefix' => 'admin'], function () {
         Route::get('/news', [App\Http\Controllers\Admin\NewsController::class, 'index'])->name('admin.news.index');

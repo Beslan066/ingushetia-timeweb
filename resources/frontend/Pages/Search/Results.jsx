@@ -33,7 +33,7 @@ export default function Results({post}) {
   useEffect(() => {
     if (!query) return;
 
-    axios.get(route('search.results', { query: query.trim().toLowerCase() }))
+    axios.get(route('search.index', { query: query.trim().toLowerCase() }))
       .then(response => {
         setResults({
           news: response.data.news,

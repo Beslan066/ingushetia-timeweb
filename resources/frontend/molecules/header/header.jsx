@@ -23,7 +23,7 @@ export default function AppHeader({ anniversary, logo, title }) {
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       if (query.length > 1) {
-        axios.get(route('search.results', { query: query.trim().toLowerCase() }))
+        axios.get(route('search.index', { query: query.trim().toLowerCase() }))
           .then(response => {
             const combinedResults = [
               ...response.data.news,

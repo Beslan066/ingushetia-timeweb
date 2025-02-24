@@ -31,6 +31,7 @@ class SearchController extends Controller
     return News::where('title', 'like', "%$query%")
       ->orWhere('lead', 'like', "%$query%")
       ->orWhere('content', 'like', "%$query%")
+      ->orderBy('published_at', 'desc')
       ->get()
       ->map(fn($item) => $item->setAttribute('type', 'Новость'));
   }
@@ -39,6 +40,7 @@ class SearchController extends Controller
   {
     return Document::where('title', 'like', "%$query%")
       ->get()
+      ->orderBy('published_at', 'desc')
       ->map(fn($item) => $item->setAttribute('type', 'Документ'));
   }
 
@@ -46,6 +48,7 @@ class SearchController extends Controller
   {
     return PhotoReportage::where('title', 'like', "%$query%")
       ->get()
+      ->orderBy('published_at', 'desc')
       ->map(fn($item) => $item->setAttribute('type', 'Фоторепортаж'));
   }
 
@@ -53,6 +56,7 @@ class SearchController extends Controller
   {
     return Video::where('title', 'like', "%$query%")
       ->orWhere('lead', 'like', "%$query%")
+      ->orderBy('published_at', 'desc')
       ->get()
       ->map(fn($item) => $item->setAttribute('type', 'Видео'));
   }
