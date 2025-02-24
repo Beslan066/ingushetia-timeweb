@@ -65,6 +65,10 @@ class NewsController extends Controller
   {
     $categories = Category::query()->take(10)->get();
 
+
+    $spotlights = News::query()->with('category')->where('agency_id',
+      5)->whereNotNull('published_at')->orderBy('published_at')->take(8)->get();
+
     $news = News::query()
       ->with('category')
       ->where('agency_id', 5)
@@ -80,6 +84,7 @@ class NewsController extends Controller
       'news' => $news,
       'categories' => $categories,
       'categoryTitle' => $categoryTitle,
+      'spotlights' => $spotlights,
     ]);
   }
 

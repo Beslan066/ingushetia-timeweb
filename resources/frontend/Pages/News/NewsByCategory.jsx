@@ -19,38 +19,49 @@ import PostContent from "#/atoms/modal/post-content.jsx";
 import ReportageContent from "#/atoms/modal/reportage-content.jsx";
 
 
-export default function NewsByCategory() {
+export default function NewsByCategory({spotlights}) {
   const { news, categoryTitle } = usePage().props;
 
   return (
     <>
-      <AppHeader anniversary={ false }/>
-      <PageTitle title={categoryTitle}/>
+      <AppHeader anniversary={false} />
+      <PageTitle title={categoryTitle} />
       <div className="news-hero">
+        {/* Добавляем обертку для основного контента */}
         <div className="news-hero__slider-wrapper">
+          {/* Добавляем пустой слайдер для сохранения структуры */}
+          <div className="main-slider-placeholder" style={{minHeight: '400px'}}></div>
+
           <div className="news-hero__news-wrapper">
-            {
-              news && !!news[0] && (
-                <div className="news-feed">
-                  {
-                    news && news.map((item) =>
-                      <AgencyNewsItem key={ item.id } id={ item.id } category={ item.category?.title } date={ item?.published_at } title={ item.title } image={ item.image_main }/>)
-                  }
-                </div>
-              )
-            }
+            {/* Добавляем контейнер для фильтров как в оригинале */}
+            <div className="tabs-wrapper">
+              <div className="tabs-spacer"></div> {/* Для выравнивания */}
+              <div className="filter-button-spacer"></div>
+            </div>
+
+            {news && !!news[0] && (
+              <div className="news-feed">
+                {news.map((item) => (
+                  <AgencyNewsItem
+                    key={item.id}
+                    id={item.id}
+                    category={item.category?.title}
+                    date={item?.published_at}
+                    title={item.title}
+                    image={item.image_main}
+                  />
+                ))}
+              </div>
+            )}
           </div>
+        </div>
+
+        <div className="hero-announce-wrapper">
+          <PopularSpotlights news={ spotlights } className={ "spotlight-sidebar--desktop" } onPost={ (id) => handleSpotlight(id, spotlights, setSlide) }/>
         </div>
       </div>
 
-
-      <Modal breadcrumbs={ [{ title: 'Новости' }] }  >
-        <PostContent/>
-      </Modal>
-      <Modal breadcrumbs={ [{ title: 'Новости' }] }>
-        <ReportageContent />
-      </Modal>
-      <AppFooter/>
+      <AppFooter />
     </>
   )
 }
