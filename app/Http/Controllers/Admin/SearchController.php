@@ -28,7 +28,8 @@ class SearchController extends Controller
 
   private function searchNews($query)
   {
-    return News::where('title', 'like', "%$query%")
+    return News::query()
+      ->where('title', 'like', "%$query%")
       ->orWhere('lead', 'like', "%$query%")
       ->orWhere('content', 'like', "%$query%")
       ->orderBy('published_at', 'desc')
@@ -38,23 +39,26 @@ class SearchController extends Controller
 
   private function searchDocuments($query)
   {
-    return Document::where('title', 'like', "%$query%")
-      ->get()
+    return Document::query()
+      ->where('title', 'like', "%$query%")
       ->orderBy('published_at', 'desc')
+      ->get()
       ->map(fn($item) => $item->setAttribute('type', 'Документ'));
   }
 
   private function searchPhotoReportages($query)
   {
-    return PhotoReportage::where('title', 'like', "%$query%")
-      ->get()
+    return PhotoReportage::query()
+      ->where('title', 'like', "%$query%")
       ->orderBy('published_at', 'desc')
+      ->get()
       ->map(fn($item) => $item->setAttribute('type', 'Фоторепортаж'));
   }
 
   private function searchVideos($query)
   {
-    return Video::where('title', 'like', "%$query%")
+    return Video::query()
+      ->where('title', 'like', "%$query%")
       ->orWhere('lead', 'like', "%$query%")
       ->orderBy('published_at', 'desc')
       ->get()
