@@ -44,8 +44,6 @@ export default function NewsByCategory({spotlights}) {
               </div>
             )}
           </div>
-        </div>
-
         <div className="hero-announce-wrapper">
           <PopularSpotlights news={ spotlights } className={ "spotlight-sidebar--desktop" } onPost={ (id) => handleSpotlight(id, spotlights, setSlide) }/>
         </div>
