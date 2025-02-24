@@ -95,4 +95,10 @@ class News extends Model
       }
     }
 
+
+  public function getRouteKeyName()
+  {
+    return 'url'; // Указываем, что для маршрутов используется поле url
+  }
+
 }

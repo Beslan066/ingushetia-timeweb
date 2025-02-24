@@ -14,7 +14,7 @@ return new class extends Migration
   public function up()
   {
     // Обрабатываем записи пачками по 500 штук
-    News::whereNull('url')->orWhere('url', '')->chunk(500, function ($newsItems) {
+    News::whereNull('url')->orWhere('url', '')->chunk(50000, function ($newsItems) {
       foreach ($newsItems as $news) {
         $news->url = Str::slug($news->title);
         while (News::where('url', $news->url)->exists()) {

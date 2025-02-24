@@ -28,11 +28,11 @@
                   <td>
                     @if($result->type === 'Новость')
                      <div class="btn-group">
-                       <a href="{{ route('admin.news.edit', $result->id) }}"
+                       <a href="{{ route('admin.news.edit', $result->url) }}"
                           class="btn btn-outline-primary btn-sm">
                          Редактировать
                        </a>
-                       <form action="{{route('admin.news.delete', $result->id)}}" method="post">
+                       <form action="{{route('admin.news.delete', $result->url)}}" method="post">
                          @csrf
                          @method('delete')
                          <button type="submit" class="btn btn-outline-danger waves-effect waves-light">Удалить

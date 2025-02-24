@@ -6,7 +6,7 @@
         <div class="col-12">
             <div class="card">
 
-                <form action="{{route('admin.news.update', $news->id)}}" method="post" enctype="multipart/form-data">
+                <form action="{{route('admin.news.update', $news->url)}}" method="post" enctype="multipart/form-data">
                     @csrf
                     @method('patch')
                     <div class="card-body">
@@ -108,10 +108,11 @@
                                 <option value="">Выбрать видеорепортаж</option>
                                 @if(isset($news->video_id))
                                     <option value="{{$news->video_id}}" selected>{{$news->video->title}}</option>
+                                @else
+                                  @foreach($videos as $video)
+                                      <option value="{{$video->id}}" @if($news->video_id == $video->id) selected @endif>{{$video->title}}</option>
+                                  @endforeach
                                 @endif
-                                @foreach($videos as $video)
-                                    <option value="{{$video->id}}" @if($news->video_id == $video->id) selected @endif>{{$video->title}}</option>
-                                @endforeach
                             </select>
                         </div>
 
