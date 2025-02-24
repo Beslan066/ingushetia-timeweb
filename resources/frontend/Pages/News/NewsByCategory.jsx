@@ -29,16 +29,6 @@ export default function NewsByCategory({spotlights}) {
       <div className="news-hero">
         {/* Добавляем обертку для основного контента */}
         <div className="news-hero__slider-wrapper">
-          {/* Добавляем пустой слайдер для сохранения структуры */}
-          <div className="main-slider-placeholder" style={{minHeight: '400px'}}></div>
-
-          <div className="news-hero__news-wrapper">
-            {/* Добавляем контейнер для фильтров как в оригинале */}
-            <div className="tabs-wrapper">
-              <div className="tabs-spacer"></div> {/* Для выравнивания */}
-              <div className="filter-button-spacer"></div>
-            </div>
-
             {news && !!news[0] && (
               <div className="news-feed">
                 {news.map((item) => (
