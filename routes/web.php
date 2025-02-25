@@ -96,7 +96,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => \App\Http\Middleware\Admin
         Route::get('/news/create', [App\Http\Controllers\Admin\NewsController::class, 'create'])->name('admin.news.create');
         Route::post('/news/store', [App\Http\Controllers\Admin\NewsController::class, 'store'])->name('admin.news.store');
         Route::get('/news/{news:url}/edit', [App\Http\Controllers\Admin\NewsController::class, 'edit'])->name('admin.news.edit');
-        Route::patch('/news/{news}', [App\Http\Controllers\Admin\NewsController::class, 'update'])->name('admin.news.update');
+        Route::patch('/news/{news:url}', [App\Http\Controllers\Admin\NewsController::class, 'update'])->name('admin.news.update');
         Route::delete('/news/{news}', [App\Http\Controllers\Admin\NewsController::class, 'destroy'])->name('admin.news.delete');
 
     });

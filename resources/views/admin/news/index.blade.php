@@ -125,9 +125,9 @@
                             <div class="btn-group">
 {{--                              <button type="button" class="btn btn-outline-success waves-effect waves-light">Перевод--}}
 {{--                              </button>--}}
-                              <a href="{{route('admin.news.edit', $item->id)}}"
+                              <a href="{{route('admin.news.edit', $item->url)}}"
                                  class="btn btn-outline-primary waves-effect waves-light">Редактировать</a>
-                              <form action="{{route('admin.news.delete', $item->id)}}" method="post">
+                              <form action="{{route('admin.news.delete', $item->url)}}" method="post">
                                 @csrf
                                 @method('delete')
                                 <button type="submit" class="btn btn-outline-danger waves-effect waves-light">Удалить
