@@ -12,9 +12,16 @@ import PostContent from "#/atoms/modal/post-content.jsx";
 import "./hero.css";
 
 export default function Hero({ categories, slides, news, showNews }) {
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const { props } = usePage();
   const [isModalOpen, setIsModalOpen] = useState(!!showNews);
   const [currentPost, setCurrentPost] = useState(showNews || null);
+
+  const onCategorySwitch = (category) => setSelectedCategory(category);
+
+  const filteredArticles = selectedCategory
+    ? news.filter((post) => post.category_id === selectedCategory).slice(0, 3)
+    : news.slice(0, 3);
 
   // Открытие поста (Inertia.visit меняет URL и передает post)
   const handlePost = (post) => {
@@ -42,8 +49,12 @@ export default function Hero({ categories, slides, news, showNews }) {
         <div className="hero__slider-wrapper">
           <MainSlider slides={slides} onPost={handlePost} />
           <div className="news-wrapper">
-            <Tabs tabs={categories} />
-            <News news={news.slice(0, 3)} onPost={handlePost} />
+            <Tabs
+              tabs={categories}
+              onTab={onCategorySwitch}
+              selected={selectedCategory}
+            />
+            <News news={filteredArticles} onPost={handlePost} />
             <AppLink to="/news" title="Все новости" />
           </div>
         </div>

@@ -3,9 +3,6 @@ import Spotlight from "#/atoms/news/spotlight.jsx";
 import AppLink from "#/atoms/buttons/link.jsx";
 
 export default function Spotlights({ news, onPost }) {
-
-
-  console.log(news)
   return (
     <div className="spotlight-sidebar">
       <div className="spotlights">

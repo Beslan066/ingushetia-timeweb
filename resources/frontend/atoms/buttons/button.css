@@ -1,6 +1,7 @@
 .button {
   display: inline-block;
-  padding: 12px 24px;
+  padding-left: 24px;
+  padding-right: 24px;
 
   font-size: var(--font-size-body);
   font-weight: var(--font-weight-regular);
