@@ -174,7 +174,7 @@
 
                         <div class="btn-group">
                             <button class="btn btn-light mr-2">Назад</button>
-                            <button type="submit" class="btn btn-primary">Создать</button>
+                            <button type="submit" class="btn btn-primary">Обновить</button>
                         </div>
 
                     </div>
