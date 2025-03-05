@@ -20,7 +20,7 @@ export default function Hero({ categories, slides, news, showNews }) {
   const onCategorySwitch = (category) => setSelectedCategory(category);
 
   const filteredArticles = selectedCategory
-    ? news.filter((post) => post.category_id === selectedCategory).slice(0, 3)
+    ? news.filter((post) => post.category_id == selectedCategory).slice(0, 3) // Используем == вместо ===
     : news.slice(0, 3);
 
   // Открытие поста (Inertia.visit меняет URL и передает post)
