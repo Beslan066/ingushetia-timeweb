@@ -24,9 +24,6 @@ export default function AgencyNewsItem({ id, date, category, title, image, onPos
       )}
 
       <div className="news-card__body">
-        <div className="news-card__preview">
-          <img src={`/storage/${image}`} alt={title + ' превью фото'} />
-        </div>
         <div className="news-card__keys">
           <div className="news-card__date">{displayDate}</div>
           <div className="news-card__category">{category}</div>
