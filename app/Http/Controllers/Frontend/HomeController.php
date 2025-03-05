@@ -33,7 +33,7 @@ class HomeController extends Controller
 {
   public function index(Request $request)
   {
-    $categories = Category::query()->take(10)->get();
+    $categories = Category::all();
     $resources = Resource::query()->where('agency_id', 5)->get();
     $photoReportages = PhotoReportage::query()->take(4)->orderBy('published_at', 'desc')->get();
     $videos = Video::query()->take(4)->orderBy('published_at', 'desc')->get();
