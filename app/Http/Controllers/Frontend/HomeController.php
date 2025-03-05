@@ -106,7 +106,7 @@ class HomeController extends Controller
       // Добавляем related posts
       $openedNews->relatedPosts = News::where('category_id', $openedNews->category_id)
         ->where('id', '!=', $openedNews->id)
-        ->select(['id', 'title', 'url', 'category_id', 'published_at'])
+        ->select(['id', 'title', 'url', 'category_id', 'image_main', 'published_at'])
         ->limit(3)
         ->get();
 
