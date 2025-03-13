@@ -36,7 +36,7 @@ export default function Index({
     {
       image: '/img/content/vectors/image 7.png',
       route: '',
-      title: 'АПК',
+      title: 'Сельское хозяйство',
       profits: ['Создано более 1000 рабочих мест', 'На 18% увеличен сбор с/х продуктов', '145 гектаров новых пахатных земель']
     },
     {
@@ -69,7 +69,6 @@ export default function Index({
         openedNews={openedNews} // Передаем данные о новости в Hero
       />
       <Vectors vectors={vectors} />
-      <AgencyNews agencies={agencies} posts={agencyNews} />
       <Districts settlements={settlements} districts={districts} />
       <MediaCollection media={media} />
       {anniversary ? <AnniversaryBanner /> : ''}

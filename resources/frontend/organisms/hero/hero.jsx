@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { usePage } from "@inertiajs/react";
-import { Inertia } from "@inertiajs/inertia";
+import { usePage, router } from "@inertiajs/react"; // Важно: используем router вместо Inertia
 import MainSlider from "#/molecules/slider/slider.jsx";
 import Tabs from "#/atoms/tabs/tabs.jsx";
 import News from "#/molecules/news/news.jsx";
@@ -17,24 +16,33 @@ export default function Hero({ categories, slides, news, showNews }) {
   const [currentPost, setCurrentPost] = useState(showNews || null);
   const [selectedCategory, setSelectedCategory] = useState(null);
 
-  // Фильтруем новости в зависимости от выбранной категории
-  const filteredNews = selectedCategory
-    ? news.filter(item => item.category_id === selectedCategory).slice(0, 3)
-    : news.slice(0, 3);
+  // Логирование для отладки
+  useEffect(() => {
+    console.log('Selected category:', selectedCategory);
+  }, [selectedCategory]);
 
-  // Обработчик выбора категории
-  const handleCategorySelect = (categoryId) => {
-    setSelectedCategory(categoryId);
+  const onCategorySwitch = (categoryId) => {
+    setSelectedCategory(categoryId !== null ? Number(categoryId) : null);
   };
 
+  // Фильтрация новостей по категории
+  const filteredArticles = selectedCategory !== null
+    ? news.filter(post => post.category_id === selectedCategory)
+    : news;
 
-
-  // Открытие поста (Inertia.visit меняет URL и передает post)
+  // Открытие поста в модальном окне (без перезагрузки)
   const handlePost = (post) => {
-    Inertia.visit(`/news/${post.url}`, { preserveScroll: true });
+    router.get(`/news/${post.url}`, {}, {
+      preserveScroll: true,
+      only: ['showNews'], // Загружаем только showNews из контроллера
+      onSuccess: (page) => {
+        setCurrentPost(page.props.showNews); // Обновляем пост
+        setIsModalOpen(true); // Открываем модалку
+      }
+    });
   };
 
-  // Если `showNews` обновился, открываем модалку
+  // Следим за showNews (если пришел с сервера — открываем)
   useEffect(() => {
     if (props.showNews) {
       setCurrentPost(props.showNews);
@@ -42,12 +50,16 @@ export default function Hero({ categories, slides, news, showNews }) {
     }
   }, [props.showNews]);
 
-  // Закрытие модалки (только сброс состояния, без Inertia.visit)
+  // Закрытие модального окна
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setCurrentPost(null);
-    window.history.pushState({}, "", "/"); // Меняем URL без запроса
+    window.history.pushState({}, "", "/"); // Сброс URL (без перезагрузки)
   };
+
+  if (!categories || categories.length === 0) {
+    return <div>Нет доступных категорий</div>;
+  }
 
   return (
     <>
@@ -57,11 +69,17 @@ export default function Hero({ categories, slides, news, showNews }) {
           <div className="news-wrapper">
             <Tabs
               tabs={categories}
+              onTab={onCategorySwitch}
               selected={selectedCategory}
-              onTab={handleCategorySelect}
             />
-            <News news={filteredNews} onPost={handlePost} />
-            <AppLink to="/news" title="Все новости" />
+            {filteredArticles.length > 0 ? (
+              <>
+                <News news={filteredArticles.slice(0, 3)} handlePost={handlePost} />
+                <AppLink to="/news" title="Все новости" />
+              </>
+            ) : (
+              <div>Нет новостей в этой категории</div>
+            )}
           </div>
         </div>
         <div className="hero__sidebar-wrapper">

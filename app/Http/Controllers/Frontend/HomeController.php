@@ -33,7 +33,7 @@ class HomeController extends Controller
 {
   public function index(Request $request)
   {
-    $categories = Category::all();
+    $categories = Category::all()->toArray();
     $resources = Resource::query()->where('agency_id', 5)->get();
     $photoReportages = PhotoReportage::query()->take(4)->orderBy('published_at', 'desc')->get();
     $videos = Video::query()->take(4)->orderBy('published_at', 'desc')->get();
@@ -73,43 +73,17 @@ class HomeController extends Controller
       return $post;
     });
 
-    $agencies = Agency::query()->whereNotIn('id', [5,2])->get();
-    $agencyNews = News::query()
-      ->whereNotIn('agency_id', [5, 2])  // Исключаем новости с agency_id 5 и 2
-      ->with('category')  // Добавляем связку с категориями
-      ->get();
-
-
-    $relatedPostIds = $agencyNews->pluck('id');
-    $relatedPosts = News::query()
-      ->with('category')  // Подгружаем категорию для связанных новостей
-      ->where('agency_id', '!=', 5)
-      ->whereIn('category_id', $relatedPostIds)
-      ->get();
-
-    $agencyNewsWithRelated = $agencyNews->map(function ($newsItem) use ($relatedPosts) {
-      $posts = $relatedPosts->filter(function ($post) use ($newsItem) {
-        return $post->id !== $newsItem->id && $post->category_id = $newsItem->category_id;
-      })->take(3);
-
-      $newsItem->relatedPosts = $posts;
-      return $newsItem;
-    });
-
     $openedNews = null;
-
-    if ($request->route('url')) {
+    if ($request->route('url')) { // Если url есть в маршруте (например, /news/{slug})
       $openedNews = News::where('url', $request->route('url'))
         ->with(['category', 'video', 'reportage'])
         ->firstOrFail();
 
-      // Добавляем related posts
       $openedNews->relatedPosts = News::where('category_id', $openedNews->category_id)
         ->where('id', '!=', $openedNews->id)
         ->select(['id', 'title', 'url', 'category_id', 'image_main', 'published_at'])
         ->limit(3)
         ->get();
-
     }
 
     //  Для обычного запроса отдаем страницу
@@ -124,8 +98,6 @@ class HomeController extends Controller
       'cities' => $cities,
       'districts' => $districts,
       'mountains' => $mountains,
-      'agencies' => $agencies,
-      'agencyNews' => $agencyNewsWithRelated,
       'showNews' => $openedNews,
       'anniversary' => config('app.anniversary'),
     ]);
