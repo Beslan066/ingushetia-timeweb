@@ -67,6 +67,7 @@ body:has(.modal--opened) {
   margin: 0 20px;
   max-height: 80vh; /* Ограничение по высоте */
   overflow-y: auto; /* Включаем прокрутку внутри */
+  scrollbar-color: #077c50 #fff;
 }
 
 @media (min-width: 1366px) {
@@ -99,3 +100,6 @@ body:has(.modal--opened) {
     overflow: auto; /* Позволяем прокрутку */
   }
 }
+
+
+

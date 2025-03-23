@@ -3,7 +3,6 @@
   font-size: var(--font-size-body);
   line-height: var(--line-height-body);
   color: var(--color-neutral-black);
-
   border-bottom: 2px solid transparent;
 }
 

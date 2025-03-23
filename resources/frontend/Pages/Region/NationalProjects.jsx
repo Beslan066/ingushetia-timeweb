@@ -15,7 +15,7 @@ export default function NationalProjects() {
       <div className="page-content__wrapper">
         <div className="page-content__content">
           <div className="img">
-            <img src="/img/pages/natProjects.png" alt="Центр города Магас, Республика Ингушетия"/>
+            <img src="/img/pages/natProjects.png" alt="Центр города Магас, Республика Ингушетия" style={{maxHeight: '270px', maxWidth: '420px'}}/>
           </div>
           <p>В мае 2018 года Президент России Владимир Путин подписал
             Указ <a href="http://www.kremlin.ru/acts/bank/43027">«О национальных целях и стратегических задачах развития

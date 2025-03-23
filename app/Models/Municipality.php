@@ -18,8 +18,8 @@ class Municipality extends Model
     public static function getTypes() {
 
         return [
-            self::TYPE_CITY => 'Городские округа',
-            self::TYPE_DISTRICT => 'Муниципальные районы',
+            self::TYPE_CITY => 'Города',
+            self::TYPE_DISTRICT => 'Районы',
         ];
     }
 
