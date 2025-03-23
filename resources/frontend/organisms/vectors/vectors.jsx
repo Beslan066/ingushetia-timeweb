@@ -5,7 +5,7 @@ import './vectors.css';
 export default function Vectors ({ vectors }) {
   return (
     <div className="vectors__wrapper">
-      <h2 className="vectors__title">Вектор развития</h2>
+      <h2 className="vectors__title">Векторы развития</h2>
       <div className="vectors">
         {
           vectors.map((vector) => {

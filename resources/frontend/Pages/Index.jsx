@@ -34,25 +34,25 @@ export default function Index({
   }
   const vectors = [
     {
-      image: '/img/content/vectors/image 7.png',
+      image: '/img/content/vectors/image7.webp',
       route: '',
       title: 'Сельское хозяйство',
       profits: ['Создано более 1000 рабочих мест', 'На 18% увеличен сбор с/х продуктов', '145 гектаров новых пахатных земель']
     },
     {
-      image: '/img/content/vectors/image 7 (1).png',
+      image: '/img/content/vectors/image7(1).webp',
       route: '',
       title: 'Цифровая сфера',
       profits: ['Открыт IT-университет “Школа 21”', 'Выпущено более 400 IT-специалистов']
     },
     {
-      image: '/img/content/vectors/image 7 (2).png',
+      image: '/img/content/vectors/image7(2).webp',
       route: '',
       title: 'Промышленность',
       profits: ['Запущено 3 новых предприятия', 'Создано более 2000 новых рабочих мест']
     },
     {
-      image: '/img/content/vectors/image 7 (3).png',
+      image: '/img/content/vectors/image7(3).webp',
       route: '',
       title: 'Туризм',
       profits: ['На 20% больше туристов', 'Более 2 новых туристических зон']
