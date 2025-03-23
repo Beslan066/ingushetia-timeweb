@@ -25,7 +25,7 @@ class UpdateRequest extends FormRequest
             'title' => 'required|string',
             'lead' => 'nullable|string|max:255',
             'video' => 'nullable|mimes:mp4,avi,mov,wmv,flv,mkv|max:512000',
-            'image_main' => 'nullable|image|mimes:jpg,jpeg,webp,png',
+            'image_main' => 'nullable|image|mimes:webp|max:130',
             'news_id' => 'nullable',
             'user_id' => 'required',
             'agency_id' => 'required',

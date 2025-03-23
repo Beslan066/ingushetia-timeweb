@@ -28,7 +28,7 @@ class StoreRequest extends FormRequest
             'title' => 'required|string',
             'lead' => 'required|string',
             'content' => 'required',
-            'image_main' => 'required|image|mimes:jpg,jpeg,webp,png',
+            'image_main' => 'required|image|mimes:jpg,jpeg,webp,png|max:130',
             'category_id' => 'nullable',
             'news_ing' => 'nullable',
             'main_material' => 'nullable',

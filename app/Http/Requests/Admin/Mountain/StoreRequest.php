@@ -33,7 +33,7 @@ class StoreRequest extends FormRequest
             'see_height' => 'required|string|max:255',
             'structure' => 'required|string|max:255',
             'content' => 'required',
-            'image_main' => 'required|image|mimes:jpg,jpeg,webp,png',
+            'image_main' => 'required|image|mimes:webp|max:130',
             'image_author' => 'required|string|max:255',
             'image_description' => 'required|string|max:255',
             'user_id' => 'required',

@@ -23,8 +23,8 @@ class UpdateRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:255',
-            'image_main' => 'nullable|image',
-            'remove_slides' => 'nullable', // Временно упрощаем валидацию
+            'image_main' => 'nullable|image|mimes:webp|max:130',
+            'remove_slides' => 'nullable',
             'slides' => 'nullable|array',
             'slides.*' => 'image',
             'user_id' => 'required|integer',

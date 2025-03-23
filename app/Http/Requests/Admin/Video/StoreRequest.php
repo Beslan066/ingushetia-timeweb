@@ -28,7 +28,7 @@ class StoreRequest extends FormRequest
             'title' => 'required|string',
             'lead' => 'nullable|string|max:255',
             'video' => 'required|mimes:mp4,avi,mov,wmv,flv,mkv|max:512000',
-            'image_main' => 'required|image|mimes:jpg,jpeg,webp,png',
+            'image_main' => 'required|image|mimes:webp|max:130',
             'news_id' => 'nullable',
             'user_id' => 'required',
             'agency_id' => 'required',

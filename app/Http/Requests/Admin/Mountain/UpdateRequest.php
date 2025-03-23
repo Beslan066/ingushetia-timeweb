@@ -30,7 +30,7 @@ class UpdateRequest extends FormRequest
             'see_height' => 'required|string|max:255',
             'structure' => 'required|string|max:255',
             'content' => 'required',
-            'image_main' => 'nullable|image|mimes:jpg,jpeg,webp,png',
+            'image_main' => 'nullable|image|mimes:webp|max:130',
             'image_author' => 'nullable|string|max:255',
             'image_description' => 'nullable|string|max:255',
             'user_id' => 'required',

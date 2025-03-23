@@ -24,7 +24,7 @@ class StoreRequest extends FormRequest
         return [
             'title' => 'required|string|max:255',
             'content' => 'nullable',
-            'image_main' => 'required',
+            'image_main' => 'required|mimes:webp|max:120',
             'slides' => 'nullable|array',
             'user_id' => 'required',
             'news_id' => 'nullable',

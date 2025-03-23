@@ -4,11 +4,11 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
         <meta name="robots" content="index, follow" />
-        <meta name="keywords" content="республика, ингушетия, новости, культура, история, фотографии, видео, институты власти" />
+        <meta name="keywords" content="Республика, ингушетия, новости, культура, история, фотографии, видео, институты власти" />
         <meta name="description" content="Официальный сайт Республики Ингушетия" />
 
 
-        <title inertia>{{ config('app.name', 'Laravel') }}</title>
+        <title inertia>{{ config('app.name', 'Республика Ингушетия - официальный сайт') }}</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
