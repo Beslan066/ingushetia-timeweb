@@ -16,8 +16,8 @@ export default function Districts({ districts, settlements }) {
   const [currentSettlement, setCurrentSettlement] = useState(first);
 
   const list = [
-    { title: 'Городские округа', items: settlements },
-    { title: 'Муниципальные районы', items: districts },
+    { title: 'Города', items: settlements },
+    { title: 'Районы', items: districts },
   ]
 
   const findSettlementById = (id) => {
@@ -44,7 +44,7 @@ export default function Districts({ districts, settlements }) {
 
   return (
     <div className="municipalities">
-      <h2 className="municipalities__title">Районы и округа</h2>
+      <h2 className="municipalities__title">Города и районы</h2>
       <div className="municipalities__wrapper">
         <div className="municipalities__list-wrapper">
           {

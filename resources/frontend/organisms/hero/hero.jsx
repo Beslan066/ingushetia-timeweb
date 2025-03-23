@@ -74,7 +74,7 @@ export default function Hero({ categories, slides, news, showNews }) {
             />
             {filteredArticles.length > 0 ? (
               <>
-                <News news={filteredArticles.slice(0, 3)} handlePost={handlePost} />
+                <News news={filteredArticles.slice(0, 3)} onPost={handlePost} />
                 <AppLink to="/news" title="Все новости" />
               </>
             ) : (

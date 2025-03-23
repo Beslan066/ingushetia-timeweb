@@ -2,7 +2,7 @@ import './external-resource.css'
 import ExternalLinkIcon from "#/atoms/icons/external-link.jsx";
 import { Link } from "@inertiajs/react";
 
-export default function ExternalResource({ title, link, highlightedDescription }) {
+export default function   ExternalResource({ title, link, highlightedDescription }) {
 
   return (
     <div className="external-resource__wrapper">
