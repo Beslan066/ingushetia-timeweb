@@ -24,38 +24,24 @@ use App\Models\Konkurs;
 use App\Models\FederalAuthority;
 use App\Models\AwardPolitic;
 use App\Models\CivilService;
+
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Illuminate\Support\Facades\Cache;
-
 
 class HomeController extends Controller
 {
   public function index(Request $request)
   {
-    $categories = Cache::remember('categories', 3600, function () {
-      return Category::select('id', 'title')->get()->toArray();
-    });
-    $resources = Cache::remember('resources_5', 3600, function () {
-      return Resource::where('agency_id', 5)->get();
-    });
+    $categories = Category::all()->toArray();
+    $resources = Resource::query()->where('agency_id', 5)->get();
     $photoReportages = PhotoReportage::query()->take(4)->orderBy('published_at', 'desc')->get();
     $videos = Video::query()->take(4)->orderBy('published_at', 'desc')->get();
 
-    $municipalities = Cache::remember('municipalities_2_20', 3600, function () {
-      return Municipality::with('supervisor:id,name')
-        ->whereIn('type', [2, 20])
-        ->select('id', 'title', 'type', 'supervisor_id')
-        ->get();
-    });
+    $cities = Municipality::query()->with('supervisor')->where('type', 2)->get();
+    $districts = Municipality::query()->with('supervisor')->where('type', 20)->get();
 
-    $cities = $municipalities->where('type', 2);
-    $districts = $municipalities->where('type', 20);
-
-    $mountains = Mountain::with('reportage:id,title,published_at')
-      ->select('id', 'name', 'reportage_id')
-      ->get();
+    $mountains = Mountain::with('reportage')->get();
 
     $mainPosts = News::query()
     ->with(['category:id,title', 'video:id,url', 'reportage:id,title'])
