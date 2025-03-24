@@ -17,7 +17,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
+use Intervention\Image\Image;
 use PHPUnit\TextUI\Configuration\Php;
+use App\Services\ImageOptimizerService;
+
 
 
 class NewsController extends Controller
@@ -55,13 +58,17 @@ class NewsController extends Controller
      */
     public function store(StoreRequest $request)
     {
-        $data = $request->validated();
+      $data = $request->validated();
 
-        if (isset($data['image_main'])) {
-            $path = Storage::put('images', $data['image_main']);
-            // Сохранение пути к изображению в базе данных
-            $data['image_main'] = $path ?? null;
-        }
+      // Обработка изображения
+      if ($request->hasFile('image_main')) {
+        $paths = ImageOptimizerService::optimizeAndConvertToWebp(
+          $request->file('image_main')
+        );
+
+        $data['image_main'] = $paths['original'];
+        $data['image_webp'] = $paths['webp'];
+      }
 
         $data['url'] = Str::slug($data['title']);
 
@@ -104,13 +111,24 @@ class NewsController extends Controller
      */
     public function update(UpdateRequest $request, News $news)
     {
-        $data = $request->validated();
+      $data = $request->validated();
 
-        if (isset($data['image_main'])) {
-            $path = Storage::put('images', $data['image_main']);
-            // Сохранение пути к изображению в базе данных
-            $data['image_main'] = $path ?? null;
-        }
+      // Обработка изображения
+      if ($request->hasFile('image_main')) {
+        // Удаление старых файлов
+        Storage::delete([
+          $news->image_main,
+          $news->image_webp
+        ]);
+
+        // Генерация новых файлов
+        $paths = ImageOptimizerService::optimizeAndConvertToWebp(
+          $request->file('image_main')
+        );
+
+        $data['image_main'] = $paths['original'];
+        $data['image_webp'] = $paths['webp'];
+      }
 
         $data['url'] = Str::slug($data['title']);
 
