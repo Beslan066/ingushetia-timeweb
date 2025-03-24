@@ -5,7 +5,7 @@ export default function Slide({ title, category, date, image, id, onPost, style,
   const formattedDate = format(date);
   return (
     <div className="slide" style={style}>
-      <img src={ `/storage/${image}` } alt={ 'Изображение новости ' + title } className="slide__image" loading="lazy"/>
+      <img src={ `/storage/${image}` } alt={ 'Изображение новости ' + title } className="slide__image"/>
       <div className="slide__info">
         <div className="slide-info__keys">
           <div className="slide-info__date">{ formattedDate }</div>
