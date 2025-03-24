@@ -1,6 +1,8 @@
 import AppHeader from "#/molecules/header/header.jsx";
 import Hero from "#/organisms/hero/hero.jsx";
 import './index.css';
+import '../../../public/css/reset.css';
+import '../../../public/css/variables.css';
 import React from "react";
 import Vectors from "#/organisms/vectors/vectors.jsx";
 import Districts from "#/organisms/districts/districts.jsx";

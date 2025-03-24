@@ -101,10 +101,6 @@ a {
   cursor: pointer;
 }
 
-a:visited {
-  color: var(--color-primary-medium);
-}
-
 a:active {
   color: var(--color-primary-darkest);
 }
