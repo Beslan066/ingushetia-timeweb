@@ -3,24 +3,18 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\News\UpdateRequest;
 use App\Http\Requests\Admin\News\StoreRequest;
-use App\Models\Agency;
+use App\Http\Requests\Admin\News\UpdateRequest;
 use App\Models\Category;
 use App\Models\News;
 use App\Models\PhotoReportage;
 use App\Models\User;
 use App\Models\Video;
+use App\Services\ImageOptimizerService;
 use Binafy\LaravelUserMonitoring\Models\VisitMonitoring;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Inertia\Inertia;
-use Intervention\Image\Image;
-use PHPUnit\TextUI\Configuration\Php;
-use App\Services\ImageOptimizerService;
-
 
 
 class NewsController extends Controller

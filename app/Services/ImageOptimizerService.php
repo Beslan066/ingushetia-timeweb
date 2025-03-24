@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Image;
 
 class ImageOptimizerService
 {
