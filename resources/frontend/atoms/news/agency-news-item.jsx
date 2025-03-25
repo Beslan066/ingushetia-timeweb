@@ -2,9 +2,11 @@ import './agency-item.css';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale'; // подключаем локаль для русского языка
 
-export default function AgencyNewsItem({ id, date, category, title, image, onPost, url }) {
+export default function AgencyNewsItem({ id, date, category, title, image, onPost, url, imageWebp }) {
   const newsDate = new Date(date); // создаём объект Date для работы с датой
   const currentYear = new Date().getFullYear(); // получаем текущий год
+  const imageUrl = imageWebp ? `/storage/${imageWebp}` : `/storage/${image}`;
+
 
   // Форматируем дату без года, с использованием русской локали
   const formattedDate = format(newsDate, 'HH:mm, d MMMM', { locale: ru });
@@ -19,7 +21,7 @@ export default function AgencyNewsItem({ id, date, category, title, image, onPos
     <a onClick={() => onPost({ id, title, url: url || `/news/${id}` })} className="news-card">
       {image && (
         <div className="news-card__preview">
-          <img src={`/storage/${image}`} alt={title + ' превью фото'} />
+          <img src={imageUrl} alt={'Изображение новости ' + title} className="slide__image" />
         </div>
       )}
 

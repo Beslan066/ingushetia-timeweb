@@ -75,6 +75,7 @@ export default function MainSlider({ slides, onPost, slideChangeInterval = 8000 
               <Slide key={ slide.id }
                      title={ slide.title }
                      image={ slide.image_main }
+                     imageWebp={ slide.image_webp }
                      date={ slide.published_at }
                      category={ slide?.category?.title }
                      style={ {

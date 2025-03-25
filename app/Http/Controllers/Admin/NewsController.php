@@ -10,7 +10,6 @@ use App\Models\News;
 use App\Models\PhotoReportage;
 use App\Models\User;
 use App\Models\Video;
-use App\Services\ImageOptimizerService;
 use Binafy\LaravelUserMonitoring\Models\VisitMonitoring;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -50,31 +49,66 @@ class NewsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreRequest $request)
-    {
-      $data = $request->validated();
+  private function processImage($image)
+  {
+    // Генерируем уникальные имена файлов
+    $originalExtension = $image->getClientOriginalExtension();
+    $uniqueName = Str::uuid();
 
-      // Обработка изображения
-      if ($request->hasFile('image_main')) {
-        $paths = ImageOptimizerService::optimizeAndConvertToWebp(
-          $request->file('image_main')
-        );
+    $paths = [
+      'original' => "news/images/{$uniqueName}.{$originalExtension}",
+      'webp' => "news/webp/{$uniqueName}.webp"
+    ];
 
-        $data['image_main'] = $paths['original'];
-        $data['image_webp'] = $paths['webp'];
-      }
+    // Сохраняем оригинальное изображение
+    Storage::put($paths['original'], file_get_contents($image));
 
-        $data['url'] = Str::slug($data['title']);
+    // Создаем WebP версию
+    $imageInfo = getimagesize($image->path());
+    $mimeType = $imageInfo['mime'];
 
-
-        // Обработка значения чекбокса
-        $data['main_material'] = $request->has('main_material') ? 1 : 0;
-
-
-        $news = News::create($data);
-
-        return redirect()->route('admin.news.index');
+    switch ($mimeType) {
+      case 'image/jpeg':
+        $sourceImage = imagecreatefromjpeg($image->path());
+        break;
+      case 'image/png':
+        $sourceImage = imagecreatefrompng($image->path());
+        break;
+      case 'image/gif':
+        $sourceImage = imagecreatefromgif($image->path());
+        break;
+      default:
+        throw new \Exception('Unsupported image type');
     }
+
+    // Сохраняем WebP в временный файл
+    $tempWebpPath = tempnam(sys_get_temp_dir(), 'webp');
+    imagewebp($sourceImage, $tempWebpPath, 90);
+    imagedestroy($sourceImage);
+
+    // Загружаем WebP в хранилище
+    Storage::put($paths['webp'], file_get_contents($tempWebpPath));
+    unlink($tempWebpPath);
+
+    return $paths;
+  }
+
+  public function store(StoreRequest $request)
+  {
+    $data = $request->validated();
+
+    if ($request->hasFile('image_main')) {
+      $paths = $this->processImage($request->file('image_main'));
+      $data['image_main'] = $paths['original'];
+      $data['image_webp'] = $paths['webp'];
+    }
+
+    $data['url'] = Str::slug($data['title']);
+    $data['main_material'] = $request->has('main_material') ? 1 : 0;
+
+    News::create($data);
+    return redirect()->route('admin.news.index');
+  }
 
     /**
      * Display the specified resource.
@@ -103,36 +137,26 @@ class NewsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateRequest $request, News $news)
-    {
-      $data = $request->validated();
+  public function update(UpdateRequest $request, News $news)
+  {
+    $data = $request->validated();
 
-      // Обработка изображения
-      if ($request->hasFile('image_main')) {
-        // Удаление старых файлов
-        Storage::delete([
-          $news->image_main,
-          $news->image_webp
-        ]);
+    if ($request->hasFile('image_main')) {
+      // Удаляем старые файлы
+      Storage::delete([$news->image_main, $news->image_webp]);
 
-        // Генерация новых файлов
-        $paths = ImageOptimizerService::optimizeAndConvertToWebp(
-          $request->file('image_main')
-        );
-
-        $data['image_main'] = $paths['original'];
-        $data['image_webp'] = $paths['webp'];
-      }
-
-        $data['url'] = Str::slug($data['title']);
-
-        // Обработка значения чекбокса
-        $data['main_material'] = $request->has('main_material') ? 1 : 0;
-
-        $news->update($data);
-
-        return redirect()->route('admin.news.index')->with('success', 'News updated successfully');
+      // Обрабатываем новое изображение
+      $paths = $this->processImage($request->file('image_main'));
+      $data['image_main'] = $paths['original'];
+      $data['image_webp'] = $paths['webp'];
     }
+
+    $data['url'] = Str::slug($data['title']);
+    $data['main_material'] = $request->has('main_material') ? 1 : 0;
+
+    $news->update($data);
+    return redirect()->route('admin.news.index')->with('success', 'News updated successfully');
+  }
 
     /**
      * Remove the specified resource from storage.
