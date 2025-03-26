@@ -11,87 +11,88 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+Route::group(['middleware' => 'auth.basic'], function () {
+  Route::get('/', [HomeController::class, 'index'])->name('home');
+  Route::get('/news/{url}', [HomeController::class, 'index'])->name('post.show');
+  Route::get('/search', [App\Http\Controllers\Frontend\SearchController::class, 'searchResults'])->name('search.index');
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/news/{url}', [HomeController::class, 'index'])->name('post.show');
-Route::get('/search', [App\Http\Controllers\Frontend\SearchController::class, 'searchResults'])->name('search.index');
-
-Route::get('/search/page', [App\Http\Controllers\Frontend\SearchController::class, 'searchPage'])->name('search.page');
-Route::get('/national-projects', [HomeController::class, 'nationalProjects'])->name('natProjects');
-Route::get('/military-support', [HomeController::class, 'svoSupport'])->name('svoSupport');
-Route::get('/contacts', [HomeController::class, 'contacts'])->name('contacts');
-Route::get('/media', [HomeController::class, 'media'])->name('media');
-Route::get('/implementations', [HomeController::class, 'implementations'])->name('implementations');
-Route::get('/anticorruptions', [HomeController::class, 'anticorruptions'])->name('anticorruptions');
-Route::get('/economic-support', [HomeController::class, 'economicSupport'])->name('economicSupport');
-Route::get('/konkurses', [HomeController::class, 'konkurs'])->name('konkurs');
-Route::get('/simvols', [HomeController::class, 'simvols'])->name('simvols');
-Route::get('/3d-tour-glory', [HomeController::class, 'gloryTour'])->name('gloryTour');
-Route::get('/managment-reserves', [HomeController::class, 'managmentReserves'])->name('homeManagmentReserves.index');
-Route::get('/judicial-authorities', [HomeController::class, 'judicialAuthorities'])->name('judicialAuthorities.index');
-Route::get('/federal-authorities', [HomeController::class, 'federalAuthorities'])->name('federalAuthorities.index');
-Route::get('/antinar', [HomeController::class, 'antinar'])->name('antinars.index');
-Route::get('/smi', [HomeController::class, 'smi'])->name('smi.index');
-Route::get('/award-politic', [HomeController::class, 'awardPolitic'])->name('awardPolitics.index');
-Route::get('/civil-service', [HomeController::class, 'civilService'])->name('civilServices.index');
-
-
+  Route::get('/search/page', [App\Http\Controllers\Frontend\SearchController::class, 'searchPage'])->name('search.page');
+  Route::get('/national-projects', [HomeController::class, 'nationalProjects'])->name('natProjects');
+  Route::get('/military-support', [HomeController::class, 'svoSupport'])->name('svoSupport');
+  Route::get('/contacts', [HomeController::class, 'contacts'])->name('contacts');
+  Route::get('/media', [HomeController::class, 'media'])->name('media');
+  Route::get('/implementations', [HomeController::class, 'implementations'])->name('implementations');
+  Route::get('/anticorruptions', [HomeController::class, 'anticorruptions'])->name('anticorruptions');
+  Route::get('/economic-support', [HomeController::class, 'economicSupport'])->name('economicSupport');
+  Route::get('/konkurses', [HomeController::class, 'konkurs'])->name('konkurs');
+  Route::get('/simvols', [HomeController::class, 'simvols'])->name('simvols');
+  Route::get('/3d-tour-glory', [HomeController::class, 'gloryTour'])->name('gloryTour');
+  Route::get('/managment-reserves', [HomeController::class, 'managmentReserves'])->name('homeManagmentReserves.index');
+  Route::get('/judicial-authorities', [HomeController::class, 'judicialAuthorities'])->name('judicialAuthorities.index');
+  Route::get('/federal-authorities', [HomeController::class, 'federalAuthorities'])->name('federalAuthorities.index');
+  Route::get('/antinar', [HomeController::class, 'antinar'])->name('antinars.index');
+  Route::get('/smi', [HomeController::class, 'smi'])->name('smi.index');
+  Route::get('/award-politic', [HomeController::class, 'awardPolitic'])->name('awardPolitics.index');
+  Route::get('/civil-service', [HomeController::class, 'civilService'])->name('civilServices.index');
 
 
 
-Route::prefix('government')->group(function () {
-  Route::get('/', [GovernmentController::class, 'government'])->name('government');
-  Route::get('/structure', [GovernmentController::class, 'structure'])->name('structure');
-  Route::get('/abilities', [GovernmentController::class, 'abilities'])->name('abilities');
-  Route::get('/sessions', [GovernmentController::class, 'sessions'])->name('sessions');
-  Route::get('/plans', [GovernmentController::class, 'plan'])->name('plan');
-  Route::get('/colleagues', [GovernmentController::class, 'colleagues'])->name('colleagues');
-  Route::get('/directories', [GovernmentController::class, 'directories'])->name('directories');
-});
 
-Route::get('/documents', [HomeController::class, 'documents'])->name('documents');
 
-Route::get('/region', [RegionController::class, 'index'])->name('region');
-Route::get('/economic', [RegionController::class, 'economic'])->name('economic');
-Route::get('/social-economic-development', [RegionController::class, 'socialEconomicDevelopment'])->name('socialEconomicDevelopment');
-Route::get('/municipalities', [RegionController::class, 'municipalities'])->name('municipality');
-Route::get('/history', [RegionController::class, 'history'])->name('history');
+  Route::prefix('government')->group(function () {
+    Route::get('/', [GovernmentController::class, 'government'])->name('government');
+    Route::get('/structure', [GovernmentController::class, 'structure'])->name('structure');
+    Route::get('/abilities', [GovernmentController::class, 'abilities'])->name('abilities');
+    Route::get('/sessions', [GovernmentController::class, 'sessions'])->name('sessions');
+    Route::get('/plans', [GovernmentController::class, 'plan'])->name('plan');
+    Route::get('/colleagues', [GovernmentController::class, 'colleagues'])->name('colleagues');
+    Route::get('/directories', [GovernmentController::class, 'directories'])->name('directories');
+  });
 
-Route::get('/agencies', [AgencyController::class, 'index'])->name('agencies.index');
-Route::get('/agencies/{agency:slug}', [AgencyController::class, 'singleAgency'])->name('agencies.single');
-Route::get('/region', function () {
+  Route::get('/documents', [HomeController::class, 'documents'])->name('documents');
+
+  Route::get('/region', [RegionController::class, 'index'])->name('region');
+  Route::get('/economic', [RegionController::class, 'economic'])->name('economic');
+  Route::get('/social-economic-development', [RegionController::class, 'socialEconomicDevelopment'])->name('socialEconomicDevelopment');
+  Route::get('/municipalities', [RegionController::class, 'municipalities'])->name('municipality');
+  Route::get('/history', [RegionController::class, 'history'])->name('history');
+
+  Route::get('/agencies', [AgencyController::class, 'index'])->name('agencies.index');
+  Route::get('/agencies/{agency:slug}', [AgencyController::class, 'singleAgency'])->name('agencies.single');
+  Route::get('/region', function () {
     return Inertia::render('Region/Region');
-});
-Route::get('/economic', function () {
+  });
+  Route::get('/economic', function () {
     return Inertia::render('Region/Economics');
-});
-Route::get('/history', function () {
+  });
+  Route::get('/history', function () {
     return Inertia::render('Region/History');
-});
+  });
 
-Route::get('/municipality', [RegionController::class, 'municipalities'])->name('municipalities');
-Route::get('/nation-projects', [RegionController::class, 'nationalProjects'])->name('nation-projects');
-Route::get('/pravitelstvo', function () {
+  Route::get('/municipality', [RegionController::class, 'municipalities'])->name('municipalities');
+  Route::get('/nation-projects', [RegionController::class, 'nationalProjects'])->name('nation-projects');
+  Route::get('/pravitelstvo', function () {
     return Inertia::render('Authority/Authority');
-});
+  });
 
-Route::get('/sostav-pravitelstva', function () {
+  Route::get('/sostav-pravitelstva', function () {
     return Inertia::render('Authority/GovernmentTeam');
+  });
+
+
+  Route::get('/news', [NewsController::class, 'index'])->name('news.index');
+  Route::get('/news/{id}', [HomeController::class, 'index'])->name('news.show');
+  Route::get('/news-by-category/{categoryId}', [NewsController::class, 'getPostsByCategory'])->name('posts.by.tag');
+
 });
-
-
-Route::get('/news', [NewsController::class, 'index'])->name('news.index');
-Route::get('/news/{id}', [HomeController::class, 'index'])->name('news.show');
-Route::get('/news-by-category/{categoryId}', [NewsController::class, 'getPostsByCategory'])->name('posts.by.tag');
-
 
 Route::group(['namespace' => 'Admin', 'middleware' => \App\Http\Middleware\Admin::class], function () {
-    Route::get('/admin', [\App\Http\Controllers\Admin\IndexController::class, 'index'])->middleware(['auth', 'verified'])->name('admin');
+    Route::get('/raduga', [\App\Http\Controllers\Admin\IndexController::class, 'index'])->middleware(['auth', 'verified'])->name('admin');
 
 
-    Route::get('/admin/search', [App\Http\Controllers\Admin\SearchController::class, 'index'])->name('admin.search');
+    Route::get('/raduga/search', [App\Http\Controllers\Admin\SearchController::class, 'index'])->name('admin.search');
 
-    Route::group(['namespace' => 'News', 'prefix' => 'admin'], function () {
+    Route::group(['namespace' => 'News', 'prefix' => 'raduga'], function () {
         Route::get('/news', [App\Http\Controllers\Admin\NewsController::class, 'index'])->name('admin.news.index');
         Route::get('/news/create', [App\Http\Controllers\Admin\NewsController::class, 'create'])->name('admin.news.create');
         Route::post('/news/store', [App\Http\Controllers\Admin\NewsController::class, 'store'])->name('admin.news.store');
@@ -101,7 +102,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => \App\Http\Middleware\Admin
 
     });
 
-    Route::group(['namespace' => 'NewsIng', 'prefix' => 'admin'], function () {
+    Route::group(['namespace' => 'NewsIng', 'prefix' => 'raduga'], function () {
         Route::get('/news-ing', [App\Http\Controllers\Admin\NewsIngController::class, 'index'])->name('admin.newsIng.index');
         Route::get('/news-ing/create', [App\Http\Controllers\Admin\NewsIngController::class, 'create'])->name('admin.newsIng.create');
         Route::post('/news-ing/store', [App\Http\Controllers\Admin\NewsIngController::class, 'store'])->name('admin.newsIng.store');
@@ -112,7 +113,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => \App\Http\Middleware\Admin
     });
 
 
-    Route::group(['namespace' => 'Video', 'prefix' => 'admin'], function () {
+    Route::group(['namespace' => 'Video', 'prefix' => 'raduga'], function () {
         Route::get('/videos', [App\Http\Controllers\Admin\VideoController::class, 'index'])->name('admin.videos.index');
         Route::get('/videos/create', [App\Http\Controllers\Admin\VideoController::class, 'create'])->name('admin.videos.create');
         Route::post('/videos/store', [App\Http\Controllers\Admin\VideoController::class, 'store'])->name('admin.videos.store');
@@ -122,7 +123,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => \App\Http\Middleware\Admin
 
     });
 
-    Route::group(['namespace' => 'PhotoReportage', 'prefix' => 'admin'], function () {
+    Route::group(['namespace' => 'PhotoReportage', 'prefix' => 'raduga'], function () {
         Route::get('/photo-reportage', [App\Http\Controllers\Admin\PhotoReportageController::class, 'index'])->name('admin.photoReportage.index');
         Route::get('/photo-reportage/create', [App\Http\Controllers\Admin\PhotoReportageController::class, 'create'])->name('admin.photoReportage.create');
         Route::post('/photo-reportage/store', [App\Http\Controllers\Admin\PhotoReportageController::class, 'store'])->name('admin.photoReportage.store');
@@ -132,7 +133,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => \App\Http\Middleware\Admin
 
     });
 
-    Route::group(['namespace' => 'Category', 'prefix' => 'admin'], function () {
+    Route::group(['namespace' => 'Category', 'prefix' => 'raduga'], function () {
         Route::get('/categories', [App\Http\Controllers\Admin\CategoryController::class, 'index'])->name('admin.categories.index');
 
         Route::get('/categories/create', [App\Http\Controllers\Admin\CategoryController::class, 'create'])->name('admin.categories.create');
@@ -143,7 +144,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => \App\Http\Middleware\Admin
 
     });
 
-    Route::group(['namespace' => 'Document', 'prefix' => 'admin'], function () {
+    Route::group(['namespace' => 'Document', 'prefix' => 'raduga'], function () {
         Route::get('/documents', [App\Http\Controllers\Admin\DocumentController::class, 'index'])->name('admin.documents.index');
 
         Route::get('/documents/create', [App\Http\Controllers\Admin\DocumentController::class, 'create'])->name('admin.documents.create');
@@ -154,7 +155,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => \App\Http\Middleware\Admin
 
     });
 
-    Route::group(['namespace' => 'Document', 'prefix' => 'admin'], function () {
+    Route::group(['namespace' => 'Document', 'prefix' => 'raduga'], function () {
         Route::get('/konkurses', [App\Http\Controllers\Admin\KonkursController::class, 'index'])->name('admin.konkurses.index');
 
         Route::get('/konkurses/create', [App\Http\Controllers\Admin\KonkursController::class, 'create'])->name('admin.konkurses.create');
@@ -165,7 +166,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => \App\Http\Middleware\Admin
 
     });
 
-    Route::group(['namespace' => 'ManagmentReserve', 'prefix' => 'admin'], function () {
+    Route::group(['namespace' => 'ManagmentReserve', 'prefix' => 'raduga'], function () {
         Route::get('/managment-reserve', [App\Http\Controllers\Admin\ManagmentReserveController::class, 'index'])->name('admin.managmentReserves.index');
 
         Route::get('/managment-reserve/create', [App\Http\Controllers\Admin\ManagmentReserveController::class, 'create'])->name('admin.managmentReserves.create');
@@ -176,7 +177,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => \App\Http\Middleware\Admin
 
     });
 
-    Route::group(['namespace' => 'Page', 'prefix' => 'admin'], function () {
+    Route::group(['namespace' => 'Page', 'prefix' => 'raduga'], function () {
         Route::get('/pages', [App\Http\Controllers\Admin\PageController::class, 'index'])->name('admin.page.index');
 
         Route::get('/pages/create', [App\Http\Controllers\Admin\PageController::class, 'create'])->name('admin.page.create');
@@ -187,7 +188,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => \App\Http\Middleware\Admin
 
     });
 
-    Route::group(['namespace' => 'Implementation', 'prefix' => 'admin'], function () {
+    Route::group(['namespace' => 'Implementation', 'prefix' => 'raduga'], function () {
         Route::get('/implementation', [App\Http\Controllers\Admin\ImplementationController::class, 'index'])->name('admin.implementations.index');
 
         Route::get('/implementations/create', [App\Http\Controllers\Admin\ImplementationController::class, 'create'])->name('admin.implementations.create');
@@ -198,7 +199,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => \App\Http\Middleware\Admin
 
     });
 
-    Route::group(['namespace' => 'SocialEconomicDevelopment', 'prefix' => 'admin'], function () {
+    Route::group(['namespace' => 'SocialEconomicDevelopment', 'prefix' => 'raduga'], function () {
         Route::get('/social-economic-development', [App\Http\Controllers\Admin\SocialEconomicDevelopmentController::class, 'index'])->name('admin.socialEconomicDevelopments.index');
 
         Route::get('/social-economic-development/create', [App\Http\Controllers\Admin\SocialEconomicDevelopmentController::class, 'create'])->name('admin.socialEconomicDevelopments.create');
@@ -209,7 +210,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => \App\Http\Middleware\Admin
 
     });
 
-    Route::group(['namespace' => 'Anticorruption', 'prefix' => 'admin'], function () {
+    Route::group(['namespace' => 'Anticorruption', 'prefix' => 'raduga'], function () {
         Route::get('/anticorruptions', [App\Http\Controllers\Admin\AnticorruptionController::class, 'index'])->name('admin.anticorruptions.index');
 
         Route::get('/anticorruptions/create', [App\Http\Controllers\Admin\AnticorruptionController::class, 'create'])->name('admin.anticorruptions.create');
@@ -220,7 +221,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => \App\Http\Middleware\Admin
 
     });
 
-    Route::group(['namespace' => 'EconomicSupport', 'prefix' => 'admin'], function () {
+    Route::group(['namespace' => 'EconomicSupport', 'prefix' => 'raduga'], function () {
         Route::get('/economic-support', [App\Http\Controllers\Admin\EconomicSupportController::class, 'index'])->name('admin.economicSupports.index');
 
         Route::get('/economic-support/create', [App\Http\Controllers\Admin\EconomicSupportController::class, 'create'])->name('admin.economicSupports.create');
@@ -231,7 +232,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => \App\Http\Middleware\Admin
 
     });
 
-    Route::group(['namespace' => 'Contact', 'prefix' => 'admin'], function () {
+    Route::group(['namespace' => 'Contact', 'prefix' => 'raduga'], function () {
         Route::get('/contacts', [App\Http\Controllers\Admin\ContactController::class, 'index'])->name('admin.contacts.index');
         Route::get('/contacts/create', [App\Http\Controllers\Admin\ContactController::class, 'create'])->name('admin.contacts.create');
         Route::post('/contacts/store', [App\Http\Controllers\Admin\ContactController::class, 'store'])->name('admin.contacts.store');
@@ -241,7 +242,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => \App\Http\Middleware\Admin
 
     });
 
-    Route::group(['namespace' => 'NationalProject', 'prefix' => 'admin'], function () {
+    Route::group(['namespace' => 'NationalProject', 'prefix' => 'raduga'], function () {
         Route::get('/national-projects', [App\Http\Controllers\Admin\NationalProjectController::class, 'index'])->name('admin.natProjects.index');
         Route::get('/national-projects/create', [App\Http\Controllers\Admin\NationalProjectController::class, 'create'])->name('admin.natProjects.create');
         Route::post('/national-projects/store', [App\Http\Controllers\Admin\NationalProjectController::class, 'store'])->name('admin.natProjects.store');
@@ -251,7 +252,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => \App\Http\Middleware\Admin
 
     });
 
-    Route::group(['namespace' => 'MilitarySupport', 'prefix' => 'admin'], function () {
+    Route::group(['namespace' => 'MilitarySupport', 'prefix' => 'raduga'], function () {
         Route::get('/military-support', [App\Http\Controllers\Admin\MilitarySupportController::class, 'index'])->name('admin.militarySupport.index');
         Route::get('/military-support/create', [App\Http\Controllers\Admin\MilitarySupportController::class, 'create'])->name('admin.militarySupport.create');
         Route::post('/military-support/store', [App\Http\Controllers\Admin\MilitarySupportController::class, 'store'])->name('admin.militarySupport.store');
@@ -261,7 +262,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => \App\Http\Middleware\Admin
 
     });
 
-    Route::group(['namespace' => 'Resource', 'prefix' => 'admin'], function () {
+    Route::group(['namespace' => 'Resource', 'prefix' => 'raduga'], function () {
         Route::get('/resources', [App\Http\Controllers\Admin\ResourceController::class, 'index'])->name('admin.resources.index');
 
         Route::get('/resources/create', [App\Http\Controllers\Admin\ResourceController::class, 'create'])->name('admin.resources.create');
@@ -272,7 +273,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => \App\Http\Middleware\Admin
 
     });
 
-    Route::group(['namespace' => 'FederalAuthority', 'prefix' => 'admin'], function () {
+    Route::group(['namespace' => 'FederalAuthority', 'prefix' => 'raduga'], function () {
         Route::get('/federal-authorities', [App\Http\Controllers\Admin\FederalAuthorityController::class, 'index'])->name('admin.federalAuthorities.index');
 
         Route::get('/federal-authorities/create', [App\Http\Controllers\Admin\FederalAuthorityController::class, 'create'])->name('admin.federalAuthorities.create');
@@ -284,7 +285,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => \App\Http\Middleware\Admin
     });
 
 
-    Route::group(['namespace' => 'Antinar', 'prefix' => 'admin'], function () {
+    Route::group(['namespace' => 'Antinar', 'prefix' => 'raduga'], function () {
         Route::get('/antinar', [App\Http\Controllers\Admin\AntinarController::class, 'index'])->name('admin.antinars.index');
 
         Route::get('/antinar/create', [App\Http\Controllers\Admin\AntinarController::class, 'create'])->name('admin.antinars.create');
@@ -296,7 +297,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => \App\Http\Middleware\Admin
     });
 
 
-    Route::group(['namespace' => 'AwardPolitic', 'prefix' => 'admin'], function () {
+    Route::group(['namespace' => 'AwardPolitic', 'prefix' => 'raduga'], function () {
         Route::get('/award-politics', [App\Http\Controllers\Admin\AwardPoliticController::class, 'index'])->name('admin.awardPolitics.index');
 
         Route::get('/award-politics/create', [App\Http\Controllers\Admin\AwardPoliticController::class, 'create'])->name('admin.awardPolitics.create');
@@ -308,7 +309,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => \App\Http\Middleware\Admin
     });
 
 
-    Route::group(['namespace' => 'CivilReserve', 'prefix' => 'admin'], function () {
+    Route::group(['namespace' => 'CivilReserve', 'prefix' => 'raduga'], function () {
         Route::get('/civil-reserve', [App\Http\Controllers\Admin\CivilReserveController::class, 'index'])->name('admin.civilReserves.index');
 
         Route::get('/civil-reserve/create', [App\Http\Controllers\Admin\CivilReserveController::class, 'create'])->name('admin.civilReserves.create');
@@ -319,7 +320,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => \App\Http\Middleware\Admin
 
     });
 
-    Route::group(['namespace' => 'Supervisor', 'prefix' => 'admin'], function () {
+    Route::group(['namespace' => 'Supervisor', 'prefix' => 'raduga'], function () {
         Route::get('/supervisors', [App\Http\Controllers\Admin\SupervisorController::class, 'index'])->name('admin.supervisors.index');
 
         Route::get('/supervisors/create', [App\Http\Controllers\Admin\SupervisorController::class, 'create'])->name('admin.supervisors.create');
@@ -330,7 +331,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => \App\Http\Middleware\Admin
 
     });
 
-  Route::group(['namespace' => 'Minister', 'prefix' => 'admin'], function () {
+  Route::group(['namespace' => 'Minister', 'prefix' => 'raduga'], function () {
     Route::get('/ministers', [App\Http\Controllers\Admin\MinisterController::class, 'index'])->name('admin.ministers.index');
 
     Route::get('/ministers/create', [App\Http\Controllers\Admin\MinisterController::class, 'create'])->name('admin.ministers.create');
@@ -341,7 +342,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => \App\Http\Middleware\Admin
 
   });
 
-    Route::group(['namespace' => 'Municipality', 'prefix' => 'admin'], function () {
+    Route::group(['namespace' => 'Municipality', 'prefix' => 'raduga'], function () {
         Route::get('/municipalities', [App\Http\Controllers\Admin\MunicipalityController::class, 'index'])->name('admin.municipalities.index');
 
         Route::get('/municipalities/create', [App\Http\Controllers\Admin\MunicipalityController::class, 'create'])->name('admin.municipalities.create');
@@ -352,7 +353,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => \App\Http\Middleware\Admin
 
     });
 
-    Route::group(['namespace' => 'Agency', 'prefix' => 'admin'], function () {
+    Route::group(['namespace' => 'Agency', 'prefix' => 'raduga'], function () {
         Route::get('/agencies', [App\Http\Controllers\Admin\AgencyController::class, 'index'])->name('admin.agencies.index');
 
         Route::get('/agencies/create', [App\Http\Controllers\Admin\AgencyController::class, 'create'])->name('admin.agencies.create');
@@ -363,7 +364,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => \App\Http\Middleware\Admin
 
     });
 
-    Route::group(['namespace' => 'Mountain', 'prefix' => 'admin'], function () {
+    Route::group(['namespace' => 'Mountain', 'prefix' => 'raduga'], function () {
         Route::get('/mountains', [App\Http\Controllers\Admin\MountainController::class, 'index'])->name('admin.mountains.index');
 
         Route::get('/mountains/create', [App\Http\Controllers\Admin\MountainController::class, 'create'])->name('admin.mountains.create');
@@ -374,7 +375,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => \App\Http\Middleware\Admin
 
     });
 
-    Route::group(['namespace' => 'AgencyActivity', 'prefix' => 'admin'], function () {
+    Route::group(['namespace' => 'AgencyActivity', 'prefix' => 'raduga'], function () {
         Route::get('/agencies-activity', [App\Http\Controllers\Admin\AgencyActivityController::class, 'index'])->name('admin.agenciesActivity.index');
 
         Route::get('/agencies-activity/create', [App\Http\Controllers\Admin\AgencyActivityController::class, 'create'])->name('admin.agenciesActivity.create');
@@ -385,7 +386,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => \App\Http\Middleware\Admin
 
     });
 
-    Route::group(['namespace' => 'User', 'prefix' => 'admin'], function () {
+    Route::group(['namespace' => 'User', 'prefix' => 'raduga'], function () {
         Route::get('/users', [App\Http\Controllers\Admin\UserController::class, 'index'])->name('admin.users.index');
 
         Route::get('/users/create', [App\Http\Controllers\Admin\UserController::class, 'create'])->name('admin.users.create');

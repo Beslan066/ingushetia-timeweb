@@ -17,7 +17,6 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->append(\App\Http\Middleware\Admin::class);
-
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
