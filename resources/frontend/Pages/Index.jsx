@@ -68,7 +68,7 @@ export default function Index({
         categories={categories}
         slides={slides}
         news={news}
-        openedNews={openedNews} // Передаем данные о новости в Hero
+        openedNews={openedNews} //  данные о новости в Hero
       />
       <Vectors vectors={vectors} />
       <Districts settlements={settlements} districts={districts} />
