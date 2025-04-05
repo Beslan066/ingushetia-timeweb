@@ -51,7 +51,6 @@ class NewsController extends Controller
      */
   private function processImage($image)
   {
-    // Генерируем уникальные имена файлов
     $originalExtension = $image->getClientOriginalExtension();
     $uniqueName = Str::uuid();
 
@@ -60,10 +59,8 @@ class NewsController extends Controller
       'webp' => "news/webp/{$uniqueName}.webp"
     ];
 
-    // Сохраняем оригинальное изображение
     Storage::put($paths['original'], file_get_contents($image));
 
-    // Создаем WebP версию
     $imageInfo = getimagesize($image->path());
     $mimeType = $imageInfo['mime'];
 
@@ -73,6 +70,7 @@ class NewsController extends Controller
         break;
       case 'image/png':
         $sourceImage = imagecreatefrompng($image->path());
+        imagepalettetotruecolor($sourceImage);
         break;
       case 'image/gif':
         $sourceImage = imagecreatefromgif($image->path());
@@ -81,12 +79,33 @@ class NewsController extends Controller
         throw new \Exception('Unsupported image type');
     }
 
-    // Сохраняем WebP в временный файл
+    // Удаление EXIF для JPEG
+    if ($mimeType === 'image/jpeg') {
+      $exifless = imagecreatetruecolor(imagesx($sourceImage), imagesy($sourceImage));
+      imagecopy($exifless, $sourceImage, 0, 0, 0, 0, imagesx($sourceImage), imagesy($sourceImage));
+      imagedestroy($sourceImage);
+      $sourceImage = $exifless;
+    }
+
     $tempWebpPath = tempnam(sys_get_temp_dir(), 'webp');
-    imagewebp($sourceImage, $tempWebpPath, 90);
+
+    // Настройка сжатия
+    $hasTransparency = ($mimeType === 'image/png' && imagecolortransparent($sourceImage) >= 0);
+
+    if ($hasTransparency) {
+      imagewebp($sourceImage, $tempWebpPath, 100); // Lossless для прозрачности
+    } else {
+      imageinterlace($sourceImage, 1); // Прогрессивный WebP
+      imagewebp($sourceImage, $tempWebpPath, 85); // Качество 85%
+    }
+
+    // Дополнительная оптимизация через cwebp
+    if (exec('which cwebp')) {
+      exec("cwebp -q 85 -m 6 -pass 3 -mt -quiet {$tempWebpPath} -o {$tempWebpPath}");
+    }
+
     imagedestroy($sourceImage);
 
-    // Загружаем WebP в хранилище
     Storage::put($paths['webp'], file_get_contents($tempWebpPath));
     unlink($tempWebpPath);
 
