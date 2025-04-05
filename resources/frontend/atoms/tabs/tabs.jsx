@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import TabItem from "#/atoms/tabs/item.jsx";
-import "./tabs.css"; // Создайте новый файл стилей
+import "./tabs.css";
 
 export default function Tabs({ tabs, selected, onTab }) {
   const tabsRef = useRef(null);

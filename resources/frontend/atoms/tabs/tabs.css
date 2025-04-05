@@ -25,9 +25,9 @@
   flex-wrap: nowrap;
 }
 .tabs-container {
-  position: relative;
-  display: flex;
-  align-items: center;
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
 }
 
 .scroll-button {
@@ -69,15 +69,15 @@
 }
 
 .tabs {
-  display: flex;
-  width: 100%;
-  overflow-x: hidden;
-  scroll-behavior: smooth;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-  gap: 8px;
+  display: flex !important;
+  width: 100% !important;
+  overflow-x: hidden !important;
+  scroll-behavior: smooth !important;
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+  gap: 8px !important;
 }
 
 .tabs::-webkit-scrollbar {
-  display: none;
+  display: none !important;
 }
