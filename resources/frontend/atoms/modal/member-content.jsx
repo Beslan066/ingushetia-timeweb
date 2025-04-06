@@ -10,7 +10,7 @@ export default function MemberContent({ name, position, avatar, content, contact
             <h2 className="member__title">{ name }</h2>
             <div className="member__position">{ position }</div>
             <div className="member__image">
-              <img src={ `${ avatar }` } alt=""/>
+              <img src={ `/storage/${avatar}` } alt=""/>
             </div>
           </div>
           <div className="content">
