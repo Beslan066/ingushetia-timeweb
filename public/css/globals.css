@@ -10,7 +10,7 @@
   background: linear-gradient(45deg, #077c50, #07a267);
 }
 
-html {
+.modal {
   scrollbar-color: #077c50 #07a267 !important;
 }
 

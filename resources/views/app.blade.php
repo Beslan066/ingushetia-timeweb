@@ -6,8 +6,8 @@
         <meta name="robots" content="index, follow" />
         <meta name="keywords" content="Республика, ингушетия, новости, культура, история, фотографии, видео, институты власти" />
         <meta name="description" content="Официальный сайт Республики Ингушетия" />
-
-
+        <link rel="stylesheet" href="{{asset('css/reset.css')}}">
+        <link rel="stylesheet" href="{{asset('css/variables.css')}}">
         <title inertia>{{ config('app.name', 'Республика Ингушетия - официальный сайт') }}</title>
 
         <!-- Fonts -->
