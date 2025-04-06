@@ -23,7 +23,8 @@ class NewsController extends Controller
       ->with('category')
       ->where('main_material', 1)
       ->where('agency_id', 5)
-      ->take(10)
+      ->orderBy('published_at', 'desc')
+      ->take(7)
       ->get();
     $categories = Category::query()->take(10)->get();
 

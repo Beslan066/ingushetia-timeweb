@@ -48,7 +48,7 @@ class HomeController extends Controller
     ->where('main_material', 1)
     ->where('agency_id', 5)
     ->orderBy('published_at', 'desc')
-    ->take(10)
+    ->take(7)
     ->get();
 
       $posts = News::query()
