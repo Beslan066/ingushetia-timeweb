@@ -81,22 +81,26 @@ class MinisterController extends Controller
      * Update the specified resource in storage.
      */
     public function update(UpdateRequest $request, Minister $minister)
-    {
-        $data = $request->validated();
+{
+    $data = $request->validated();
 
-        if (isset($data['image_main'])) {
-          // сохраняем новое изображение и обновляем ссылку
-          $data['image_main'] = Storage::put('images', $data['image_main']);
-          $data['image_main'] = str_replace('images/', '', $data['image_main']);
-        } else {
-          // если изображение не загружено, используем старое значение
-          $data['image_main'] = $minister->image_main;
+    if (isset($data['image_main'])) {
+        // Удаляем старое изображение, если оно существует
+        if ($minister->image_main) {
+            Storage::delete($minister->image_main);
         }
-
-        $minister->update($data);
-
-        return redirect()->route('admin.ministers.index')->with('success', 'Minister updated successfully');
+        
+        // сохраняем новое изображение
+        $data['image_main'] = Storage::put('images', $data['image_main']);
+    } else {
+        // если изображение не загружено, используем старое значение
+        $data['image_main'] = $minister->image_main;
     }
+
+    $minister->update($data);
+
+    return redirect()->route('admin.ministers.index')->with('success', 'Minister updated successfully');
+}
 
     /**
      * Remove the specified resource from storage.

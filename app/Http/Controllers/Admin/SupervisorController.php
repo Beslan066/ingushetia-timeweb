@@ -85,12 +85,16 @@ class SupervisorController extends Controller
         $data = $request->validated();
 
         if (isset($data['image_main'])) {
-          // сохраняем новое изображение и обновляем ссылку
-          $data['image_main'] = Storage::put('images', $data['image_main']);
-          $data['image_main'] = str_replace('images/', '', $data['image_main']);
+            // Удаляем старое изображение, если оно существует
+            if ($supervisor->image_main) {
+                Storage::delete($supervisor->image_main);
+            }
+            
+            // сохраняем новое изображение
+            $data['image_main'] = Storage::put('images', $data['image_main']);
         } else {
-          // если изображение не загружено, используем старое значение
-          $data['image_main'] = $supervisor->image_main;
+            // если изображение не загружено, используем старое значение
+            $data['image_main'] = $supervisor->image_main;
         }
         $supervisor->update($data);
 
