@@ -1,18 +1,16 @@
+import React, { lazy, Suspense } from 'react';
 import AppHeader from "#/molecules/header/header.jsx";
 import Hero from "#/organisms/hero/hero.jsx";
 import './index.css';
-import React from "react";
-import Vectors from "#/organisms/vectors/vectors.jsx";
-import Districts from "#/organisms/districts/districts.jsx";
-import MediaCollection from "#/molecules/news/mediaCollection.jsx";
-import Mountains from "#/molecules/mountains/mountains.jsx";
-import Documents from "#/organisms/documents/documents.jsx";
-import ExternalResources from "#/organisms/documents/external-resources.jsx";
-import AppFooter from "#/organisms/footer/footer.jsx";
-import AnniversaryBanner from "#/atoms/anniversary-banner/banner.jsx";
-import AgencyNews from "#/molecules/news/agency-news.jsx";
 
-import { usePage } from '@inertiajs/inertia-react';
+// Ленивая загрузка тяжелых компонентов
+const Vectors = lazy(() => import("#/organisms/vectors/vectors.jsx"));
+const Districts = lazy(() => import("#/organisms/districts/districts.jsx"));
+const MediaCollection = lazy(() => import("#/molecules/news/mediaCollection.jsx"));
+const Mountains = lazy(() => import("#/molecules/mountains/mountains.jsx"));
+const ExternalResources = lazy(() => import("#/organisms/documents/external-resources.jsx"));
+const AppFooter = lazy(() => import("#/organisms/footer/footer.jsx"));
+const AnniversaryBanner = lazy(() => import("#/atoms/anniversary-banner/banner.jsx"));
 
 export default function Index({
                                 mainPosts: slides,
@@ -23,15 +21,9 @@ export default function Index({
                                 media,
                                 mountains,
                                 resources,
-                                agencies,
-                                agencyNews,
-                                anniversary,
-                                showNews: openedNews, // Данные о новости, переданные из контроллера
+                                showNews: openedNews,
+                                anniversary
                               }) {
-  const url = new URL(window.location.href);
-  if (url.searchParams.has('anniversary')) {
-    localStorage.setItem('anniversary', JSON.stringify(!anniversary));
-  }
   const vectors = [
     {
       image: '/img/content/vectors/vector1.webp',
@@ -66,15 +58,18 @@ export default function Index({
         categories={categories}
         slides={slides}
         news={news}
-        openedNews={openedNews} //  данные о новости в Hero
+        openedNews={openedNews}
       />
-      <Vectors vectors={vectors} />
-      <Districts settlements={settlements} districts={districts} />
-      <MediaCollection media={media} />
-      {anniversary ? <AnniversaryBanner /> : ''}
-      <Mountains mountains={mountains} />
-      <ExternalResources resources={resources} />
-      <AppFooter />
+
+      <Suspense fallback={<div className="loader">Загрузка...</div>}>
+        <Vectors vectors={vectors} />
+        <Districts settlements={settlements} districts={districts} />
+        <MediaCollection media={media} />
+        {anniversary && <AnniversaryBanner />}
+        <Mountains mountains={mountains} />
+        <ExternalResources resources={resources} />
+        <AppFooter />
+      </Suspense>
     </>
   );
 }
