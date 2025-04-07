@@ -70,14 +70,14 @@ export default function AppHeader({ anniversary, logo, title }) {
         <div className="top-menu__wrapper">
           <div className="top-menu__site-name">
             { anniversary ? <AnniversaryLogoImage/> : <LogoImage logo={logo ?? "/img/logo.svg"}/> }
-            <Link className={ `top-menu__title ${ anniversary ? 'top-menu__title--anniversary' : '' }` } href="/">
+            <a className={ `top-menu__title ${ anniversary ? 'top-menu__title--anniversary' : '' }` } href="/">
               <div className="top-menu__name">
                 <h1>
                   { title ?? 'Республика Ингушетия' }
                 </h1>
               </div>
               <div className="top-menu__caption">Официальный портал</div>
-            </Link>
+            </a>
           </div>
 
           <div className="top-menu__actions">
@@ -154,35 +154,35 @@ export default function AppHeader({ anniversary, logo, title }) {
       <div className={ `sidebar-menu sidebar-menu--${menuOpened ? 'opened' : 'closed'}` }>
         <div className="sidebar-menu__container">
           <ul className="menu main-menu">
-            <li className="menu-item"><Link href="/news">Новости</Link></li>
-            <li className="menu-item"><Link href="/region">Регион</Link></li>
+            <li className="menu-item"><a href="/news">Новости</a></li>
+            <li className="menu-item"><a href="/region">Регион</a></li>
             <li className="menu-item">
               <button onClick={ e => e.target.parentNode.classList.toggle('menu-item--opened') }>Органы власти</button>
               <ul className="submenu">
-                <li className="menu-item"><Link href="/president">Глава Республики</Link></li>
-                <li className="menu-item"><Link href="/government">Правительство</Link></li>
-                <li className="menu-item"><Link href="#">Федеральные органы власти</Link></li>
-                <li className="menu-item"><Link href={ route('agencies.index') }>Министерства</Link></li>
+                <li className="menu-item"><a href="/president">Глава Республики</a></li>
+                <li className="menu-item"><a href="/government">Правительство</a></li>
+                <li className="menu-item"><a href="#">Федеральные органы власти</a></li>
+                <li className="menu-item"><a href={ route('agencies.index') }>Министерства</a></li>
               </ul>
             </li>
-            <li className="menu-item"><Link href={ route('media') }>Медиа</Link></li>
-            <li className="menu-item"><Link href="/documents">Документы</Link></li>
-            <li className="menu-item"><Link href={ route('contacts') }>Контакты</Link></li>
+            <li className="menu-item"><a href={ route('media') }>Медиа</a></li>
+            <li className="menu-item"><a href="/documents">Документы</a></li>
+            <li className="menu-item"><a href={ route('contacts') }>Контакты</a></li>
           </ul>
           <ul className="menu additional-menu">
-            <li className="menu-item"><Link >Государственная символика</Link></li>
-            <li className="menu-item"><Link href={route('judicialAuthorities.index')}>Органы судебной системы РИ</Link></li>
-            <li className="menu-item"><Link href={route('awardPolitics.index')}>Наградная политика </Link></li>
-            <li className="menu-item"><Link href={route('civilServices.index')}>Государственная служба</Link></li>
-            <li className="menu-item"><Link href="">Культура и история</Link></li>
-            <li className="menu-item"><Link href={route('gloryTour')}>Виртуальный тур по Залу славы</Link></li>
-            <li className="menu-item"><Link href={route('federalAuthorities.index')}>Территориальные органы фед.органов власти</Link></li>
-            <li className="menu-item"><Link href={route('antinars.index')}>Антинаркотическая комиссия</Link></li>
-            <li className="menu-item"><Link href={route('smi.index')}>Республиканские СМИ</Link></li>
-            <li className="menu-item"><Link href={route('homeManagmentReserves.index')}>Резерв управленческих кадров</Link></li>
-            <li className="menu-item"><Link href={route('konkurs')}>Конкурсы в органах исполнительной власти</Link></li>
-            <li className="menu-item"><Link href={route('anticorruptions')}>Противодействие коррупции</Link></li>
-            <li className="menu-item"><Link href="/military-support">Поддержка семей военнослужащих</Link></li>
+            <li className="menu-item"><a >Государственная символика</a></li>
+            <li className="menu-item"><a href={route('judicialAuthorities.index')}>Органы судебной системы РИ</a></li>
+            <li className="menu-item"><a href={route('awardPolitics.index')}>Наградная политика </a></li>
+            <li className="menu-item"><a href={route('civilServices.index')}>Государственная служба</a></li>
+            <li className="menu-item"><a href="">Культура и история</a></li>
+            <li className="menu-item"><a href={route('gloryTour')}>Виртуальный тур по Залу славы</a></li>
+            <li className="menu-item"><a href={route('federalAuthorities.index')}>Территориальные органы фед.органов власти</a></li>
+            <li className="menu-item"><a href={route('antinars.index')}>Антинаркотическая комиссия</a></li>
+            <li className="menu-item"><a href={route('smi.index')}>Республиканские СМИ</a></li>
+            <li className="menu-item"><a href={route('homeManagmentReserves.index')}>Резерв управленческих кадров</a></li>
+            <li className="menu-item"><a href={route('konkurs')}>Конкурсы в органах исполнительной власти</a></li>
+            <li className="menu-item"><a href={route('anticorruptions')}>Противодействие коррупции</a></li>
+            <li className="menu-item"><a href="/military-support">Поддержка семей военнослужащих</a></li>
           </ul>
         </div>
       </div>
