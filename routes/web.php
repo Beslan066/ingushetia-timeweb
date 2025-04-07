@@ -38,7 +38,7 @@ Route::group(['middleware' => 'auth.basic'], function () {
 
 
 
-
+  Route::get('/president', [HomeController::class, 'president'])->name('president');
   Route::prefix('government')->group(function () {
     Route::get('/', [GovernmentController::class, 'government'])->name('government');
     Route::get('/structure', [GovernmentController::class, 'structure'])->name('structure');

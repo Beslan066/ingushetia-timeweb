@@ -89,7 +89,7 @@ export default function AppHeader({ anniversary, logo, title }) {
                   <button onClick={ e => e.target.parentNode.classList.toggle('menu-item--opened') }>Органы власти
                   </button>
                   <ul className="submenu">
-                    <li className="menu-item"><Link href="/government">Глава Республики</Link></li>
+                    <li className="menu-item"><Link href="/president">Глава Республики</Link></li>
                     <li className="menu-item"><Link href="/government/">Правительство</Link></li>
                     <li className="menu-item"><Link href="#">Федеральные органы власти</Link></li>
                     <li className="menu-item"><Link href={ route('agencies.index') }>Министерства</Link></li>
@@ -159,8 +159,8 @@ export default function AppHeader({ anniversary, logo, title }) {
             <li className="menu-item">
               <button onClick={ e => e.target.parentNode.classList.toggle('menu-item--opened') }>Органы власти</button>
               <ul className="submenu">
-                <li className="menu-item"><Link href="/government">Глава Республики</Link></li>
-                <li className="menu-item"><Link href="/government/directories">Правительство</Link></li>
+                <li className="menu-item"><Link href="/president">Глава Республики</Link></li>
+                <li className="menu-item"><Link href="/government">Правительство</Link></li>
                 <li className="menu-item"><Link href="#">Федеральные органы власти</Link></li>
                 <li className="menu-item"><Link href={ route('agencies.index') }>Министерства</Link></li>
               </ul>

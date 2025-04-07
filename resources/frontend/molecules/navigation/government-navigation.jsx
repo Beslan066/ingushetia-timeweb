@@ -13,7 +13,7 @@ export default function GovernmentNavigation() {
           {
             component.startsWith('Government/Government') && (
               <ul>
-                <li><Link className={ `regions-nav__link ${ component === 'Government/GovernmentStructure' ? 'active' : '' }` } href="/government/structure">Состав правительства</Link></li>
+                <li><Link className={ `regions-nav__link ${ component === 'Government/President' ? 'active' : '' }` } href="/government/structure">Состав правительства</Link></li>
                 <li><Link className={ `regions-nav__link ${ component === 'Government/GovernmentAbilities' ? 'active' : '' }` } href="/government/abilities">Полномочия правительства</Link></li>
                 <li><Link className={ `regions-nav__link ${ component === 'Government/GovernmentSessions' ? 'active' : '' }` } href="/government/sessions">Заседания правительства</Link></li>
                 <li><Link className={ `regions-nav__link ${ component === 'Government/GovernmentPlan' ? 'active' : '' }` } href="/government/plans">План работы правительства</Link></li>
@@ -23,7 +23,7 @@ export default function GovernmentNavigation() {
           }
         </li>
         <li><Link className={`regions-nav__link ${ component === 'Government/Directories' ? 'active' : ''}`} href="/government/directories">Аппарат правительства</Link></li>
-        {/*<li><Link className={ `regions-nav__link ${ component === 'Government/GovernmentStructure' ? 'active' : ''}` } href="/government/structure">Аппарат правительства</Link></li>*/ }
+        {/*<li><Link className={ `regions-nav__link ${ component === 'Government/President' ? 'active' : ''}` } href="/government/structure">Аппарат правительства</Link></li>*/ }
         {/*<li><Link className={ `regions-nav__link ${ component === 'Government/Projects' ? 'active' : ''}` } href="/government/projects">Проектная деятельность</Link></li>*/}
         {/*<li><Link className={ `regions-nav__link ${ component === 'Government/GovernmentEntities' ? 'active' : ''}` } href="/government/entities">Органы исполнительной власти</Link></li>*/}
         {/*<li><Link className={ `regions-nav__link ${ component === 'Government/Work' ? 'active' : ''}` } href="/government/work">Государственная служба</Link></li>*/}

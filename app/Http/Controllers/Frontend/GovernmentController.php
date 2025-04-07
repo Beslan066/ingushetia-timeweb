@@ -18,7 +18,7 @@ class GovernmentController extends Controller
 
     $ministers = Minister::query()->whereNot('priority', 1)->get();
 
-    return Inertia::render('Government/GovernmentStructure', ['ministers' => $ministers]);
+    return Inertia::render('Government/President', ['ministers' => $ministers]);
   }
   public function abilities()
   {

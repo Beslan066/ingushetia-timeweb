@@ -332,8 +332,6 @@ class HomeController extends Controller
     ]);
   }
 
-
-
   public function civilService(Request $request) {
     $civilServiceTypes = CivilService::getTypes();
     $civilServiceTypes = collect($civilServiceTypes)->mapWithKeys(fn($type) => [$type['id'] => $type])->toArray();
@@ -358,5 +356,11 @@ class HomeController extends Controller
       'civilServiceTypes' => array_values($civilServiceTypes), // Передаём типы наград
     ]);
 }
+
+  public function president()
+  {
+    return Inertia::render('President/President');
+
+  }
 
 }

@@ -42,7 +42,7 @@ export default function MunicipalityContent({ municipality }) {
             </div>
             <div className="head-person-info">
               <h3>{ municipality?.supervisor?.name }</h3>
-              <span className="supervisor__position">Глава г.Магас</span>
+              <span className="supervisor__position">{municipality?.supervisor.position}</span>
               <div className={ 'head-bio' } dangerouslySetInnerHTML={ { __html: municipality?.supervisor?.bio } }></div>
             </div>
           </div>
