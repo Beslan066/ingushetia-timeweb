@@ -90,7 +90,7 @@ export default function AppHeader({ anniversary, logo, title }) {
                   </button>
                   <ul className="submenu">
                     <li className="menu-item"><Link href="/president">Глава Республики</Link></li>
-                    <li className="menu-item"><Link href="/government/">Правительство</Link></li>
+                    <li className="menu-item"><Link href="/government">Правительство</Link></li>
                     <li className="menu-item"><Link href="#">Федеральные органы власти</Link></li>
                     <li className="menu-item"><Link href={ route('agencies.index') }>Министерства</Link></li>
                   </ul>

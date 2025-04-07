@@ -1,4 +1,4 @@
-import './government.css'
+import './president.css'
 import AppHeader from "#/molecules/header/header.jsx";
 import PageTitle from "#/atoms/texts/PageTitle.jsx";
 import React, { useState } from "react";
