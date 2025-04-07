@@ -65,7 +65,7 @@ export default function Hero({ categories, slides, news, showNews }) {
     <>
       <div className="hero-wrapper">
         <div className="hero__slider-wrapper">
-          {/*<MainSlider slides={slides} onPost={handlePost} />*/}
+          <MainSlider slides={slides} onPost={handlePost} />
           <div className="news-wrapper">
             <Tabs
               tabs={categories}
