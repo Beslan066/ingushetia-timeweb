@@ -19,11 +19,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
   <link rel="icon" href="{{ asset('img/favicon.ico') }}" type="image/x-icon">
 
-  @routes
+
   @inertiaHead
 </head>
 <body class="body">
 @inertia
+
+
+@routes
 
 <!-- Отложенная загрузка скриптов -->
 @viteReactRefresh

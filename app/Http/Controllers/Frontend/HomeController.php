@@ -33,8 +33,8 @@ class HomeController extends Controller
 {
   public function index(Request $request)
   {
-    $categories = Category::all()->toArray();
-    $resources = Resource::query()->where('agency_id', 5)->get();
+    $categories = Category::select('title')->get()->toArray();
+    $resources = Resource::query()->where('agency_id', 5)->select('title', 'link')->get();
     $photoReportages = PhotoReportage::query()->take(4)->orderBy('published_at', 'desc')->get();
     $videos = Video::query()->take(4)->orderBy('published_at', 'desc')->get();
 
