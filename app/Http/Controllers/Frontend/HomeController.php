@@ -24,49 +24,104 @@ use App\Models\Konkurs;
 use App\Models\FederalAuthority;
 use App\Models\AwardPolitic;
 use App\Models\CivilService;
-
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Redis;
 
 class HomeController extends Controller
 {
   public function index(Request $request)
   {
-    $categories = Category::select('id', 'title')->get()->toArray();
-    $resources = Resource::query()->where('agency_id', 5)->select('title', 'link')->get();
-    $photoReportages = PhotoReportage::query()->take(4)->orderBy('published_at', 'desc')->get();
-    $videos = Video::query()->take(4)->orderBy('published_at', 'desc')->get();
+    // Текущее время кэша (в секундах)
+    $cacheTimeShort = 300;   // 5 минут
+    $cacheTimeLong = 3600;   // 1 час
 
-    $cities = Municipality::query()->with('supervisor')->where('type', 2)->get();
-    $districts = Municipality::query()->with('supervisor')->where('type', 20)->get();
 
-    $mountains = Mountain::with('reportage')->get();
 
-    $mainPosts = News::query()
-    ->with(['category:id,title', 'video:id,url', 'reportage:id,title'])
-    ->where('main_material', 1)
-    ->where('agency_id', 5)
-    ->orderBy('published_at', 'desc')
-    ->take(7)
-    ->get();
 
-      $posts = News::query()
-      ->with('category', 'video', 'reportage')
-      ->where('main_material', 0)
-      ->where('agency_id', 5)
-      ->orderBy('published_at', 'desc')
-      ->paginate(6);
 
-    $postsIds = $posts->pluck('category_id');
+    //Чтобы обновить данные используем php artisan tinker
+    // Cache::forget('Значение ключа');
 
-    $related = News::query()
-    ->with('category')
-    ->whereIn('category_id', $postsIds)
-    ->take(30)
-    ->orderBy('published_at', 'desc')
-    ->get();
 
+    // Ключи кеша
+    $cacheKeys = [
+      'categories' => 'categories_data',
+      'resources' => 'resources_data_agency_5',
+      'photoReportages' => 'photo_reportages_last_4',
+      'videos' => 'videos_last_4',
+      'cities' => 'municipalities_type_2',
+      'districts' => 'municipalities_type_20',
+      'mountains' => 'mountains_with_reportage',
+      'mainPosts' => 'main_posts_agency_5',
+      'posts' => 'news_last_12_agency_5',
+      'related' => 'related_news_for_last_6_agency_5',
+    ];
+
+    $categories = Cache::remember($cacheKeys['categories'], $cacheTimeLong, function () {
+      return Category::select('id', 'title')->get()->toArray();
+    });
+
+    $resources = Cache::remember($cacheKeys['resources'], $cacheTimeLong, function () {
+      return Resource::query()->where('agency_id', 5)->select('title', 'link')->get();
+    });
+
+    $photoReportages = Cache::remember($cacheKeys['photoReportages'], $cacheTimeShort, function () {
+      return PhotoReportage::query()->take(4)->orderBy('published_at', 'desc')->get();
+    });
+
+    $videos = Cache::remember($cacheKeys['videos'], $cacheTimeShort, function () {
+      return Video::query()->take(4)->orderBy('published_at', 'desc')->get();
+    });
+
+    $cities = Cache::remember($cacheKeys['cities'], $cacheTimeLong, function () {
+      return Municipality::query()->with('supervisor')->where('type', 2)->get();
+    });
+
+    $districts = Cache::remember($cacheKeys['districts'], $cacheTimeLong, function () {
+      return Municipality::query()->with('supervisor')->where('type', 20)->get();
+    });
+
+    $mountains = Cache::remember($cacheKeys['mountains'], $cacheTimeLong, function () {
+      return Mountain::with('reportage')->get();
+    });
+
+    $mainPosts = Cache::remember($cacheKeys['mainPosts'], $cacheTimeShort, function () {
+      return News::query()
+        ->with(['category:id,title', 'video:id,url', 'reportage:id,title'])
+        ->where('main_material', 1)
+        ->where('agency_id', 5)
+        ->orderBy('published_at', 'desc')
+        ->take(7)
+        ->get();
+    });
+
+    // Кешируем обычные посты (без пагинации)
+    $posts = Cache::remember($cacheKeys['posts'], $cacheTimeShort, function () {
+      return News::query()
+        ->with('category', 'video', 'reportage')
+        ->where('main_material', 0)
+        ->where('agency_id', 5)
+        ->orderBy('published_at', 'desc')
+        ->take(6)
+        ->get();
+    });
+
+    // Кешируем связанные посты
+    $related = Cache::remember($cacheKeys['related'], $cacheTimeShort, function () use ($posts) {
+      $postsIds = $posts->pluck('category_id');
+      return News::query()
+        ->with('category')
+        ->whereIn('category_id', $postsIds)
+        ->orderBy('published_at', 'desc')
+        ->take(30)
+        ->get();
+    });
+
+    // Привязываем related к каждому посту
     $posts->map(function ($post) use ($related) {
       $filtered = $related->where('category_id', $post->category_id)->whereNotIn('id', [$post->id])->take(3);
       $post->relatedPosts = $filtered;
@@ -79,17 +134,16 @@ class HomeController extends Controller
         ->with(['category', 'video', 'reportage'])
         ->firstOrFail();
 
-      // Получаем связанные новости для открытого поста
+      // Связанные новости для открытого поста
       $openedNews->relatedPosts = News::where('category_id', $openedNews->category_id)
-        ->where('id', '!=', $openedNews->id)  // Исключаем сам пост
+        ->where('id', '!=', $openedNews->id)
         ->select(['id', 'title', 'url', 'category_id', 'image_main', 'published_at'])
         ->limit(3)
         ->get();
     }
 
-    //  Для обычного запроса отдаем страницу
     return Inertia::render('Index', [
-      'posts' => $posts->items(),
+      'posts' => $posts,
       'categories' => $categories,
       'mainPosts' => $mainPosts,
       'resources' => $resources,
@@ -224,8 +278,8 @@ class HomeController extends Controller
   }
 
 
-
-  public function konkurs() {
+  public function konkurs()
+  {
 
     $konkursTypes = Konkurs::getTypes();
     $konkursTypes = collect($konkursTypes)->mapWithKeys(function ($type) {
@@ -243,11 +297,14 @@ class HomeController extends Controller
     ]);
   }
 
-  public function simvols() {
+  public function simvols()
+  {
 
     return Inertia::render('Simvols/Simvols');
   }
-  public function gloryTour() {
+
+  public function gloryTour()
+  {
 
     return Inertia::render('GloryTours/GloryTour');
   }
@@ -269,12 +326,14 @@ class HomeController extends Controller
     return Inertia::render('ManagmentReserves/ManagmentReserve', ['documents' => $documents]);
   }
 
-  public function judicialAuthorities() {
+  public function judicialAuthorities()
+  {
 
     return Inertia::render('JudicialAuthorities/JudicialAuthority');
   }
 
-  public function federalAuthorities() {
+  public function federalAuthorities()
+  {
 
 
     $federalAuthorities = FederalAuthority::all();
@@ -282,7 +341,8 @@ class HomeController extends Controller
     return Inertia::render('FederalAuthorities/FederalAuthority', compact('federalAuthorities'));
   }
 
-  public function antinar() {
+  public function antinar()
+  {
 
 
     $documentTypes = Antinar::getTypes();
@@ -301,7 +361,8 @@ class HomeController extends Controller
 
   }
 
-  public function smi() {
+  public function smi()
+  {
 
     return Inertia::render('Smi/Smi');
   }
@@ -333,7 +394,8 @@ class HomeController extends Controller
     ]);
   }
 
-  public function civilService(Request $request) {
+  public function civilService(Request $request)
+  {
     $civilServiceTypes = CivilService::getTypes();
     $civilServiceTypes = collect($civilServiceTypes)->mapWithKeys(fn($type) => [$type['id'] => $type])->toArray();
 
@@ -356,7 +418,7 @@ class HomeController extends Controller
       'documents' => $documents,
       'civilServiceTypes' => array_values($civilServiceTypes), // Передаём типы наград
     ]);
-}
+  }
 
   public function president()
   {

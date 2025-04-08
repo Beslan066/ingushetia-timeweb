@@ -6,12 +6,14 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "ext-redis": "*",
         "inertiajs/inertia-laravel": "^1.0",
         "intervention/image": "^3.11",
         "laravel/framework": "^11.0",
         "laravel/sanctum": "^4.0",
         "laravel/telescope": "^5.5",
         "laravel/tinker": "^2.9",
+        "predis/predis": "^2.0",
         "tightenco/ziggy": "^2.0"
     },
     "require-dev": {

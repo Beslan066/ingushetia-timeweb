@@ -8,8 +8,11 @@ use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\NewsController;
 use App\Http\Controllers\Frontend\RegionController;
 use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+
+
 
 Route::group(['middleware' => 'auth.basic'], function () {
   Route::get('/', [HomeController::class, 'index'])->name('home');

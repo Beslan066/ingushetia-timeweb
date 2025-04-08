@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Redis;
 
 class Municipality extends Model
 {
@@ -48,4 +49,17 @@ class Municipality extends Model
     public  function supervisor() {
         return $this->belongsTo(Supervisor::class, 'supervisor_id', 'id');
     }
+
+    protected static function booted()
+{
+    static::saved(function ($model) {
+        // Очищаем кеш при сохранении
+        Redis::del('photo_reportages_last_4', 'videos_last_4', 'main_posts_agency_5');
+    });
+
+    static::deleted(function ($model) {
+        // Очищаем кеш при удалении
+        Redis::del('photo_reportages_last_4', 'videos_last_4', 'main_posts_agency_5');
+    });
+}
 }
