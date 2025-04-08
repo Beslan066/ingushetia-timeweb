@@ -23,7 +23,7 @@ class StoreRequest extends FormRequest
     {
         return [
             'title' => 'required|string',
-            'file' => 'required|file|mimes:pdf,docx,xlsx',
+            'file' => 'required|file|mimes:pdf,docx,xlsx,doc',
             'type' => 'required|integer',
             'published_at' => 'required|date_format:Y-m-d\TH:i',
             'agency_id' => 'required',

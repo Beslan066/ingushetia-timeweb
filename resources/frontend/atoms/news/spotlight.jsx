@@ -12,9 +12,9 @@ export default function Spotlight({ id, date, category, title, url, onPost, hasV
       <div className="spotlight__keys">
         <div className="spotlight__date">{formattedDate}</div>
         {categoryId &&
-          <Link href={route('posts.by.tag', categoryId)}>
+          <a href={route('posts.by.tag', categoryId)}>
           <div className="spotlight__category">{category}</div>
-          </Link>
+          </a>
         }
         {hasVideo ? <div className="spotlight__video"><VideoIcon /></div> : ""}
       </div>
