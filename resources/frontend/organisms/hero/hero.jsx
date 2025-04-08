@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { usePage, router } from "@inertiajs/react"; // Важно: используем router вместо Inertia
+import { usePage, router } from "@inertiajs/react";
 import MainSlider from "#/molecules/slider/slider.jsx";
 import Tabs from "#/atoms/tabs/tabs.jsx";
 import News from "#/molecules/news/news.jsx";
@@ -16,33 +16,29 @@ export default function Hero({ categories, slides, news, showNews }) {
   const [currentPost, setCurrentPost] = useState(showNews || null);
   const [selectedCategory, setSelectedCategory] = useState(null);
 
-  // Логирование для отладки
   useEffect(() => {
     console.log('Selected category:', selectedCategory);
   }, [selectedCategory]);
 
   const onCategorySwitch = (categoryId) => {
-    setSelectedCategory(categoryId !== null ? Number(categoryId) : null);
+    setSelectedCategory(categoryId !== null ? String(categoryId) : null);
   };
 
-  // Фильтрация новостей по категории
   const filteredArticles = selectedCategory !== null
-    ? news.filter(post => post.category_id === selectedCategory)
+    ? news.filter(post => String(post.category_id) === String(selectedCategory))
     : news;
 
-  // Открытие поста в модальном окне (без перезагрузки)
   const handlePost = (post) => {
     router.get(`/news/${post.url}`, {}, {
       preserveScroll: true,
-      only: ['showNews'], // Загружаем только showNews из контроллера
+      only: ['showNews'],
       onSuccess: (page) => {
-        setCurrentPost(page.props.showNews); // Обновляем пост
-        setIsModalOpen(true); // Открываем модалку
+        setCurrentPost(page.props.showNews);
+        setIsModalOpen(true);
       }
     });
   };
 
-  // Следим за showNews (если пришел с сервера — открываем)
   useEffect(() => {
     if (props.showNews) {
       setCurrentPost(props.showNews);
@@ -50,11 +46,10 @@ export default function Hero({ categories, slides, news, showNews }) {
     }
   }, [props.showNews]);
 
-  // Закрытие модального окна
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setCurrentPost(null);
-    window.history.pushState({}, "", "/"); // Сброс URL (без перезагрузки)
+    window.history.pushState({}, "", "/");
   };
 
   if (!categories || categories.length === 0) {

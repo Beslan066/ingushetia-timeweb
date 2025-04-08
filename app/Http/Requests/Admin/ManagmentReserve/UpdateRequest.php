@@ -25,7 +25,6 @@ class UpdateRequest extends FormRequest
             'title' => 'required|string',
             'file' => 'nullable|file|mimes:pdf,docx,doc',
             'type' => 'nullable|integer',
-
             'published_at' => 'required|date_format:Y-m-d\TH:i',
             'agency_id' => 'required',
         ];

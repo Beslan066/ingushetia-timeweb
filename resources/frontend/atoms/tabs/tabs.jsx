@@ -58,7 +58,7 @@ export default function Tabs({ tabs, selected, onTab }) {
           <TabItem
             key={tab.id}
             title={tab.title}
-            active={tab.id === selected}
+            active={String(tab.id) === String(selected)}  // Приводим оба значения к строке
             id={tab.id}
             onTab={onTab}
           />

@@ -16,6 +16,10 @@
                                 <input class="form-control form-control-lg mb-3" type="text" placeholder="Введите заголовок" name="title">
                             </div>
 
+                            @error('title')
+                            <div class="text-danger">{{ $message }}</div>
+                            @enderror
+
 
 
                             <div class="form-group w-100 d-flex align-items-center">

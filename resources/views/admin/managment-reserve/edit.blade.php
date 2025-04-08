@@ -6,7 +6,7 @@
         <div class="col-12">
             <div class="card">
 
-                <form action="{{route('admin.managmentReserve.update', $managmentReserve->id)}}" method="post" enctype="multipart/form-data">
+                <form action="{{route('admin.managmentReserves.update', $managmentReserve->id)}}" method="post" enctype="multipart/form-data">
                     @csrf
                     @method('patch')
                     <div class="card-body">

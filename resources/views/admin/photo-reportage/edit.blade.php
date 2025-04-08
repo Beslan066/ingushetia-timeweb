@@ -15,6 +15,10 @@
                                 <input class="form-control form-control-lg mb-3" type="text" placeholder="Введите заголовок" name="title" value="{{ old('title', $reportage->title) }}">
                             </div>
 
+                            @error('title')
+                            <div class="text-danger">{{ $message }}</div>
+                            @enderror
+
                             <div class="form-group w-50">
                                 <label for="image_main">Главное изображение</label>
                                 <input type="file" id="image_main" name="image_main" class="dropify" data-height="300" data-default-file="{{ $reportage->image_main ? asset('storage/' . $reportage->image_main) : '' }}" />

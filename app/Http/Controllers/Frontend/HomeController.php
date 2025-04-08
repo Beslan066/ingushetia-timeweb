@@ -33,7 +33,7 @@ class HomeController extends Controller
 {
   public function index(Request $request)
   {
-    $categories = Category::select('title')->get()->toArray();
+    $categories = Category::select('id', 'title')->get()->toArray();
     $resources = Resource::query()->where('agency_id', 5)->select('title', 'link')->get();
     $photoReportages = PhotoReportage::query()->take(4)->orderBy('published_at', 'desc')->get();
     $videos = Video::query()->take(4)->orderBy('published_at', 'desc')->get();
@@ -74,13 +74,14 @@ class HomeController extends Controller
     });
 
     $openedNews = null;
-    if ($request->route('url')) { // Если url есть в маршруте (например, /news/{slug})
+    if ($request->route('url')) {
       $openedNews = News::where('url', $request->route('url'))
         ->with(['category', 'video', 'reportage'])
         ->firstOrFail();
 
+      // Получаем связанные новости для открытого поста
       $openedNews->relatedPosts = News::where('category_id', $openedNews->category_id)
-        ->where('id', '!=', $openedNews->id)
+        ->where('id', '!=', $openedNews->id)  // Исключаем сам пост
         ->select(['id', 'title', 'url', 'category_id', 'image_main', 'published_at'])
         ->limit(3)
         ->get();
