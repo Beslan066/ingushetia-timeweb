@@ -3,14 +3,15 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\PhotoReportage\UpdateRequest;
 use App\Http\Requests\Admin\PhotoReportage\StoreRequest;
+use App\Http\Requests\Admin\PhotoReportage\UpdateRequest;
 use App\Models\News;
 use App\Models\PhotoReportage;
 use App\Models\Category;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
@@ -46,45 +47,46 @@ class PhotoReportageController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreRequest $request)
-    {
-        $data = $request->validated();
-        $slidesJson = [];
+  public function store(StoreRequest $request)
+  {
+    try {
+      DB::beginTransaction();
 
-        if ($request->hasFile('slides')) {
-            $slidesArray = [];
-            $slides = $request->file('slides');
+      $data = $request->validated();
+      $slides = [];
 
-            foreach ($slides as $slide) {
-                $filename = $slide->store('slide_images'); // Сохраняем изображение слайда и получаем имя файла
-                $slidesArray[] = $filename; // Добавляем имя файла в массив
-            }
+      // Обработка главного изображения
+      if ($request->hasFile('image_main')) {
+        $data['image_main'] = $request->file('image_main')->store('photo_reportages/main', 'public');
+      }
 
-            $slidesJson = json_encode($slidesArray); // Кодируем массив имен файлов в формат JSON
+      // Обработка слайдов
+      if ($request->hasFile('slides')) {
+        foreach ($request->file('slides') as $slide) {
+          $path = $slide->store('photo_reportages/slides', 'public');
+          $slides[] = $path;
         }
+        $data['slides'] = json_encode($slides);
+      }
 
-        if ($request->hasFile('image_main')) {
-            $imageMain = $request->file('image_main');
-            $imageMainPath = $imageMain->store('images'); // Сохраняем изображение в папке 'images'
+      // Создание фоторепортажа
+      $photoReportage = PhotoReportage::create($data);
 
-            $data['image_main'] = $imageMainPath;
-        }
+      DB::commit();
 
+      return redirect()
+        ->route('admin.photoReportage.index')
+        ->with('success', 'Фоторепортаж успешно создан');
 
-        $news = PhotoReportage::create([
-            'title' => $request->title,
-            'user_id' => $request->user_id,
-            'lead' => $request->lead,
-            'agency_id' => $request->agency_id,
-            'published_at' => $request->published_at,
-            'image_main' => $data['image_main'],
-            'slides' => $slidesJson, // Используем переменную $slidesJson
-        ]);
+    } catch (\Exception $e) {
+      DB::rollBack();
+      Log::error('Ошибка при создании фоторепортажа: ' . $e->getMessage());
 
-
-
-        return redirect()->route('admin.photoReportage.index');
+      return back()
+        ->withInput()
+        ->with('error', 'Произошла ошибка при создании фоторепортажа');
     }
+  }
 
     /**
      * Display the specified resource.

@@ -19,50 +19,64 @@ class UpdateRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
-    {
-        return [
-            'title' => 'required|string|max:255',
-            'image_main' => 'nullable|image|mimes:webp|max:130',
-            'remove_slides' => 'nullable',
-            'slides' => 'nullable|array',
-            'slides.*' => 'image',
-            'user_id' => 'required|integer',
-            'news_id' => 'nullable|integer',
-            'agency_id' => 'required|integer',
-            'published_at' => 'required|date_format:Y-m-d\TH:i',
-        ];
-    }
+  public function rules(): array
+  {
+    return [
+      'title' => 'sometimes|string|max:255|min:3',
+      'content' => 'nullable|string',
+      'image_main' => 'sometimes|mimes:webp,jpeg,png,jpg|max:130|dimensions:min_width=600,min_height=400',
+      'slides' => 'nullable|array|max:20',
+      'slides.*' => 'sometimes|mimes:webp,jpeg,png,jpg|max:250|dimensions:min_width=600,min_height=400',
+      'user_id' => 'sometimes|exists:users,id',
+      'news_id' => 'nullable|exists:news,id',
+      'agency_id' => 'sometimes|exists:agencies,id',
+      'mountain_material' => 'nullable|boolean',
+      'published_at' => 'sometimes|date_format:Y-m-d\TH:i',
+      'lead' => 'nullable|string|max:500',
+    ];
+  }
 
+  public function messages(): array
+  {
+    return [
+      // Общие сообщения
+      'sometimes' => 'Поле :attribute обязательно при обновлении.',
+      'max' => 'Поле :attribute не должно превышать :max символов.',
+      'min' => 'Поле :attribute должно содержать минимум :min символов.',
 
+      // Специфичные сообщения
+      'title.required' => 'Название фоторепортажа обязательно.',
+      'title.max' => 'Название не должно превышать 255 символов.',
+      'title.min' => 'Название должно содержать минимум 3 символа.',
 
-    public function messages()
-    {
-        return [
-            'title.required' => 'Это поле необходимо для заполнения',
-            'title.string' => 'Проверьте правильность ввода',
-            'title.max' => 'Максимальная длина заголовка — 255 символов',
+      'image_main.mimes' => 'Главное изображение должно быть в формате: webp, jpeg, png, jpg.',
+      'image_main.max' => 'Размер главного изображения не должен превышать 130КБ.',
+      'image_main.dimensions' => 'Главное изображение должно быть минимум 600x400 пикселей.',
 
-            'image_main.nullable' => 'Это поле может быть пустым',
-            'image_main.image' => 'Необходимо выбрать изображение',
+      'slides.max' => 'Можно загрузить не более 10 слайдов.',
+      'slides.*.mimes' => 'Слайды должны быть в формате: webp, jpeg, png, jpg.',
+      'slides.*.max' => 'Размер каждого слайда не должен превышать 2MB.',
+      'slides.*.dimensions' => 'Слайды должны быть минимум 600x400 пикселей.',
 
-            'slides.nullable' => 'Поле слайдов может быть пустым',
-            'slides.array' => 'Поле слайдов должно быть массивом',
+      'user_id.exists' => 'Выбранный автор не существует.',
+      'agency_id.exists' => 'Выбранное агентство не существует.',
+      'news_id.exists' => 'Выбранная новость не существует.',
+      'published_at.date_format' => 'Неверный формат даты публикации.',
+      'lead.max' => 'Лид не должен превышать 500 символов.',
+    ];
+  }
 
-            'remove_slides.nullable' => 'Поле удаляемых слайдов может быть пустым',
-            'remove_slides.*.string' => 'Каждый элемент удаляемых слайдов должен быть строкой',
-
-            'user_id.required' => 'Идентификатор пользователя обязателен',
-            'user_id.integer' => 'Идентификатор пользователя должен быть числом',
-
-            'news_id.nullable' => 'Идентификатор новости может быть пустым',
-            'news_id.integer' => 'Идентификатор новости должен быть числом',
-
-            'agency_id.required' => 'Идентификатор агентства обязателен',
-            'agency_id.integer' => 'Идентификатор агентства должен быть числом',
-
-            'published_at.required' => 'Дата и время публикации обязательны',
-            'published_at.date_format' => 'Дата и время публикации должны соответствовать формату Y-m-d\TH:i',
-        ];
-    }
+  public function attributes(): array
+  {
+    return [
+      'title' => 'Название',
+      'content' => 'Контент',
+      'image_main' => 'Главное изображение',
+      'slides' => 'Слайды',
+      'user_id' => 'Автор',
+      'agency_id' => 'Агентство',
+      'published_at' => 'Дата публикации',
+      'lead' => 'Лид',
+    ];
+  }
 }

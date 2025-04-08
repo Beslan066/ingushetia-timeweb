@@ -44,7 +44,6 @@ const getSlidesCount = (slides) => {
 export default function News({
                                news,
                                categories,
-                               mainPosts: slides,
                                media,
                                spotlights,
                                page: pageNumber,
@@ -105,11 +104,11 @@ export default function News({
       <PageTitle title="Новости" />
       <div className="news-hero">
         <div className="news-hero__slider-wrapper">
-          <MainSlider
-            slides={slides}
-            slideChangeInterval={10000}
-            onPost={(id) => handleSlide(id, slides, setSlide)}
-          />
+          {/*<MainSlider*/}
+          {/*  slides={slides}*/}
+          {/*  slideChangeInterval={10000}*/}
+          {/*  onPost={(id) => handleSlide(id, slides, setSlide)}*/}
+          {/*/>*/}
           <div className="news-hero__news-wrapper">
             <div className="news-wrapper">
               <Tabs

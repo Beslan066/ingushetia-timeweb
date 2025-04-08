@@ -19,30 +19,68 @@ class StoreRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
-    {
-        return [
-            'title' => 'required|string|max:255',
-            'content' => 'nullable',
-            'image_main' => 'required|mimes:webp|max:120',
-            'slides' => 'nullable|array',
-            'user_id' => 'required',
-            'news_id' => 'nullable',
-            'agency_id' => 'required',
-            'mountain_reportage' => 'nullable',
-            'published_at' => 'required|date_format:Y-m-d\TH:i',
-        ];
-    }
+  public function rules(): array
+  {
+    return [
+      'title' => 'required|string|max:255|min:3',
+      'content' => 'nullable|string',
+      'image_main' => 'required|mimes:webp|max:130|dimensions:min_width=600,min_height=400',
+      'slides' => 'nullable|array|max:20',
+      'slides.*' => 'mimes:webp,jpeg,png,jpg|max:250|dimensions:min_width=600,min_height=400',
+      'user_id' => 'required|exists:users,id',
+      'news_id' => 'nullable|exists:news,id',
+      'agency_id' => 'required|exists:agencies,id',
+      'published_at' => 'required|date_format:Y-m-d\TH:i|after_or_equal:now',
+      'lead' => 'nullable|string|max:500',
+    ];
+  }
 
-    public function messages()
-    {
-        return [
-            'title.required' => 'Это поле необходимо для заполнения',
-            'title.string' => 'Проверьте правильность ввода',
-            'image_main.required' => 'Это поле необходимо выбрать',
-            'image_main.file' => 'Необходимо выбрать изображение ',
-            'mountain_reportage.nullable' => 'Это поле не обязательно для заполнения.',
+  public function messages(): array
+  {
+    return [
+      // Общие сообщения
+      'required' => 'Поле :attribute обязательно для заполнения.',
+      'max' => 'Поле :attribute не должно превышать :max символов.',
+      'min' => 'Поле :attribute должно содержать минимум :min символов.',
 
-        ];
-    }
+      // Специфичные сообщения
+      'title.required' => 'Название фоторепортажа обязательно.',
+      'title.max' => 'Название не должно превышать 255 символов.',
+      'title.min' => 'Название должно содержать минимум 3 символа.',
+
+      'image_main.required' => 'Главное изображение обязательно.',
+      'image_main.mimes' => 'Главное изображение должно быть в формате: webp, jpeg, png, jpg.',
+      'image_main.max' => 'Размер главного изображения не должен превышать 130КБ.',
+      'image_main.dimensions' => 'Главное изображение должно быть минимум 600x400 пикселей.',
+
+      'slides.max' => 'Можно загрузить не более 10 слайдов.',
+      'slides.*.mimes' => 'Слайды должны быть в формате: webp, jpeg, png, jpg.',
+      'slides.*.max' => 'Размер каждого слайда не должен превышать 2MB.',
+      'slides.*.dimensions' => 'Слайды должны быть минимум 600x400 пикселей.',
+
+      'user_id.exists' => 'Выбранный автор не существует.',
+      'agency_id.exists' => 'Выбранное агентство не существует.',
+      'news_id.exists' => 'Выбранная новость не существует.',
+
+      'published_at.required' => 'Дата публикации обязательна.',
+      'published_at.date_format' => 'Неверный формат даты публикации.',
+      'published_at.after_or_equal' => 'Дата публикации не может быть в прошлом.',
+
+      'lead.max' => 'Лид не должен превышать 500 символов.',
+    ];
+  }
+
+  public function attributes(): array
+  {
+    return [
+      'title' => 'Название',
+      'content' => 'Контент',
+      'image_main' => 'Главное изображение',
+      'slides' => 'Слайды',
+      'user_id' => 'Автор',
+      'agency_id' => 'Агентство',
+      'published_at' => 'Дата публикации',
+      'lead' => 'Лид',
+    ];
+  }
 }

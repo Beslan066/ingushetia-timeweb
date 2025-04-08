@@ -356,6 +356,7 @@
 <div class="menu-overlay"></div>
 
 
+@stack('scripts')
 <!-- jQuery  -->
 <script src="{{asset('assets/js/jquery.min.js')}}"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
