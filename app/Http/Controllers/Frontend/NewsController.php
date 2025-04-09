@@ -19,13 +19,6 @@ class NewsController extends Controller
     $dateFrom = request()->input('dateFrom') ? Carbon::parse(request()->input('dateFrom')) : null;
     $dateTo = request()->input('dateTo') ? Carbon::parse(request()->input('dateTo')) : null;
 
-    $mainPosts = News::query()
-      ->with('category')
-      ->where('main_material', 1)
-      ->where('agency_id', 5)
-      ->orderBy('published_at', 'desc')
-      ->take(7)
-      ->get();
     $categories = Category::query()->take(10)->get();
 
     $news = News::query()
@@ -49,7 +42,6 @@ class NewsController extends Controller
     return Inertia::render('News/News', [
       'news' => $news->items(),
       'categories' => $categories,
-      'mainPosts' => $mainPosts,
       'media' => $media,
       'spotlights' => $spotlights,
       'page' => $page + 1,
