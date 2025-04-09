@@ -17,10 +17,6 @@ import AppLink from "#/atoms/buttons/link.jsx";
 import ReportageContent from "#/atoms/modal/reportage-content.jsx";
 import useModal from "#/hooks/useModal.js";
 
-const handleSlide = (id, slides, setSlide) => {
-  const cur = slides.find(s => s.id === id);
-  setSlide(cur ?? undefined);
-};
 
 const handleSpotlight = (id, spotlights, setSlide) => {
   const cur = spotlights.find(s => s.id === id);
@@ -29,13 +25,9 @@ const handleSpotlight = (id, spotlights, setSlide) => {
 
 const getSlidesCount = (slides) => {
   if (!slides) return null;
-
   const arr = JSON.parse(slides);
-  const length = arr.length;
-  if (!length) return null;
-
-  return length + ' фото';
-};
+  return arr.length ? arr.length + ' фото' : null;
+}
 
 export default function News({
                                news,
@@ -54,16 +46,10 @@ export default function News({
   const [paginator, setPaginator] = useState({ page: pageNumber, total: totalPages });
   const [reportage, isReportageOpen, setReportage] = useModal(undefined);
   const [isLoading, setIsLoading] = useState(false);
-  const [scrollDirection, setScrollDirection] = useState('down');
-  const lastScrollY = useRef(0);
 
-  const visitedPages = pages.map((page) => page.page).sort();
-  const prevNotVisitedPage = Math.min(visitedPages[0] - 1, paginator.page - 1) > 0
-    ? Math.min(visitedPages[0] - 1, paginator.page - 1)
-    : null;
-  const nextNotVisitedPage = Math.max(visitedPages[visitedPages.length - 1] + 1, paginator.page + 1) <= paginator.total
-    ? Math.max(visitedPages[visitedPages.length - 1] + 1, paginator.page + 1)
-    : null;
+  const visitedPages = pages.map((p) => p.page).sort((a, b) => a - b);
+  const prevNotVisitedPage = Math.min(...visitedPages) > 1 ? Math.min(...visitedPages) - 1 : null;
+  const nextNotVisitedPage = Math.max(...visitedPages) < paginator.total ? Math.max(...visitedPages) + 1 : null;
 
   const loadPage = useCallback((page, direction) => {
     if (isLoading) return;
@@ -71,19 +57,19 @@ export default function News({
     setIsLoading(true);
     router.reload({
       method: 'get',
-      data: { page: page, category: selectedCategory, ...filters },
+      data: { page, category: selectedCategory, ...filters },
       preserveScroll: true,
       onSuccess: ({ props: data }) => {
-        setPaginator({ page: data.page, total: data.pages });
         const currentPage = { page: data.page, news: data.news, media: data.media };
+        setPaginator({ page: data.page, total: data.pages });
 
-        setPages(prevPages => {
-          if (direction === 'prev') {
-            return [currentPage, ...prevPages];
-          } else {
-            return [...prevPages, currentPage];
-          }
-        });
+        if (direction === 'prev') {
+          setPages((prev) => [currentPage, ...prev]);
+          const offset = document.getElementById('news-feed-container')?.offsetHeight || 0;
+          setTimeout(() => window.scrollTo(0, offset), 0);
+        } else {
+          setPages((prev) => [...prev, currentPage]);
+        }
 
         window.history.replaceState(
           null,
@@ -91,19 +77,15 @@ export default function News({
           `?page=${data.page}${selectedCategory ? `&category=${selectedCategory}` : ''}`
         );
       },
-      onFinish: () => {
-        setIsLoading(false);
-      }
+      onFinish: () => setIsLoading(false),
     });
   }, [isLoading, selectedCategory, filters]);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-
-      const currentY = window.scrollY;
-      setScrollDirection(currentY > lastScrollY.current ? 'down' : 'up');
-      lastScrollY.current = currentY;
+    const onScroll = () => {
+      const scrollTop = window.scrollY;
+      const scrollHeight = document.documentElement.scrollHeight;
+      const clientHeight = window.innerHeight;
 
       if (scrollTop + clientHeight >= scrollHeight - 500 && nextNotVisitedPage && !isLoading) {
         loadPage(nextNotVisitedPage, 'next');
@@ -113,55 +95,33 @@ export default function News({
         loadPage(prevNotVisitedPage, 'prev');
       }
 
-      if (scrollTop > 1000 && scrollDirection === 'down' && pages.length > 2) {
-        setPages(prev => prev.slice(1));
-      }
-
-      if (scrollTop < 300 && scrollDirection === 'up' && pages.length > 2) {
-        setPages(prev => prev.slice(0, -1));
-      }
-
-      // Самый верх — полный сброс
-      if (currentY <= 50 && paginator.page !== 1) {
-        router.reload({
-          method: 'get',
-          data: { page: 1, category: selectedCategory, ...filters },
-          preserveScroll: true,
-          onSuccess: ({ props: data }) => {
-            setPaginator({ page: data.page, total: data.pages });
-            const currentPage = { page: data.page, news: data.news, media: data.media };
-            setPages([currentPage]);
-            window.history.replaceState(
-              null,
-              '',
-              `?${selectedCategory ? `category=${selectedCategory}` : ''}`
-            );
-          }
-        });
+      if (scrollTop <= 100 && paginator.page !== 1) {
+        window.history.replaceState(
+          null,
+          '',
+          `?${selectedCategory ? `category=${selectedCategory}` : ''}`
+        );
+        setPages((prev) => prev.slice(0, 1));
+        setPaginator((prev) => ({ ...prev, page: 1 }));
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [nextNotVisitedPage, prevNotVisitedPage, isLoading, loadPage, paginator.page, selectedCategory, scrollDirection, pages, filters]);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [loadPage, nextNotVisitedPage, prevNotVisitedPage, isLoading, paginator.page, selectedCategory]);
 
   const onFilters = (dateFrom, dateTo, selected) => {
     router.reload({
       method: 'get',
       data: { page: 1, category: selected, dateFrom, dateTo },
       onSuccess: ({ props: data }) => {
+        setPages([{ page: data.page, news: data.news, media: data.media }]);
         setPaginator({ page: data.page, total: data.pages });
-        const currentPage = { page: data.page, news: data.news, media: data.media };
-        setPages([currentPage]);
         setFilters({ dateFrom, dateTo });
         setSelectedCategory(selected);
       }
     });
   };
-
-  const filteredArticles = selectedCategory !== null
-    ? news.filter(post => post.category_id === selectedCategory)
-    : news;
 
   const onCategorySwitch = (categoryId) => {
     setSelectedCategory(categoryId !== null ? Number(categoryId) : null);
@@ -175,11 +135,7 @@ export default function News({
         <div className="news-hero__slider-wrapper">
           <div className="news-hero__news-wrapper">
             <div className="news-wrapper">
-              <Tabs
-                tabs={categories}
-                onTab={onCategorySwitch}
-                selected={selectedCategory}
-              />
+              <Tabs tabs={categories} onTab={onCategorySwitch} selected={selectedCategory} />
               <FilterButton isActive={isFiltersOpened} onChange={setFiltersOpened} />
             </div>
             <Filters
@@ -190,68 +146,49 @@ export default function News({
             <div id="news-feed-container">
               {pages.map((page, index) => (
                 <React.Fragment key={page.page}>
-                  {index === 0 && (
-                    <>
-                      {page.media && (
-                        <div className="media-feed__wrapper">
-                          <div className="media-feed">
-                            {page.media.map((item) => {
-                              const isVideo = item.hasOwnProperty('video');
-                              const slides = isVideo ? null : getSlidesCount(item?.slides);
-                              return <MediaNews
-                                key={item.id}
-                                id={item.id}
-                                type={isVideo ? 'video' : 'gallery'}
-                                title={item.title}
-                                count={slides}
-                                date={item.published_at}
-                                image={item.image_main}
-                                video={item.video}
-                                handleOpen={() => setReportage(item)}
-                              />
-                            })}
-                          </div>
-                          <div className="media-link__wrapper">
-                            <AppLink to="/media" title="Все репортажи" />
-                          </div>
-                        </div>
-                      )}
-                      <div className="news-feed">
-                        {page.news && page.news.map((item) =>
-                          <AgencyNewsItem
-                            key={item.id}
-                            id={item.id}
-                            category={item.category?.title}
-                            date={item?.published_at}
-                            title={item.title}
-                            image={item.image_main}
-                            onPost={() => setSlide(item)}
-                          />
-                        )}
+                  {(index === 0 && page.media?.length > 0) && (
+                    <div className="media-feed__wrapper">
+                      <div className="media-feed">
+                        {page.media.map((item) => {
+                          const isVideo = !!item.video;
+                          const slides = isVideo ? null : getSlidesCount(item?.slides);
+                          return (
+                            <MediaNews
+                              key={item.id}
+                              id={item.id}
+                              type={isVideo ? 'video' : 'gallery'}
+                              title={item.title}
+                              count={slides}
+                              date={item.published_at}
+                              image={item.image_main}
+                              video={item.video}
+                              handleOpen={() => setReportage(item)}
+                            />
+                          );
+                        })}
                       </div>
-                    </>
-                  )}
-
-                  {index > 0 && (
-                    <div className="news-feed__next-wrapper">
-                      <div className="news-feed">
-                        {page.news && page.news.map((item) =>
-                          <AgencyNewsItem
-                            key={item.id}
-                            id={item.id}
-                            category={item.category?.title}
-                            date={item?.published_at}
-                            title={item.title}
-                            image={item.image_main}
-                            onPost={() => setSlide(item)}
-                          />
-                        )}
+                      <div className="media-link__wrapper">
+                        <AppLink to="/media" title="Все репортажи" />
                       </div>
                     </div>
                   )}
+                  <div className="news-feed__wrapper">
+                    <div className="news-feed">
+                      {page.news.map((item) => (
+                        <AgencyNewsItem
+                          key={item.id}
+                          id={item.id}
+                          category={item.category?.title}
+                          date={item?.published_at}
+                          title={item.title}
+                          image={item.image_main}
+                          onPost={() => setSlide(item)}
+                        />
+                      ))}
+                    </div>
+                  </div>
                 </React.Fragment>
               ))}
-
             </div>
             {isLoading && <div className="loading-indicator">Загрузка...</div>}
           </div>
