@@ -24,9 +24,9 @@ class StoreRequest extends FormRequest
     return [
       'title' => 'required|string|max:255|min:3',
       'content' => 'nullable|string',
-      'image_main' => 'required|mimes:webp|max:130|dimensions:min_width=600,min_height=400',
+      'image_main' => 'required|mimes:webp|max:130',
       'slides' => 'nullable|array|max:20',
-      'slides.*' => 'mimes:webp,jpeg,png,jpg|max:250|dimensions:min_width=600,min_height=400',
+      'slides.*' => 'mimes:webp,jpeg,png,jpg|max:250',
       'user_id' => 'required|exists:users,id',
       'news_id' => 'nullable|exists:news,id',
       'agency_id' => 'required|exists:agencies,id',
@@ -55,7 +55,7 @@ class StoreRequest extends FormRequest
 
       'slides.max' => 'Можно загрузить не более 10 слайдов.',
       'slides.*.mimes' => 'Слайды должны быть в формате: webp, jpeg, png, jpg.',
-      'slides.*.max' => 'Размер каждого слайда не должен превышать 2MB.',
+      'slides.*.max' => 'Размер каждого слайда не должен превышать 205KB.',
       'slides.*.dimensions' => 'Слайды должны быть минимум 600x400 пикселей.',
 
       'user_id.exists' => 'Выбранный автор не существует.',

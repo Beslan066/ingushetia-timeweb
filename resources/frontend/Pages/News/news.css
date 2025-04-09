@@ -201,3 +201,12 @@
     padding: 80px 0 48px;
   }
 }
+
+.loading-indicator {
+  text-align: center;
+  padding: 20px;
+  color: #999;
+}
+
+
+

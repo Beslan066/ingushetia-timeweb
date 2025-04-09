@@ -4,7 +4,7 @@ import PageTitle from "#/atoms/texts/PageTitle.jsx";
 import MainSlider from "#/molecules/slider/slider.jsx";
 import './news.css';
 import Tabs from "#/atoms/tabs/tabs.jsx";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import Filters from "#/molecules/filters/filters.jsx";
 import FilterButton from "#/atoms/filters/filter-button.jsx";
 import AgencyNewsItem from "#/atoms/news/agency-news-item.jsx";
@@ -28,18 +28,14 @@ const handleSpotlight = (id, spotlights, setSlide) => {
 };
 
 const getSlidesCount = (slides) => {
-  if (!slides) {
-    return null;
-  }
+  if (!slides) return null;
 
   const arr = JSON.parse(slides);
   const length = arr.length;
-  if (!length) {
-    return null;
-  }
+  if (!length) return null;
 
   return length + ' фото';
-}
+};
 
 export default function News({
                                news,
@@ -50,29 +46,104 @@ export default function News({
                                pages: totalPages,
                                filters: initialFilters
                              }) {
-  const [selectedCategory, setSelectedCategory] = useState(initialFilters.category); // Выбранная категория
+  const [selectedCategory, setSelectedCategory] = useState(initialFilters.category);
   const [filters, setFilters] = useState(null);
   const [isFiltersOpened, setFiltersOpened] = useState(false);
   const [slide, isSlideOpen, setSlide] = useModal(undefined);
   const [pages, setPages] = useState([{ page: pageNumber, news: news, media: media }]);
   const [paginator, setPaginator] = useState({ page: pageNumber, total: totalPages });
   const [reportage, isReportageOpen, setReportage] = useModal(undefined);
+  const [isLoading, setIsLoading] = useState(false);
+  const [scrollDirection, setScrollDirection] = useState('down');
+  const lastScrollY = useRef(0);
 
   const visitedPages = pages.map((page) => page.page).sort();
-  const prevNotVisitedPage = Math.min(visitedPages[0] - 1, paginator.page - 1) > 0 ? Math.min(visitedPages[0] - 1, paginator.page - 1) - 1 : null;
-  const nextNotVisitedPage = Math.max(visitedPages[visitedPages.length - 1] + 1, paginator.page + 1) <= paginator.total ? Math.max(visitedPages[visitedPages.length - 1] + 1, paginator.page + 1) : null;
+  const prevNotVisitedPage = Math.min(visitedPages[0] - 1, paginator.page - 1) > 0
+    ? Math.min(visitedPages[0] - 1, paginator.page - 1)
+    : null;
+  const nextNotVisitedPage = Math.max(visitedPages[visitedPages.length - 1] + 1, paginator.page + 1) <= paginator.total
+    ? Math.max(visitedPages[visitedPages.length - 1] + 1, paginator.page + 1)
+    : null;
 
-  const onPage = (page, state) => {
+  const loadPage = useCallback((page, direction) => {
+    if (isLoading) return;
+
+    setIsLoading(true);
     router.reload({
       method: 'get',
       data: { page: page, category: selectedCategory, ...filters },
+      preserveScroll: true,
       onSuccess: ({ props: data }) => {
         setPaginator({ page: data.page, total: data.pages });
         const currentPage = { page: data.page, news: data.news, media: data.media };
-        state === 'prev' ? setPages([currentPage, ...pages]) : setPages([...pages, currentPage]);
+
+        setPages(prevPages => {
+          if (direction === 'prev') {
+            return [currentPage, ...prevPages];
+          } else {
+            return [...prevPages, currentPage];
+          }
+        });
+
+        window.history.replaceState(
+          null,
+          '',
+          `?page=${data.page}${selectedCategory ? `&category=${selectedCategory}` : ''}`
+        );
+      },
+      onFinish: () => {
+        setIsLoading(false);
       }
-    })
-  }
+    });
+  }, [isLoading, selectedCategory, filters]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+
+      const currentY = window.scrollY;
+      setScrollDirection(currentY > lastScrollY.current ? 'down' : 'up');
+      lastScrollY.current = currentY;
+
+      if (scrollTop + clientHeight >= scrollHeight - 500 && nextNotVisitedPage && !isLoading) {
+        loadPage(nextNotVisitedPage, 'next');
+      }
+
+      if (scrollTop <= 500 && prevNotVisitedPage && !isLoading) {
+        loadPage(prevNotVisitedPage, 'prev');
+      }
+
+      if (scrollTop > 1000 && scrollDirection === 'down' && pages.length > 2) {
+        setPages(prev => prev.slice(1));
+      }
+
+      if (scrollTop < 300 && scrollDirection === 'up' && pages.length > 2) {
+        setPages(prev => prev.slice(0, -1));
+      }
+
+      // Самый верх — полный сброс
+      if (currentY <= 50 && paginator.page !== 1) {
+        router.reload({
+          method: 'get',
+          data: { page: 1, category: selectedCategory, ...filters },
+          preserveScroll: true,
+          onSuccess: ({ props: data }) => {
+            setPaginator({ page: data.page, total: data.pages });
+            const currentPage = { page: data.page, news: data.news, media: data.media };
+            setPages([currentPage]);
+            window.history.replaceState(
+              null,
+              '',
+              `?${selectedCategory ? `category=${selectedCategory}` : ''}`
+            );
+          }
+        });
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [nextNotVisitedPage, prevNotVisitedPage, isLoading, loadPage, paginator.page, selectedCategory, scrollDirection, pages, filters]);
 
   const onFilters = (dateFrom, dateTo, selected) => {
     router.reload({
@@ -82,18 +153,16 @@ export default function News({
         setPaginator({ page: data.page, total: data.pages });
         const currentPage = { page: data.page, news: data.news, media: data.media };
         setPages([currentPage]);
-        setFilters({ dateFrom: dateFrom, dateTo: dateTo });
+        setFilters({ dateFrom, dateTo });
         setSelectedCategory(selected);
       }
-    })
-  }
+    });
+  };
 
-  // Фильтрация новостей по категории
   const filteredArticles = selectedCategory !== null
     ? news.filter(post => post.category_id === selectedCategory)
     : news;
 
-  // Переключение категории
   const onCategorySwitch = (categoryId) => {
     setSelectedCategory(categoryId !== null ? Number(categoryId) : null);
   };
@@ -104,11 +173,6 @@ export default function News({
       <PageTitle title="Новости" />
       <div className="news-hero">
         <div className="news-hero__slider-wrapper">
-          {/*<MainSlider*/}
-          {/*  slides={slides}*/}
-          {/*  slideChangeInterval={10000}*/}
-          {/*  onPost={(id) => handleSlide(id, slides, setSlide)}*/}
-          {/*/>*/}
           <div className="news-hero__news-wrapper">
             <div className="news-wrapper">
               <Tabs
@@ -118,50 +182,36 @@ export default function News({
               />
               <FilterButton isActive={isFiltersOpened} onChange={setFiltersOpened} />
             </div>
-            <Filters isActive={isFiltersOpened} onChange={(dateFrom, dateTo) => onFilters(dateFrom, dateTo, selectedCategory)} onClose={() => setFiltersOpened(false)} />
-            {prevNotVisitedPage !== null && <button onClick={() => onPage(prevNotVisitedPage, 'prev')} className="infinite-scroll-button">Показать предыдущее</button>}
-            {
-              pages && !!pages[0] && (
-                <div className="news-feed">
-                  {
-                    pages[0].news && pages[0].news.map((item) =>
-                      <AgencyNewsItem
-                        key={item.id}
-                        id={item.id}
-                        category={item.category?.title}
-                        date={item?.published_at}
-                        title={item.title}
-                        image={item.image_main}
-                        onPost={() => setSlide(item)}
-                      />
-                    )
-                  }
-                </div>
-              )
-            }
-          </div>
-        </div>
-        <div className="hero-announce-wrapper">
-          <PopularSpotlights
-            news={spotlights}
-            className="spotlight-sidebar--desktop"
-            onPost={(id) => handleSpotlight(id, spotlights, setSlide)}
-          />
-        </div>
-      </div>
-
-      <div className="news-page__more-wrapper">
-        <div className="feed-more">
-          {
-            pages && pages.map((page, index) => (
-              index === 0 ? null :
+            <Filters
+              isActive={isFiltersOpened}
+              onChange={(dateFrom, dateTo) => onFilters(dateFrom, dateTo, selectedCategory)}
+              onClose={() => setFiltersOpened(false)}
+            />
+            <div id="news-feed-container">
+              {pages.map((page, index) => (
                 <React.Fragment key={page.page}>
-                  {
-                    page.media && (
-                      <div className="media-feed__wrapper">
-                        <div className="media-feed">
-                          {
-                            page.media && page.media.map((item) => {
+                  {index === 0 && (
+                    <div className="news-feed">
+                      {page.news && page.news.map((item) =>
+                        <AgencyNewsItem
+                          key={item.id}
+                          id={item.id}
+                          category={item.category?.title}
+                          date={item?.published_at}
+                          title={item.title}
+                          image={item.image_main}
+                          onPost={() => setSlide(item)}
+                        />
+                      )}
+                    </div>
+                  )}
+
+                  {index > 0 && (
+                    <>
+                      {page.media && (
+                        <div className="media-feed__wrapper">
+                          <div className="media-feed">
+                            {page.media.map((item) => {
                               const isVideo = item.hasOwnProperty('video');
                               const slides = isVideo ? null : getSlidesCount(item?.slides);
                               return <MediaNews
@@ -175,48 +225,60 @@ export default function News({
                                 video={item.video}
                                 handleOpen={() => setReportage(item)}
                               />
-                            })
-                          }
+                            })}
+                          </div>
+                          {index === pages.length - 1 && (
+                            <div className="media-link__wrapper">
+                              <AppLink to="/media" title="Все репортажи" />
+                            </div>
+                          )}
                         </div>
-                        <div className="media-link__wrapper">
-                          <AppLink to="/media" title="Все репортажи" />
+                      )}
+                      <div className="news-feed__next-wrapper">
+                        <div className="news-feed">
+                          {page.news && page.news.map((item) =>
+                            <AgencyNewsItem
+                              key={item.id}
+                              id={item.id}
+                              category={item.category?.title}
+                              date={item?.published_at}
+                              title={item.title}
+                              image={item.image_main}
+                              onPost={() => setSlide(item)}
+                            />
+                          )}
                         </div>
                       </div>
-                    )
-                  }
-                  <div className="news-feed__next-wrapper">
-                    <div className="news-feed">
-                      {
-                        page.news && page.news.map((item) =>
-                          <AgencyNewsItem
-                            key={item.id}
-                            id={item.id}
-                            category={item.category?.title}
-                            date={item?.published_at}
-                            title={item.title}
-                            image={item.image_main}
-                            onPost={() => setSlide(item)}
-                          />
-                        )
-                      }
-                    </div>
-                    <div></div>
-                  </div>
+                    </>
+                  )}
                 </React.Fragment>
-            ))
-          }
+              ))}
+            </div>
+            {isLoading && <div className="loading-indicator">Загрузка...</div>}
+          </div>
         </div>
-        <div className="next-wrapper">
-          {nextNotVisitedPage !== null &&
-            <button onClick={() => onPage(nextNotVisitedPage, 'next')} className="infinite-scroll-button">Показать еще</button>}
+        <div className="hero-announce-wrapper">
+          <PopularSpotlights
+            news={spotlights}
+            className="spotlight-sidebar--desktop"
+            onPost={(id) => handleSpotlight(id, spotlights, setSlide)}
+          />
         </div>
       </div>
 
-      <Modal breadcrumbs={[{ title: 'Новости' }, { title: slide?.title }]} isOpen={isSlideOpen} handleClose={() => setSlide(undefined)}>
+      <Modal
+        breadcrumbs={[{ title: 'Новости' }, { title: slide?.title }]}
+        isOpen={isSlideOpen}
+        handleClose={() => setSlide(undefined)}
+      >
         <PostContent post={slide} />
       </Modal>
 
-      <Modal breadcrumbs={[{ title: 'Новости' }, { title: reportage?.title }]} isOpen={isReportageOpen} handleClose={() => setReportage(undefined)}>
+      <Modal
+        breadcrumbs={[{ title: 'Новости' }, { title: reportage?.title }]}
+        isOpen={isReportageOpen}
+        handleClose={() => setReportage(undefined)}
+      >
         <ReportageContent reportage={reportage} />
       </Modal>
 

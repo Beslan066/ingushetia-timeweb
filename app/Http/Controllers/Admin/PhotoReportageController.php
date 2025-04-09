@@ -53,6 +53,7 @@ class PhotoReportageController extends Controller
       DB::beginTransaction();
 
       $data = $request->validated();
+
       $slides = [];
 
       // Обработка главного изображения

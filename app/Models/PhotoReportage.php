@@ -20,7 +20,6 @@ class PhotoReportage extends Model
         'news_id',
         'published_at',
         'agency_id',
-        'mountain_material'
     ];
 
     protected $dates = ['deleted_at'];
