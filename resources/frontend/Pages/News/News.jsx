@@ -16,6 +16,7 @@ import MediaNews from "#/atoms/news/media.jsx";
 import AppLink from "#/atoms/buttons/link.jsx";
 import ReportageContent from "#/atoms/modal/reportage-content.jsx";
 import useModal from "#/hooks/useModal.js";
+import BackToTop from "#/atoms/topButton/BackToTop.jsx";
 
 
 const handleSpotlight = (id, spotlights, setSlide) => {
@@ -135,8 +136,9 @@ export default function News({
         <div className="news-hero__slider-wrapper">
           <div className="news-hero__news-wrapper">
             <div className="news-wrapper">
-              <Tabs tabs={categories} onTab={onCategorySwitch} selected={selectedCategory} />
-              <FilterButton isActive={isFiltersOpened} onChange={setFiltersOpened} />
+              <div className={'tab-row'}>
+                <Tabs tabs={categories} onTab={onCategorySwitch} selected={selectedCategory} />
+              </div>
             </div>
             <Filters
               isActive={isFiltersOpened}
@@ -194,6 +196,10 @@ export default function News({
           </div>
         </div>
         <div className="hero-announce-wrapper">
+          <div className={'filter-button-row'}>
+            <FilterButton isActive={isFiltersOpened} onChange={setFiltersOpened} />
+          </div>
+
           <PopularSpotlights
             news={spotlights}
             className="spotlight-sidebar--desktop"
@@ -219,6 +225,7 @@ export default function News({
       </Modal>
 
       <AppFooter />
+      <BackToTop />
     </>
   );
 }
