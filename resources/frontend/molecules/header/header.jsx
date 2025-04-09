@@ -83,21 +83,21 @@ export default function AppHeader({ anniversary, logo, title }) {
           <div className="top-menu__actions">
             <nav className="top-menu__navigation">
               <ul >
-                <li className="menu-item"><Link href="/news">Новости</Link></li>
-                <li className="menu-item"><Link href="/region">Регион</Link></li>
+                <li className="menu-item"><a href="/news">Новости</a></li>
+                <li className="menu-item"><a href="/region">Регион</a></li>
                 <li className="menu-item">
                   <button onClick={ e => e.target.parentNode.classList.toggle('menu-item--opened') }>Органы власти
                   </button>
                   <ul className="submenu">
-                    <li className="menu-item"><Link href="/president">Глава Республики</Link></li>
-                    <li className="menu-item"><Link href="/government">Правительство</Link></li>
-                    <li className="menu-item"><Link href="#">Федеральные органы власти</Link></li>
-                    <li className="menu-item"><Link href={ route('agencies.index') }>Министерства</Link></li>
+                    <li className="menu-item"><a href="/president">Глава Республики</a></li>
+                    <li className="menu-item"><a href="/government">Правительство</a></li>
+                    <li className="menu-item"><a href="#">Федеральные органы власти</a></li>
+                    <li className="menu-item"><a href={ route('agencies.index') }>Министерства</a></li>
                   </ul>
                 </li>
-                <li className="menu-item"><Link href={ route('media') }>Медиа</Link></li>
-                <li className="menu-item"><Link href="/documents">Документы</Link></li>
-                <li className="menu-item"><Link href={ route('contacts') }>Контакты</Link></li>
+                <li className="menu-item"><a href={ route('media') }>Медиа</a></li>
+                <li className="menu-item"><a href="/documents">Документы</a></li>
+                <li className="menu-item"><a href={ route('contacts') }>Контакты</a></li>
               </ul>
             </nav>
             <button aria-label="Поиск" onClick={ () => {
