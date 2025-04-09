@@ -16,9 +16,6 @@ export default function Hero({ categories, slides, news, showNews }) {
   const [currentPost, setCurrentPost] = useState(showNews || null);
   const [selectedCategory, setSelectedCategory] = useState(null);
 
-  useEffect(() => {
-    console.log('Selected category:', selectedCategory);
-  }, [selectedCategory]);
 
   const onCategorySwitch = (categoryId) => {
     setSelectedCategory(categoryId !== null ? String(categoryId) : null);

@@ -81,3 +81,42 @@
 .tabs::-webkit-scrollbar {
   display: none !important;
 }
+
+/* Добавляем поддержку свайпов для мобильных устройств */
+@media (max-width: 768px) {
+  .tabs {
+    overflow-x: scroll !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .tabs-container {
+    display: block;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    scroll-snap-type: x mandatory;
+    -ms-overflow-style: none;
+  }
+
+  .tabs__item {
+    flex-shrink: 0;
+    scroll-snap-align: start;
+  }
+
+  .tabs__item--active {
+    border-bottom: 2px solid var(--color-primary-medium);
+  }
+
+  /* Убираем кнопки прокрутки на мобильных */
+  .scroll-button {
+    display: none;
+  }
+
+  /* Поддержка свайпа: можно использовать JavaScript для обработки свайпов, если необходимо */
+  .tabs {
+    touch-action: pan-x;
+  }
+}
