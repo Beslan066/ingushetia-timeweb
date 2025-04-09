@@ -191,22 +191,6 @@ export default function News({
               {pages.map((page, index) => (
                 <React.Fragment key={page.page}>
                   {index === 0 && (
-                    <div className="news-feed">
-                      {page.news && page.news.map((item) =>
-                        <AgencyNewsItem
-                          key={item.id}
-                          id={item.id}
-                          category={item.category?.title}
-                          date={item?.published_at}
-                          title={item.title}
-                          image={item.image_main}
-                          onPost={() => setSlide(item)}
-                        />
-                      )}
-                    </div>
-                  )}
-
-                  {index > 0 && (
                     <>
                       {page.media && (
                         <div className="media-feed__wrapper">
@@ -227,32 +211,47 @@ export default function News({
                               />
                             })}
                           </div>
-                          {index === pages.length - 1 && (
-                            <div className="media-link__wrapper">
-                              <AppLink to="/media" title="Все репортажи" />
-                            </div>
-                          )}
+                          <div className="media-link__wrapper">
+                            <AppLink to="/media" title="Все репортажи" />
+                          </div>
                         </div>
                       )}
-                      <div className="news-feed__next-wrapper">
-                        <div className="news-feed">
-                          {page.news && page.news.map((item) =>
-                            <AgencyNewsItem
-                              key={item.id}
-                              id={item.id}
-                              category={item.category?.title}
-                              date={item?.published_at}
-                              title={item.title}
-                              image={item.image_main}
-                              onPost={() => setSlide(item)}
-                            />
-                          )}
-                        </div>
+                      <div className="news-feed">
+                        {page.news && page.news.map((item) =>
+                          <AgencyNewsItem
+                            key={item.id}
+                            id={item.id}
+                            category={item.category?.title}
+                            date={item?.published_at}
+                            title={item.title}
+                            image={item.image_main}
+                            onPost={() => setSlide(item)}
+                          />
+                        )}
                       </div>
                     </>
                   )}
+
+                  {index > 0 && (
+                    <div className="news-feed__next-wrapper">
+                      <div className="news-feed">
+                        {page.news && page.news.map((item) =>
+                          <AgencyNewsItem
+                            key={item.id}
+                            id={item.id}
+                            category={item.category?.title}
+                            date={item?.published_at}
+                            title={item.title}
+                            image={item.image_main}
+                            onPost={() => setSlide(item)}
+                          />
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </React.Fragment>
               ))}
+
             </div>
             {isLoading && <div className="loading-indicator">Загрузка...</div>}
           </div>
