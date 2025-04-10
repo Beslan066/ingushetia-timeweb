@@ -64,14 +64,14 @@
               </div>
 
               <div class="form-group w-50">
-                <label for="slides">Слайд-шоу фотографий (макс. 20 файлов)</label>
+                <label for="slides">Слайд-шоу фотографий (макс. 40 файлов)</label>
                 <input type="file"
                        id="slides"
                        name="slides[]"
                        class="form-control @error('slides') is-invalid @enderror @error('slides.*') is-invalid @enderror"
                        multiple
-                       data-max-files="20">
-                <small class="text-muted">Выберите до 20 изображений</small>
+                       data-max-files="40">
+                <small class="text-muted">Выберите до 40 изображений</small>
 
                 <!-- Контейнер для предпросмотра -->
                 <div id="slides-preview" class="d-flex flex-wrap mt-2 gap-2"></div>
