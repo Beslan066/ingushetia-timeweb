@@ -29,7 +29,7 @@ class StoreRequest extends FormRequest
       'user_id' => 'required|exists:users,id',
       'news_id' => 'nullable|exists:news,id',
       'agency_id' => 'required|exists:agencies,id',
-      'published_at' => 'required|date_format:Y-m-d\TH:i|after_or_equal:now',
+      'published_at' => 'required|date_format:Y-m-d\TH:i',
       'lead' => 'nullable|string|max:500',
     ];
   }
@@ -61,9 +61,8 @@ class StoreRequest extends FormRequest
       'agency_id.exists' => 'Выбранное агентство не существует.',
       'news_id.exists' => 'Выбранная новость не существует.',
 
-      'published_at.required' => 'Дата публикации обязательна.',
-      'published_at.date_format' => 'Неверный формат даты публикации.',
-      'published_at.after_or_equal' => 'Дата публикации не может быть в прошлом.',
+      'published_at.required' => 'Укажите дату публикации.',
+      'published_at.date_format' => 'Некорректный формат даты, используйте формат ГГГГ-ММ-ДДTЧЧ:ММ.',
 
       'lead.max' => 'Лид не должен превышать 500 символов.',
     ];
