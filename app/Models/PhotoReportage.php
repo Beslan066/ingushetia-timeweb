@@ -13,7 +13,7 @@ class PhotoReportage extends Model
     use HasFactory;
     protected $fillable = [
         'title',
-        'content',
+        'lead',
         'image_main',
         'slides',
         'user_id',
@@ -47,6 +47,18 @@ class PhotoReportage extends Model
       $query->where('published_at', '<=', $dateTo);
     }
   }
+
+  public function getSlidesArrayAttribute()
+  {
+    $slides = json_decode($this->slides, true) ?: [];
+
+    return array_map(function($path) {
+      // Удаляем лишние части пути если нужно
+      return str_replace('photo_reportages/slides/', '', $path);
+    }, $slides);
+  }
+
+
 
   protected static function booted()
 {

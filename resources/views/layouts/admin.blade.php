@@ -19,6 +19,8 @@
   <link href="{{asset('assets/css/icons.min.css')}}" rel="stylesheet" type="text/css"/>
   <link href="{{asset('assets/css/theme.min.css')}}" rel="stylesheet" type="text/css"/>
   <link href="{{asset('plugins/dropify/dropify.min.css')}}" rel="stylesheet" type="text/css"/>
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -63,6 +65,40 @@
 
     li.page-item {
       margin-right: 10px;
+    }
+
+    #slides-preview {
+      min-height: 120px;
+    }
+    #slides-preview .img-thumbnail {
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    #slides-preview .img-thumbnail:hover {
+      transform: scale(1.05);
+    }
+    .remove-slide {
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+    .remove-slide:hover {
+      opacity: 1;
+    }
+
+    .position-relative.slide-preview-item {
+      max-width: 180px;
+      height: 100px;
+      margin-right: 30px;
+    }
+
+    .position-relative.slide-preview-item img {
+      height: 100%;
+    }
+
+    .slide-wrapper {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
     }
   </style>
 </head>
@@ -379,6 +415,8 @@
 <script src="{{asset('assets/js/theme.js')}}"></script>
 <script src="{{asset('plugins/dropify/dropify.min.js')}}"></script>
 <script src="{{asset('assets/pages/fileuploads-demo.js')}}"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/i18n/ru.js"></script>
 
 
 <!-- Init js-->
@@ -400,6 +438,41 @@
 
       return button.render();   // Return button as jQuery object
     }
+
+
+    $('.select2-ajax').select2({
+      ajax: {
+        url: $(this).data('url'),
+        dataType: 'json',
+        delay: 250,
+        data: function (params) {
+          return {
+            q: params.term, // search term
+            page: params.page
+          };
+        },
+        processResults: function (data, params) {
+          params.page = params.page || 1;
+
+          return {
+            results: data.results,
+            pagination: {
+              more: (params.page * 20) < data.total_count
+            }
+          };
+        },
+        cache: true
+      },
+      minimumInputLength: 1,
+      placeholder: 'Начните вводить название новости',
+      allowClear: true,
+      language: 'ru'
+    });
+
+    // Инициализация обычного Select2 для других селектов
+    $('select:not(.select2-ajax)').select2({
+      language: 'ru'
+    });
 
 
     // Initialize Summernote
@@ -487,6 +560,127 @@
   }
 
 
+</script>
+
+<script>
+  $(document).ready(function() {
+    // Хранилище для файлов
+    let slidesFiles = [];
+
+    // Инициализация Dropify
+    $('.dropify').dropify({
+      messages: {
+        'default': 'Перетащите файл или кликните для выбора',
+        'replace': 'Перетащите или кликните для замены',
+        'remove': 'Удалить',
+        'error': 'Ошибка'
+      },
+      error: {
+        'fileSize': 'Файл слишком большой (макс. {{ config('app.upload_max_size') ?? '130K' }}).',
+      }
+    });
+
+    // Обработчик изменения input файлов
+    $('#slides').on('change', function() {
+      handleFileSelection(this.files);
+    });
+
+    // Обработчик drag and drop (дополнительная функциональность)
+    $('#slides-preview').on('dragover', function(e) {
+      e.preventDefault();
+      $(this).addClass('border-primary');
+    }).on('dragleave', function(e) {
+      e.preventDefault();
+      $(this).removeClass('border-primary');
+    }).on('drop', function(e) {
+      e.preventDefault();
+      $(this).removeClass('border-primary');
+      if (e.originalEvent.dataTransfer.files.length) {
+        handleFileSelection(e.originalEvent.dataTransfer.files);
+      }
+    });
+
+    // Функция обработки выбранных файлов
+    function handleFileSelection(files) {
+      const maxFiles = 20;
+      const newFiles = Array.from(files);
+
+      // Проверка на максимальное количество файлов
+      if (slidesFiles.length + newFiles.length > maxFiles) {
+        alert(`Максимальное количество слайдов - ${maxFiles}`);
+        return;
+      }
+
+
+      // Добавляем новые файлы в хранилище
+      slidesFiles = [...slidesFiles, ...newFiles];
+
+      // Обновляем предпросмотр
+      updatePreview();
+
+      // Обновляем input files
+      updateFileInput();
+    }
+
+    // Функция обновления предпросмотра
+    function updatePreview() {
+      const preview = $('#slides-preview');
+      preview.empty();
+
+      if (slidesFiles.length === 0) {
+        preview.html('<div class="text-muted w-100 text-center">Нет загруженных изображений</div>');
+        return;
+      }
+
+      slidesFiles.forEach((file, index) => {
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+          const previewItem = $(`
+                    <div class="position-relative slide-preview-item" data-index="${index}">
+                        <img src="${e.target.result}" class="img-thumbnail">
+                        <span class="badge bg-primary position-absolute top-0 start-0">${index + 1}</span>
+                        <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 remove-slide">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `);
+
+          preview.append(previewItem);
+        };
+
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // Функция обновления input files
+    function updateFileInput() {
+      const dataTransfer = new DataTransfer();
+      slidesFiles.forEach(file => dataTransfer.items.add(file));
+      $('#slides')[0].files = dataTransfer.files;
+    }
+
+    // Обработчик удаления слайда
+    $(document).on('click', '.remove-slide', function() {
+      const index = $(this).closest('.slide-preview-item').data('index');
+      slidesFiles.splice(index, 1);
+      updatePreview();
+      updateFileInput();
+    });
+
+    // Валидация при отправке формы
+    $('#photoReportageForm').on('submit', function(e) {
+      if (slidesFiles.length === 0) {
+        e.preventDefault();
+        alert('Пожалуйста, добавьте хотя бы один слайд');
+        return false;
+      }
+      return true;
+    });
+
+    // Инициализация предпросмотра при загрузке страницы
+    updatePreview();
+  });
 </script>
 
 </body>

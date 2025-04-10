@@ -20,7 +20,8 @@
           </div>
         @endif
 
-        <form action="{{route('admin.photoReportage.store')}}" method="post" enctype="multipart/form-data" id="photoReportageForm">
+        <form action="{{route('admin.photoReportage.store')}}" method="post" enctype="multipart/form-data"
+              id="photoReportageForm">
           @csrf
           @method('post')
           <div class="card-body">
@@ -38,16 +39,14 @@
                 @enderror
               </div>
 
-              <div class="form-group w-100 d-flex align-items-center">
-                <div class="w-50">
-                                <textarea class="summernote @error('content') is-invalid @enderror"
-                                          placeholder="Введите контент"
-                                          name="content">{{ old('content') }}</textarea>
-                  @error('content')
-                  <div class="invalid-feedback d-block">{{ $message }}</div>
-                  @enderror
-                </div>
+              <div class="form-group w-50">
+                <label for="exampleFormControlTextarea1">Лид</label>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" style="height: 101px;"
+                          placeholder="Введите лид" name="lead"></textarea>
               </div>
+              @error('lead')
+              <div class="text-danger">{{ $message }}</div>
+              @enderror
 
               <div class="form-group w-50">
                 <label for="image_main">Главное изображение (WEBP, макс. 130KB)</label>
@@ -65,17 +64,17 @@
               </div>
 
               <div class="form-group w-50">
-                <label for="slides">Слайд-шоу фотографий (макс. 20 файлов, WEBP)</label>
+                <label for="slides">Слайд-шоу фотографий (макс. 20 файлов)</label>
                 <input type="file"
                        id="slides"
                        name="slides[]"
                        class="form-control @error('slides') is-invalid @enderror @error('slides.*') is-invalid @enderror"
                        multiple
                        data-max-files="20">
-                <small class="text-muted">Выберите до 20 изображений в формате WEBP</small>
+                <small class="text-muted">Выберите до 20 изображений</small>
 
                 <!-- Контейнер для предпросмотра -->
-                <div id="slides-preview" class="d-flex flex-wrap mt-3 gap-2"></div>
+                <div id="slides-preview" class="d-flex flex-wrap mt-2 gap-2"></div>
 
                 @error('slides')
                 <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -99,6 +98,22 @@
                 <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror
               </div>
+
+
+              <div class="form-group w-50">
+                <label for="news_select">Новость для репортажа</label>
+                <select class="form-control select2" id="news_select" name="news_id">
+                  <option value="">Выберите новость</option>
+                  @foreach($news as $item)
+                    <option value="{{$item->id}}">{{$item->title}}</option>
+                  @endforeach
+                </select>
+              </div>
+              @error('news_id')
+              <div class="invalid-feedback d-block">{{ $message }}</div>
+              @enderror
+
+
 
               <div class="form-group w-50">
                 <label for="user_id">Автор</label>
@@ -140,7 +155,9 @@
 @push('scripts')
   <script src="https://cdn.jsdelivr.net/npm/dropify/dist/js/dropify.min.js"></script>
   <script>
-    $(document).ready(function() {
+
+
+    $(document).ready(function () {
       // Инициализация Dropify
       $('.dropify').dropify({
         messages: {
@@ -155,94 +172,8 @@
         }
       });
 
-      // Обработка формы
-      $('#photoReportageForm').on('submit', function(e) {
-        e.preventDefault();
-
-        let form = $(this);
-        let formData = new FormData(this);
-
-        $.ajax({
-          url: form.attr('action'),
-          type: 'POST',
-          data: formData,
-          processData: false,
-          contentType: false,
-          success: function(response) {
-            if(response.redirect) {
-              window.location.href = response.redirect;
-            }
-          },
-          error: function(xhr) {
-            if(xhr.status === 422) {
-              let errors = xhr.responseJSON.errors;
-              let errorHtml = '<div class="alert alert-danger"><ul>';
-
-              $.each(errors, function(key, value) {
-                errorHtml += '<li>' + value[0] + '</li>';
-                $('#'+key).addClass('is-invalid');
-                $('#'+key+'-error').remove();
-                $('#'+key).after('<div class="invalid-feedback">'+value[0]+'</div>');
-              });
-
-              errorHtml += '</ul></div>';
-
-              $('.alert-danger').remove();
-              form.prepend(errorHtml);
-            }
-          }
-        });
-      });
-
-      // Предпросмотр слайдов
-      $('#slides').on('change', function() {
-        let preview = $('#slides-preview');
-        preview.empty();
-
-        if (this.files && this.files.length > 0) {
-          if (this.files.length > 20) {
-            alert('Максимальное количество слайдов - 20');
-            $(this).val('');
-            return;
-          }
-
-          Array.from(this.files).forEach((file, index) => {
-            if (!file.type.match('image.*')) {
-              alert('Файл ' + file.name + ' не является изображением');
-              return;
-            }
-
-            let reader = new FileReader();
-            reader.onload = function(e) {
-              preview.append(`
-                        <div class="position-relative" style="width: 150px; margin: 5px;">
-                            <img src="${e.target.result}" class="img-thumbnail" style="width:100%; height:100px; object-fit:cover;">
-                            <span class="badge bg-primary position-absolute top-0 start-0">${index+1}</span>
-                            <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0" onclick="$(this).parent().remove(); updateFileInput()">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                    `);
-            }
-            reader.readAsDataURL(file);
-          });
-        }
-      });
     });
 
-    function updateFileInput() {
-      let input = $('#slides')[0];
-      let dataTransfer = new DataTransfer();
 
-      $('#slides-preview img').each(function() {
-        Array.from(input.files).forEach(file => {
-          if (this.src.includes(file.name)) {
-            dataTransfer.items.add(file);
-          }
-        });
-      });
-
-      input.files = dataTransfer.files;
-    }
   </script>
 @endpush

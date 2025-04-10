@@ -23,16 +23,14 @@ class UpdateRequest extends FormRequest
   {
     return [
       'title' => 'sometimes|string|max:255|min:3',
-      'content' => 'nullable|string',
+      'lead' => 'nullable|string|max:500',
       'image_main' => 'sometimes|mimes:webp,jpeg,png,jpg|max:130|dimensions:min_width=600,min_height=400',
       'slides' => 'nullable|array|max:20',
       'slides.*' => 'sometimes|mimes:webp,jpeg,png,jpg|max:250|dimensions:min_width=600,min_height=400',
       'user_id' => 'sometimes|exists:users,id',
       'news_id' => 'nullable|exists:news,id',
       'agency_id' => 'sometimes|exists:agencies,id',
-      'mountain_material' => 'nullable|boolean',
       'published_at' => 'sometimes|date_format:Y-m-d\TH:i',
-      'lead' => 'nullable|string|max:500',
     ];
   }
 
@@ -70,7 +68,6 @@ class UpdateRequest extends FormRequest
   {
     return [
       'title' => 'Название',
-      'content' => 'Контент',
       'image_main' => 'Главное изображение',
       'slides' => 'Слайды',
       'user_id' => 'Автор',

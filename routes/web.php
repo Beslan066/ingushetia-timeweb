@@ -102,7 +102,6 @@ Route::group(['namespace' => 'Admin', 'middleware' => \App\Http\Middleware\Admin
         Route::get('/news/{news:url}/edit', [App\Http\Controllers\Admin\NewsController::class, 'edit'])->name('admin.news.edit');
         Route::patch('/news/{news:url}', [App\Http\Controllers\Admin\NewsController::class, 'update'])->name('admin.news.update');
         Route::delete('/news/{news:url}', [App\Http\Controllers\Admin\NewsController::class, 'destroy'])->name('admin.news.delete');
-
     });
 
     Route::group(['namespace' => 'NewsIng', 'prefix' => 'raduga'], function () {
@@ -133,6 +132,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => \App\Http\Middleware\Admin
         Route::get('/photo-reportage/{reportage}/edit', [App\Http\Controllers\Admin\PhotoReportageController::class, 'edit'])->name('admin.photoReportage.edit');
         Route::patch('/photo-reportage/{reportage}', [App\Http\Controllers\Admin\PhotoReportageController::class, 'update'])->name('admin.photoReportage.update');
         Route::delete('/photo-reportage/{reportage}', [App\Http\Controllers\Admin\PhotoReportageController::class, 'destroy'])->name('admin.photoReportage.delete');
+        Route::get('/admin/news/search', [App\Http\Controllers\Admin\PhotoReportageController::class, 'searchNews'])->name('admin.news.search');
 
     });
 
