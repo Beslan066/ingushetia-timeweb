@@ -15,9 +15,8 @@ export default function AppFooter({ anniversary = false }) {
     {
       name: 'Органы власти',
       links: [
-        { link: '/', name: 'Глава республики' },
-        { link: '/', name: 'Народное собрание' },
-        { link: '/', name: 'Правительство РИ' },
+        { link: '/president', name: 'Глава республики' },
+        { link: '/government', name: 'Правительство РИ' },
         { link: '/', name: 'Федеральные органы власти' },
       ]
     },
@@ -38,18 +37,20 @@ export default function AppFooter({ anniversary = false }) {
     {
       name: 'Для СМИ',
       links: [
-        { link: '/', name: 'Новости' },
-        { link: '/', name: 'Фоторепортажи' },
-        { link: '/', name: 'Видеорепортажи' },
+        { link: '/news', name: 'Новости' },
+        { link: '/media?category=photo', name: 'Фоторепортажи' },
+        { link: '/media?category=video', name: 'Видеорепортажи' },
       ]
     },
     {
       name: 'Документы',
       links: [
-        { link: '/', name: 'Постановления' },
-        { link: '/', name: 'Указы' },
-        { link: '/', name: 'Распоряжения' },
-        { link: '/', name: 'Другие' },
+        { link: '/documents?type_id=0', name: 'Акты' },
+        { link: '/documents?type_id=1', name: 'Законы' },
+        { link: '/documents?type_id=2', name: 'Постановления' },
+        { link: '/documents?type_id=3', name: 'Указы' },
+        { link: '/documents?type_id=4', name: 'Распоряжения' },
+        { link: '/documents', name: 'Все' },
       ]
     }
   ]
@@ -66,7 +67,7 @@ export default function AppFooter({ anniversary = false }) {
                   <div className="link-group__links">
                     {
                       group.links.map((link) => {
-                        return <Link key={ link.name } to={ link.url } className="link-group__link">{ link.name }</Link>
+                        return <Link key={ link.name } href={ link.link } className="link-group__link">{ link.name }</Link>
                       })
                     }
                   </div>

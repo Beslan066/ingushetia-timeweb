@@ -26,7 +26,7 @@ export default function Hero({ categories, slides, news, showNews }) {
     : news;
 
   const handlePost = (post) => {
-    router.get(`/news/${post.url}`, {}, {
+    router.get(`/post/${post.url}`, {}, {
       preserveScroll: true,
       only: ['showNews'],
       onSuccess: (page) => {

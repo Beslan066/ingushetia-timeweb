@@ -39,10 +39,6 @@ class HomeController extends Controller
     $cacheTimeShort = 300;   // 5 минут
     $cacheTimeLong = 3600;   // 1 час
 
-
-
-
-
     //Чтобы обновить данные используем php artisan tinker
     // Cache::forget('Значение ключа');
 
@@ -153,6 +149,81 @@ class HomeController extends Controller
       'cities' => $cities,
       'districts' => $districts,
       'mountains' => $mountains,
+      'showNews' => $openedNews,
+      'anniversary' => config('app.anniversary'),
+    ]);
+  }
+
+  public function showPost(Request $request, $url)
+  {
+    // Используем те же ключи кэша, что и в index()
+    $cacheTimeShort = 300;
+    $cacheTimeLong = 3600;
+
+    $cacheKeys = [
+      'categories' => 'categories_data',
+      'resources' => 'resources_data_agency_5',
+      'photoReportages' => 'photo_reportages_last_4',
+      'videos' => 'videos_last_4',
+      'cities' => 'municipalities_type_2',
+      'districts' => 'municipalities_type_20',
+      'mountains' => 'mountains_with_reportage',
+      'mainPosts' => 'main_posts_agency_5',
+      'posts' => 'news_last_12_agency_5',
+      'related' => 'related_news_for_last_6_agency_5',
+    ];
+
+    // Получаем основные данные из кэша
+    $categories = Cache::remember($cacheKeys['categories'], $cacheTimeLong, function () {
+      return Category::select('id', 'title')->get()->toArray();
+    });
+
+    $mainPosts = Cache::remember($cacheKeys['mainPosts'], $cacheTimeShort, function () {
+      return News::query()
+        ->with(['category:id,title', 'video:id,url', 'reportage:id,title'])
+        ->where('main_material', 1)
+        ->where('agency_id', 5)
+        ->orderBy('published_at', 'desc')
+        ->take(7)
+        ->get();
+    });
+
+    $posts = Cache::remember($cacheKeys['posts'], $cacheTimeShort, function () {
+      return News::query()
+        ->with('category', 'video', 'reportage')
+        ->where('main_material', 0)
+        ->where('agency_id', 5)
+        ->orderBy('published_at', 'desc')
+        ->take(6)
+        ->get();
+    });
+
+    // Получаем открываемую новость (без кэширования, так как нужно актуальное состояние)
+    $openedNews = News::where('url', $url)
+      ->with(['category', 'video', 'reportage'])
+      ->firstOrFail();
+
+    // Увеличиваем счетчик просмотров
+    $openedNews->incrementViews();
+
+    // Получаем связанные новости
+    $openedNews->relatedPosts = News::where('category_id', $openedNews->category_id)
+      ->where('id', '!=', $openedNews->id)
+      ->select(['id', 'title', 'url', 'category_id', 'image_main', 'published_at'])
+      ->limit(3)
+      ->get();
+
+    return Inertia::render('Index', [
+      'posts' => $posts,
+      'categories' => $categories,
+      'mainPosts' => $mainPosts,
+      'resources' => Cache::get($cacheKeys['resources']),
+      'photoReportages' => Cache::get($cacheKeys['photoReportages']),
+      'videos' => Cache::get($cacheKeys['videos']),
+      'media' => collect(Cache::get($cacheKeys['photoReportages']))->merge(Cache::get($cacheKeys['videos']))->sortByDesc('published_at'),
+      'cities' => Cache::get($cacheKeys['cities']),
+      'districts' => Cache::get($cacheKeys['districts']),
+      'mountains' => Cache::get($cacheKeys['mountains']),
       'showNews' => $openedNews,
       'anniversary' => config('app.anniversary'),
     ]);

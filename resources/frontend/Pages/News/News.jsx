@@ -54,7 +54,14 @@ export default function News({
   const prevNotVisitedPage = Math.min(...visitedPages) > 1 ? Math.min(...visitedPages) - 1 : null;
   const nextNotVisitedPage = Math.max(...visitedPages) < paginator.total ? Math.max(...visitedPages) + 1 : null;
 
+
+  const scrollPositionRef = useRef(0);
+  const currentPageRef = useRef(pageNumber);
+
   const handlePost = (post) => {
+    scrollPositionRef.current = window.scrollY;
+    currentPageRef.current = paginator.page; // Сохраняем текущую страницу
+
     router.get(`/news/${post.url}`, {}, {
       preserveScroll: true,
       only: ['showNews', 'spotlights'],
@@ -76,12 +83,20 @@ export default function News({
     setIsModalOpen(false);
     setCurrentPost(null);
 
+    // Восстанавливаем правильный URL с учетом текущей страницы
     const searchParams = new URLSearchParams(window.location.search);
-    const queryString = searchParams.toString();
-    const newUrl = queryString ? `/news?${queryString}` : '/news';
+    if (selectedCategory) searchParams.set('category', selectedCategory);
+    searchParams.set('page', currentPageRef.current);
+
+    const newUrl = `/news?${searchParams.toString()}`;
+
+    setTimeout(() => {
+      window.scrollTo(0, scrollPositionRef.current);
+    }, 0);
 
     window.history.pushState({}, "", newUrl);
   };
+
 
   useEffect(() => {
     if (props.showNews) {
@@ -93,7 +108,10 @@ export default function News({
   const loadPage = useCallback((page, direction) => {
     if (isLoading) return;
 
+    const currentScroll = window.scrollY;
     setIsLoading(true);
+    currentPageRef.current = page; // Обновляем текущую страницу
+
     router.reload({
       method: 'get',
       data: { page, category: selectedCategory, ...filters },
@@ -105,9 +123,10 @@ export default function News({
         if (direction === 'prev') {
           setPages((prev) => [currentPage, ...prev]);
           const offset = document.getElementById('news-feed-container')?.offsetHeight || 0;
-          setTimeout(() => window.scrollTo(0, offset), 0);
+          setTimeout(() => window.scrollTo(0, offset + currentScroll), 0);
         } else {
           setPages((prev) => [...prev, currentPage]);
+          setTimeout(() => window.scrollTo(0, currentScroll), 0);
         }
 
         window.history.replaceState(
@@ -119,6 +138,12 @@ export default function News({
       onFinish: () => setIsLoading(false),
     });
   }, [isLoading, selectedCategory, filters]);
+
+
+  const BackToTopFixed = React.useMemo(() => {
+    return () => <BackToTop key={currentPageRef.current} />;
+  }, [currentPageRef.current]);
+
 
   useEffect(() => {
     const onScroll = () => {

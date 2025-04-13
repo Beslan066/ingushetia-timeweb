@@ -16,7 +16,7 @@ use Inertia\Inertia;
 
 Route::group(['middleware' => 'auth.basic'], function () {
   Route::get('/', [HomeController::class, 'index'])->name('home');
-  Route::get('/news/{url}', [HomeController::class, 'index'])->name('post.show');
+  Route::get('/post/{url}', [HomeController::class, 'showPost'])->name('post.show.home');
   Route::get('/search', [App\Http\Controllers\Frontend\SearchController::class, 'searchResults'])->name('search.index');
 
   Route::get('/search/page', [App\Http\Controllers\Frontend\SearchController::class, 'searchPage'])->name('search.page');
@@ -84,7 +84,7 @@ Route::group(['middleware' => 'auth.basic'], function () {
 
 
   Route::get('/news', [NewsController::class, 'index'])->name('news.index');
-  Route::get('/news/{url}', [NewsController::class, 'show'])->name('post.show');
+  Route::get('/news/{url}', [NewsController::class, 'show'])->name('post.show.news');
   Route::get('/news-by-category/{categoryId}', [NewsController::class, 'getPostsByCategory'])->name('posts.by.tag');
 
 });
