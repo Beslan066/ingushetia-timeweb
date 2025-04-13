@@ -28,7 +28,7 @@ export default function PostContent({ post, onPost }) {
         <Link href={route('posts.by.tag', post.category.id)}>
           <div className="post-meta__category">{post.category?.title}</div>
         </Link>
-        <div className="post-meta__date">{formatDate(post.created_at)}</div>
+        <div className="post-meta__date">{formatDate(post.published_at)}</div>
       </div>
 
       {/* Заголовок и изображение */}
