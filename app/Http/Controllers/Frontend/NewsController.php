@@ -29,8 +29,13 @@ class NewsController extends Controller
       ->orderBy('published_at', 'desc')
       ->paginate(6);
 
-    $spotlights = News::query()->with('category')->where('agency_id',
-      5)->whereNotNull('published_at')->orderBy('published_at')->take(8)->get();
+    // Получаем популярные новости (например, 8 самых просматриваемых за последний месяц)
+    $popularNews = News::query()
+      ->where('agency_id', 5)
+      ->whereNotNull('published_at')
+      ->orderBy('views', 'desc')
+      ->take(8)
+      ->get();
 
     $media = [];
     if ($page > 0) {
@@ -43,7 +48,7 @@ class NewsController extends Controller
       'news' => $news->items(),
       'categories' => $categories,
       'media' => $media,
-      'spotlights' => $spotlights,
+      'spotlights' => $popularNews,
       'page' => $page + 1,
       'pages' => ceil($news->total() / $news->perPage()),
       'filters' => [
@@ -53,6 +58,42 @@ class NewsController extends Controller
       ]
     ]);
   }
+
+
+  public function show($url)
+  {
+    $newsItem = News::where('url', $url)
+      ->with(['category', 'video', 'reportage'])
+      ->firstOrFail();
+
+    // Увеличиваем счетчик просмотров
+    $newsItem->incrementViews();
+
+    // Получаем популярные новости
+    $popularNews = News::query()
+      ->where('id', '!=', $newsItem->id)
+      ->where('agency_id', 5)
+      ->whereNotNull('published_at')
+      ->orderBy('views', 'desc')
+      ->take(8)
+      ->get();
+
+    return Inertia::render('News/News', [
+      'showNews' => $newsItem,
+      'news' => [],
+      'categories' => Category::query()->take(10)->get(),
+      'media' => [],
+      'spotlights' => $popularNews,
+      'page' => 1,
+      'pages' => 1,
+      'filters' => [
+        'category' => null,
+        'dateFrom' => null,
+        'dateTo' => null,
+      ],
+    ]);
+  }
+
 
   public function getPostsByCategory($categoryId)
   {

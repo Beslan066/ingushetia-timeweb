@@ -8,7 +8,7 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import Filters from "#/molecules/filters/filters.jsx";
 import FilterButton from "#/atoms/filters/filter-button.jsx";
 import AgencyNewsItem from "#/atoms/news/agency-news-item.jsx";
-import { Link, router } from "@inertiajs/react";
+import { Link, router, usePage } from "@inertiajs/react";
 import Modal from "#/atoms/modal/modal.jsx";
 import PostContent from "#/atoms/modal/post-content.jsx";
 import PopularSpotlights from "#/molecules/spotlights/popular-spotlights.jsx";
@@ -17,7 +17,6 @@ import AppLink from "#/atoms/buttons/link.jsx";
 import ReportageContent from "#/atoms/modal/reportage-content.jsx";
 import useModal from "#/hooks/useModal.js";
 import BackToTop from "#/atoms/topButton/BackToTop.jsx";
-
 
 const handleSpotlight = (id, spotlights, setSlide) => {
   const cur = spotlights.find(s => s.id === id);
@@ -39,6 +38,7 @@ export default function News({
                                pages: totalPages,
                                filters: initialFilters
                              }) {
+  const { props } = usePage();
   const [selectedCategory, setSelectedCategory] = useState(initialFilters.category);
   const [filters, setFilters] = useState(null);
   const [isFiltersOpened, setFiltersOpened] = useState(false);
@@ -47,10 +47,48 @@ export default function News({
   const [paginator, setPaginator] = useState({ page: pageNumber, total: totalPages });
   const [reportage, isReportageOpen, setReportage] = useModal(undefined);
   const [isLoading, setIsLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(!!props.showNews);
+  const [currentPost, setCurrentPost] = useState(props.showNews || null);
 
   const visitedPages = pages.map((p) => p.page).sort((a, b) => a - b);
   const prevNotVisitedPage = Math.min(...visitedPages) > 1 ? Math.min(...visitedPages) - 1 : null;
   const nextNotVisitedPage = Math.max(...visitedPages) < paginator.total ? Math.max(...visitedPages) + 1 : null;
+
+  const handlePost = (post) => {
+    router.get(`/news/${post.url}`, {}, {
+      preserveScroll: true,
+      only: ['showNews', 'spotlights'],
+      onSuccess: (page) => {
+        setCurrentPost(page.props.showNews);
+        setIsModalOpen(true);
+      }
+    });
+  };
+
+  const handlePopularPost = (id) => {
+    const post = spotlights.find(item => item.id === id);
+    if (post) {
+      handlePost(post);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setCurrentPost(null);
+
+    const searchParams = new URLSearchParams(window.location.search);
+    const queryString = searchParams.toString();
+    const newUrl = queryString ? `/news?${queryString}` : '/news';
+
+    window.history.pushState({}, "", newUrl);
+  };
+
+  useEffect(() => {
+    if (props.showNews) {
+      setCurrentPost(props.showNews);
+      setIsModalOpen(true);
+    }
+  }, [props.showNews]);
 
   const loadPage = useCallback((page, direction) => {
     if (isLoading) return;
@@ -184,7 +222,7 @@ export default function News({
                           date={item?.published_at}
                           title={item.title}
                           image={item.image_main}
-                          onPost={() => setSlide(item)}
+                          onPost={() => handlePost(item)}
                         />
                       ))}
                     </div>
@@ -203,7 +241,7 @@ export default function News({
           <PopularSpotlights
             news={spotlights}
             className="spotlight-sidebar--desktop"
-            onPost={(id) => handleSpotlight(id, spotlights, setSlide)}
+            onPost={handlePopularPost}
           />
         </div>
       </div>
@@ -222,6 +260,14 @@ export default function News({
         handleClose={() => setReportage(undefined)}
       >
         <ReportageContent reportage={reportage} />
+      </Modal>
+
+      <Modal
+        breadcrumbs={[{ title: "Главная" }, { title: "Новости" }, { title: currentPost?.title }]}
+        isOpen={isModalOpen}
+        handleClose={handleCloseModal}
+      >
+        {currentPost ? <PostContent post={currentPost} /> : <div>Загрузка...</div>}
       </Modal>
 
       <AppFooter />

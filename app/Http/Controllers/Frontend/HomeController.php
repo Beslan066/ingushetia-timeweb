@@ -158,8 +158,6 @@ class HomeController extends Controller
     ]);
   }
 
-
-
   public function nationalProjects()
   {
     $natProjects = NationalProject::all();
