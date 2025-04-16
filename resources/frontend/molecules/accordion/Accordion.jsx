@@ -17,7 +17,7 @@ export default function Accordion({ title, children }) {
         <span className="accordion__icon"><img src={ open ? '/img/icons/Minus.svg' : '/img/icons/Plus.svg' } alt="иконка открытия"/></span>
       </button>
       <div className="accordion__body" ref={drawerRef}>
-        <div className="accordion-body__content">
+        <div className="accordion-body__content" >
           { children }
         </div>
       </div>

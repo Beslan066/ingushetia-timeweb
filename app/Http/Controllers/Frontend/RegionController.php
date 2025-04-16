@@ -10,6 +10,8 @@ use App\Models\Municipality;
 use App\Models\NationalProject;
 use App\Models\News;
 use App\Models\PhotoReportage;
+use App\Models\Region;
+use App\Models\RegionSection;
 use App\Models\Resource;
 use App\Models\SocialEconomicDevelopment;
 use App\Models\Video;
@@ -18,10 +20,17 @@ use Inertia\Inertia;
 
 class RegionController extends Controller
 {
-    public function index()
-    {
-        return Inertia::render('Region/Region');
-    }
+  public function index()
+  {
+    $region = Region::first();
+    $sections = RegionSection::all();
+
+
+    return Inertia::render('Region/Region', [
+      'region' => $region,
+      'sections' => $sections,
+    ]);
+  }
 
     public function economic()
     {

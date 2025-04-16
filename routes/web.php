@@ -62,9 +62,6 @@ Route::group(['middleware' => 'auth.basic'], function () {
 
   Route::get('/agencies', [AgencyController::class, 'index'])->name('agencies.index');
   Route::get('/agencies/{agency:slug}', [AgencyController::class, 'singleAgency'])->name('agencies.single');
-  Route::get('/region', function () {
-    return Inertia::render('Region/Region');
-  });
   Route::get('/economic', function () {
     return Inertia::render('Region/Economics');
   });

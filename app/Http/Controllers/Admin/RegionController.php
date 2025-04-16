@@ -14,7 +14,7 @@ class RegionController extends Controller
      */
     public function index()
     {
-        $region = Region::all();
+        $region = Region::query()->take(1)->get()->last();
 
         $regionCount = $region->count();
 
@@ -98,8 +98,8 @@ class RegionController extends Controller
     $region->update([
         'name' => $request->name,
         'description' => $request->description,
-        'image_main' => $request->file('image_main') 
-            ? $request->file('image_main')->store('regions') 
+        'image_main' => $request->file('image_main')
+            ? $request->file('image_main')->store('regions')
             : $region->image_main,
     ]);
 

@@ -33,6 +33,7 @@
         "react-intersection-observer": "^9.15.1",
         "react-swipeable": "^7.0.1",
         "react-transition-group": "^4.4.5",
+        "terser": "^5.39.0",
         "ziggy-js": "^2.5.2"
     }
 }
