@@ -31,7 +31,7 @@ export default function Region() {
             <span className="img__description">Центр города Магас, Республика Ингушетия</span>
           </div>
 
-          <div dangerouslySetInnerHTML={{ __html: region.content }} className={'mb-2'}>
+          <div dangerouslySetInnerHTML={{ __html: region.description }} className={'mb-2'}>
 
           </div>
 
