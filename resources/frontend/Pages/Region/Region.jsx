@@ -31,8 +31,8 @@ export default function Region() {
             <span className="img__description">Центр города Магас, Республика Ингушетия</span>
           </div>
 
-          <div>
-            {region.name}
+          <div dangerouslySetInnerHTML={{ __html: section.content }} className={mb-2}>
+
           </div>
 
           <div className="accordion__items">
