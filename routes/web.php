@@ -169,6 +169,18 @@ Route::group(['namespace' => 'Admin', 'middleware' => \App\Http\Middleware\Admin
 
     });
 
+
+  Route::group(['namespace' => 'Region', 'prefix' => 'raduga'], function () {
+    Route::get('/regions', [App\Http\Controllers\Admin\RegionController::class, 'index'])->name('admin.regions.index');
+
+    Route::get('/regions/create', [App\Http\Controllers\Admin\RegionController::class, 'create'])->name('admin.regions.create');
+    Route::post('/regions/store', [App\Http\Controllers\Admin\RegionController::class, 'store'])->name('admin.regions.store');
+    Route::get('/regions/{region}/edit', [App\Http\Controllers\Admin\RegionController::class, 'edit'])->name('admin.regions.edit');
+    Route::patch('/regions/{region}', [App\Http\Controllers\Admin\RegionController::class, 'update'])->name('admin.regions.update');
+    Route::delete('/regions/{region}', [App\Http\Controllers\Admin\RegionController::class, 'destroy'])->name('admin.regions.delete');
+
+  });
+
     Route::group(['namespace' => 'ManagmentReserve', 'prefix' => 'raduga'], function () {
         Route::get('/managment-reserve', [App\Http\Controllers\Admin\ManagmentReserveController::class, 'index'])->name('admin.managmentReserves.index');
 
