@@ -11,12 +11,12 @@ class AdministrationController extends Controller {
   public function index() {
 
     $headMember = Administration::query()
-      ->where('position', 1)
-      ->orderBy('position', 'desc')->get();
+      ->where('priority', 1)
+      ->orderBy('priority', 'desc')->take(1)->first();
 
     $admnistrators = Administration::query()
-      ->whereNot('position', 1)
-      ->orderBy('position', 'desc')->get();
+      ->whereNot('priority', 1)
+      ->orderBy('priority', 'desc')->get();
 
     return Inertia::render('Administration/AdministrationStructure', [
       'admnistrators' => $admnistrators,

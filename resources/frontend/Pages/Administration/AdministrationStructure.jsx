@@ -16,6 +16,8 @@ export default function AdministrationStructure({admnistrators, headMember}) {
     setSelectedMember(member);
   };
 
+  console.log(headMember)
+
   return (
     <>
       <AppHeader anniversary={ false }/>
@@ -26,9 +28,8 @@ export default function AdministrationStructure({admnistrators, headMember}) {
             <GovernmentMember
               isHead={true}
               name={headMember.name}
-              avatar={headMember.avatar}
+              avatar={`/storage/${headMember.image_main}`}
               position={headMember.position}
-              onClick={() => handleMemberClick(headMember)}
             />
             {admnistrators &&
               admnistrators.map((admnistrator) => {
