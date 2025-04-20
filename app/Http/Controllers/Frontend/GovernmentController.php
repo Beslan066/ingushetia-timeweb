@@ -11,33 +11,33 @@ class GovernmentController extends Controller
 {
   public function government()
   {
-    return Inertia::render('Government/Government');
+    return Inertia::render('Administration/Administration');
   }
   public function structure()
   {
 
     $ministers = Minister::query()->whereNot('priority', 1)->get();
 
-    return Inertia::render('Government/GovernmentStructure', ['ministers' => $ministers]);
+    return Inertia::render('Administration/AdministrationStructure', ['ministers' => $ministers]);
   }
   public function abilities()
   {
-    return Inertia::render('Government/GovernmentAbilities');
+    return Inertia::render('Administration/GovernmentAbilities');
   }
   public function sessions()
   {
-    return Inertia::render('Government/GovernmentSessions');
+    return Inertia::render('Administration/GovernmentSessions');
   }
   public function plan()
   {
-    return Inertia::render('Government/GovernmentPlan');
+    return Inertia::render('Administration/GovernmentPlan');
   }
   public function colleagues()
   {
-    return Inertia::render('Government/GovernmentColleagues');
+    return Inertia::render('Administration/GovernmentColleagues');
   }
   public function directories()
   {
-    return Inertia::render('Government/Directories');
+    return Inertia::render('Administration/Directories');
   }
 }

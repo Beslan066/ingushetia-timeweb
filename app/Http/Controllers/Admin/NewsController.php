@@ -143,7 +143,6 @@ class NewsController extends Controller
     public function edit(News $news)
     {
 
-
         $reportages = PhotoReportage::all();
         $videos = Video::all();
 

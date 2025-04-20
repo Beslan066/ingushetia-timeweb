@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\ImplementationController;
 use App\Http\Controllers\Admin\SupportController;
+use App\Http\Controllers\Frontend\AdministrationController;
 use App\Http\Controllers\Frontend\AgencyController;
 use App\Http\Controllers\Frontend\GovernmentController;
 use App\Http\Controllers\Frontend\HomeController;
@@ -42,6 +43,9 @@ Route::group(['middleware' => 'auth.basic'], function () {
 
 
   Route::get('/president', [HomeController::class, 'president'])->name('president');
+  Route::get('/president-administration', [AdministrationController::class, 'index'])->name('presidentAdministration');
+
+
   Route::prefix('government')->group(function () {
     Route::get('/', [GovernmentController::class, 'government'])->name('government');
     Route::get('/structure', [GovernmentController::class, 'structure'])->name('structure');
@@ -351,6 +355,28 @@ Route::group(['namespace' => 'Admin', 'middleware' => \App\Http\Middleware\Admin
     Route::get('/ministers/{minister}/edit', [App\Http\Controllers\Admin\MinisterController::class, 'edit'])->name('admin.ministers.edit');
     Route::patch('/ministers/{minister}', [App\Http\Controllers\Admin\MinisterController::class, 'update'])->name('admin.ministers.update');
     Route::delete('/ministers/{minister}', [App\Http\Controllers\Admin\MinisterController::class, 'destroy'])->name('admin.ministers.delete');
+
+  });
+
+  Route::group(['namespace' => 'Administration', 'prefix' => 'raduga'], function () {
+    Route::get('/administration', [App\Http\Controllers\Admin\AdministrationController::class, 'index'])->name('admin.administrations.index');
+
+    Route::get('/administration/create', [App\Http\Controllers\Admin\AdministrationController::class, 'create'])->name('admin.administrations.create');
+    Route::post('/administration/store', [App\Http\Controllers\Admin\AdministrationController::class, 'store'])->name('admin.administrations.store');
+    Route::get('/administration/{administration}/edit', [App\Http\Controllers\Admin\AdministrationController::class, 'edit'])->name('admin.administrations.edit');
+    Route::patch('/administration/{administration}', [App\Http\Controllers\Admin\AdministrationController::class, 'update'])->name('admin.administrations.update');
+    Route::delete('/administration/{administration}', [App\Http\Controllers\Admin\AdministrationController::class, 'destroy'])->name('admin.administrations.delete');
+
+  });
+
+  Route::group(['namespace' => 'AdministrationType', 'prefix' => 'raduga'], function () {
+    Route::get('/administration-types', [App\Http\Controllers\Admin\AdministrationTypeController::class, 'index'])->name('admin.administrationTypes.index');
+
+    Route::get('/administration-types/create', [App\Http\Controllers\Admin\AdministrationTypeController::class, 'create'])->name('admin.administrationTypes.create');
+    Route::post('/administration-types/store', [App\Http\Controllers\Admin\AdministrationTypeController::class, 'store'])->name('admin.administrationTypes.store');
+    Route::get('/administration-types/{administrationType}/edit', [App\Http\Controllers\Admin\AdministrationTypeController::class, 'edit'])->name('admin.administrationTypes.edit');
+    Route::patch('/administration-types/{administrationType}', [App\Http\Controllers\Admin\AdministrationTypeController::class, 'update'])->name('admin.administrationTypes.update');
+    Route::delete('/administration-types/{administrationType}', [App\Http\Controllers\Admin\AdministrationTypeController::class, 'destroy'])->name('admin.administrationTypes.delete');
 
   });
 

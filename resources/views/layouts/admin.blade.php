@@ -272,6 +272,12 @@
                     <li><a href="{{route('admin.agencies.index')}}" class=" waves-effect"><i
                           class="bx bx-buildings"></i><span>Министерства</span></a></li>
 
+                    <li><a href="{{route('admin.administrationTypes.index')}}" class=" waves-effect"><i
+                          class="bx bx-buildings"></i><span>Категории Администрации Главы</span></a></li>
+
+                    <li><a href="{{route('admin.administrations.index')}}" class=" waves-effect"><i
+                          class="bx bx-buildings"></i><span>Администрация Главы</span></a></li>
+
                     <li><a href="{{route('admin.mountains.index')}}" class=" waves-effect"><i
                           class="bx bx-mountain"></i><span>Родина башен</span></a></li>
                     <li>
