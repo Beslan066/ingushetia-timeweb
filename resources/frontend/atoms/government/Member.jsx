@@ -1,9 +1,12 @@
 import './member.css';
 
 export default function GovernmentMember({isHead, avatar, name, position, onClick}) {
+
+  const hasAvatar = avatar && !avatar.endsWith('/storage/null');
+
   return (
     <button className={ `government-team__container government-team--${isHead ? 'head' : 'member'}` } onClick={onClick}>
-      {avatar &&
+      {hasAvatar &&
         <div className="government-team__avatar">
           <img src={avatar} alt={name}/>
         </div>
