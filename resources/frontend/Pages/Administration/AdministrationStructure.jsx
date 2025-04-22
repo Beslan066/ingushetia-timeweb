@@ -9,14 +9,12 @@ import Modal from "#/atoms/modal/modal.jsx";
 import MilitaryContent from "#/atoms/modal/military-content.jsx";
 import MemberContent from "#/atoms/modal/member-content.jsx";
 
-export default function AdministrationStructure({admnistrators, headMember}) {
+export default function AdministrationStructure({administratorsByType, headMember}) {
   const [selectedMember, setSelectedMember] = useState(null);
 
   const handleMemberClick = (member) => {
     setSelectedMember(member);
   };
-
-  console.log(headMember)
 
   return (
     <>
@@ -24,6 +22,7 @@ export default function AdministrationStructure({admnistrators, headMember}) {
       <PageTitle title="Администрация Главы РИ"/>
       <div className="page-content__wrapper">
         <div className="page-content__content">
+          {/* Выводим главу отдельно */}
           <div className="government-team__wrapper government-team-columns">
             <GovernmentMember
               isHead={true}
@@ -31,21 +30,31 @@ export default function AdministrationStructure({admnistrators, headMember}) {
               avatar={`/storage/${headMember.image_main}`}
               position={headMember.position}
             />
-            {admnistrators &&
-              admnistrators.map((admnistrator) => {
-                return (
-                  <GovernmentMember
-                    key={admnistrator.id} // Добавьте key для списка
-                    isHead={false}
-                    name={admnistrator.name}
-                    avatar={`/storage/${admnistrator.image_main}`}
-                    position={admnistrator.position}
-                    onClick={() => handleMemberClick(admnistrator)}
-                  />
-                )
-              })
-            }
           </div>
+
+          {/* Выводим администраторов по категориям */}
+          {administratorsByType && Object.entries(administratorsByType).map(([typeId, admins]) => {
+            // typeId может быть null, если administration_types_id не установлен
+            const typeName = admins[0]?.type?.name || "Без категории";
+
+            return (
+              <div key={typeId} className="government-category">
+                <h2 className="government-category__title">{typeName}</h2>
+                <div className="government-team__wrapper government-team-columns">
+                  {admins.map((admin) => (
+                    <GovernmentMember
+                      key={admin.id}
+                      isHead={false}
+                      name={admin.name}
+                      avatar={`/storage/${admin.image_main}`}
+                      position={admin.position}
+                      onClick={() => handleMemberClick(admin)}
+                    />
+                  ))}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
       <AppFooter/>
@@ -60,8 +69,8 @@ export default function AdministrationStructure({admnistrators, headMember}) {
             name={selectedMember.name}
             avatar={selectedMember.image_main}
             position={selectedMember.position}
-            contacts={selectedMember.contacts || []} // Добавляем проверку на наличие contacts
-            content={selectedMember.content || ''} // Добавляем проверку на наличие content
+            contacts={selectedMember.contacts || []}
+            content={selectedMember.content || ''}
           />
         )}
       </Modal>

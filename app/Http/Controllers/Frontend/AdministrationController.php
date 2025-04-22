@@ -9,17 +9,22 @@ use Inertia\Inertia;
 
 class AdministrationController extends Controller {
   public function index() {
-
     $headMember = Administration::query()
       ->where('priority', 1)
-      ->orderBy('priority', 'desc')->take(1)->first();
+      ->orderBy('priority', 'desc')
+      ->take(1)
+      ->first();
 
-    $admnistrators = Administration::query()
+    // Получаем администраторов с их типами и группируем
+    $administratorsByType = Administration::query()
       ->whereNot('priority', 1)
-      ->orderBy('priority', 'asc')->get();
+      ->with('type') // Загружаем связанные типы
+      ->orderBy('priority', 'asc')
+      ->get()
+      ->groupBy('administration_types_id');
 
     return Inertia::render('Administration/AdministrationStructure', [
-      'admnistrators' => $admnistrators,
+      'administratorsByType' => $administratorsByType,
       'headMember' => $headMember,
     ]);
   }

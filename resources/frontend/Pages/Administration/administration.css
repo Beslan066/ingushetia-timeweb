@@ -167,3 +167,8 @@
 .government-team-columns {
   grid-template-columns: unset !important;
 }
+
+.government-category__title {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
