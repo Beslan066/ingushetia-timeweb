@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('administrations', function (Blueprint $table) {
           $table->id();
           $table->string('name');
-          $table->string('image_main');
+          $table->string('image_main')->nullable();
           $table->tinyInteger('priority')->nullable();
           $table->string('position');
           $table->text('bio')->nullable();

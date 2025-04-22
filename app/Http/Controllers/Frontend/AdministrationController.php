@@ -16,7 +16,7 @@ class AdministrationController extends Controller {
 
     $admnistrators = Administration::query()
       ->whereNot('priority', 1)
-      ->orderBy('priority', 'desc')->get();
+      ->orderBy('priority', 'asc')->get();
 
     return Inertia::render('Administration/AdministrationStructure', [
       'admnistrators' => $admnistrators,
