@@ -42,7 +42,6 @@
 
                                             <h4 class="card-title">Изображение</h4>
                                             <input type="file" class="dropify" data-height="300" name="image_main" multiple/>
-
                                         </div>
                                     </div>
                                 </div>

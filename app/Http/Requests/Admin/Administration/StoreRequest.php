@@ -30,7 +30,7 @@ class StoreRequest extends FormRequest
             'bio' => 'nullable',
             'user_id' => 'required',
             'priority' => 'nullable',
-            'image_main' => 'required|image|mimes:jpg,jpeg,webp,png',
+            'image_main' => 'nullable|image|mimes:jpg,jpeg,webp,png',
             'administration_types_id' => 'required',
         ];
     }
@@ -43,7 +43,6 @@ class StoreRequest extends FormRequest
             'position.required' => 'Заполните краткое описание.',
             'position.string' => 'Краткое описание должно быть строкой.',
             'position.max' => 'Длина краткого описания не должна превышать 255 символов.',
-            'image_main.required' => 'Необходимо выбрать изображение.',
             'image_main.image' => 'Файл должен быть изображением.',
             'image_main.mimes' => 'Изображение должно быть в формате: jpg, jpeg, webp, png.',
             'administration_types_id.required' => 'Поле обязательно для заполнения',
