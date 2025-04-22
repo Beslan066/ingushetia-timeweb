@@ -162,3 +162,8 @@
     max-width: 1212px;
   }
 }
+
+
+.government-team-columns {
+  grid-template-columns: unset !important;
+}

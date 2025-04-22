@@ -24,7 +24,7 @@ export default function AdministrationStructure({admnistrators, headMember}) {
       <PageTitle title="Администрация Главы РИ"/>
       <div className="page-content__wrapper">
         <div className="page-content__content">
-          <div className="government-team__wrapper">
+          <div className="government-team__wrapper government-team-columns">
             <GovernmentMember
               isHead={true}
               name={headMember.name}
