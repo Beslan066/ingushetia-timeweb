@@ -39,7 +39,6 @@ export default function MediaCollection({ media }) {
       const date = parseISO(isoDateStr);
 
       if (isNaN(date.getTime())) {
-        console.error('Invalid date:', dateStr);
         return '';
       }
 
