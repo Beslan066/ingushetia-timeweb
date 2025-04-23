@@ -64,7 +64,7 @@
               </div>
 
               <div class="form-group w-50">
-                <label for="slides">Слайд-шоу фотографий (макс. 40 файлов)</label>
+                <label for="slides">Слайд-шоу фотографий (макс. 19 файлов)</label>
                 <input type="file"
                        id="slides"
                        name="slides[]"

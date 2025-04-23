@@ -610,7 +610,7 @@
 
     // Функция обработки выбранных файлов
     function handleFileSelection(files) {
-      const maxFiles = 40;
+      const maxFiles = 19;
       const newFiles = Array.from(files);
 
       // Проверка на максимальное количество файлов

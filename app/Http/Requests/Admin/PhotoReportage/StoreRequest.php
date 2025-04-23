@@ -54,7 +54,7 @@ class StoreRequest extends FormRequest
 
       'slides.max' => 'Можно загрузить не более 40 слайдов.',
       'slides.*.mimes' => 'Слайды должны быть в формате: webp, jpeg, png, jpg.',
-      'slides.*.max' => 'Размер каждого слайда не должен превышать 130KB.',
+      'slides.*.max' => 'Размер каждого слайда не должен превышать 250KB.',
       'slides.*.dimensions' => 'Слайды должны быть минимум 600x400 пикселей.',
 
       'user_id.exists' => 'Выбранный автор не существует.',
