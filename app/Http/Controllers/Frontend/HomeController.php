@@ -47,8 +47,6 @@ class HomeController extends Controller
     $cacheKeys = [
       'categories' => 'categories_data',
       'resources' => 'resources_data_agency_5',
-      'photoReportages' => 'photo_reportages_last_4',
-      'videos' => 'videos_last_4',
       'cities' => 'municipalities_type_2',
       'districts' => 'municipalities_type_20',
       'mountains' => 'mountains_with_reportage',
@@ -65,13 +63,11 @@ class HomeController extends Controller
       return Resource::query()->where('agency_id', 5)->select('title', 'link')->get();
     });
 
-    $photoReportages = Cache::remember($cacheKeys['photoReportages'], $cacheTimeShort, function () {
-      return PhotoReportage::query()->take(4)->orderBy('published_at', 'desc')->get();
-    });
+    // Фоторепортажи без кеширования
+    $photoReportages = PhotoReportage::query()->take(4)->orderBy('published_at', 'desc')->get();
 
-    $videos = Cache::remember($cacheKeys['videos'], $cacheTimeShort, function () {
-      return Video::query()->take(4)->orderBy('published_at', 'desc')->get();
-    });
+    // Видео без кеширования
+    $videos = Video::query()->take(4)->orderBy('published_at', 'desc')->get();
 
     $cities = Cache::remember($cacheKeys['cities'], $cacheTimeLong, function () {
       return Municipality::query()->with('supervisor')->where('type', 2)->get();
@@ -143,8 +139,6 @@ class HomeController extends Controller
       'categories' => $categories,
       'mainPosts' => $mainPosts,
       'resources' => $resources,
-      'photoReportages' => $photoReportages,
-      'videos' => $videos,
       'media' => collect($photoReportages)->merge($videos)->sortByDesc('published_at'),
       'cities' => $cities,
       'districts' => $districts,
