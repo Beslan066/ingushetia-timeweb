@@ -139,7 +139,9 @@ class HomeController extends Controller
       'categories' => $categories,
       'mainPosts' => $mainPosts,
       'resources' => $resources,
-      'media' => collect($photoReportages)->merge($videos)->sortByDesc('published_at'),
+      'media' => collect($photoReportages)->merge($videos)->sortByDesc('published_at')
+        ->values()
+        ->all(),
       'cities' => $cities,
       'districts' => $districts,
       'mountains' => $mountains,
