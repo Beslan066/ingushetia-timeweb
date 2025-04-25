@@ -64,6 +64,11 @@ class RegionController extends Controller
 
   public function nationalProjects()
   {
-    return Inertia::render('Region/NationalProjects');
+
+    $nationalProjects = NationalProject::query()->orderBy('id', 'asc')->get();
+
+    return Inertia::render('Region/NationalProjects', [
+      'nationalProjects' => $nationalProjects
+    ]);
   }
 }

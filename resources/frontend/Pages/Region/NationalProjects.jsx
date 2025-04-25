@@ -7,7 +7,8 @@ import React from "react";
 import './region.css'
 import Accordion from "#/molecules/accordion/Accordion.jsx";
 
-export default function NationalProjects() {
+export default function NationalProjects({nationalProjects}) {
+
   return (
     <>
       <AppHeader anniversary={ false }/>
@@ -40,30 +41,11 @@ export default function NationalProjects() {
           <p>В 2024 году на реализацию национальных проектов из федерального и областного бюджетов предусмотрено 11,19
             млрд.руб.</p>
           <div className="accordion__items">
-            <Accordion title="Национальный проект «Демография»">
-              <div className="inline-img">
-                <img src="/img/pages/demography.png" alt="Национальный проект «Демография»"/>
-              </div>
-              <p>В национальный проект «Демография» включено 5 федеральных проектов:</p>
-              <ul>
-                <li>Финансовая поддержка семей при рождении детей;</li>
-                <li>Содействие занятости;</li>
-                <li>Старшее поколение;</li>
-                <li>Укрепление общественного здоровья;</li>
-                <li>Спорт - норма жизни.</li>
-              </ul>
-              <hr/>
-              <p>В Республике Ингушетия реализуются:</p>
-              <ul>
-                <li>Финансовая поддержка семей при рождении детей</li>
-                <li>Содействие занятости женщин - создание условий дошкольного образования для детей в возрасте до трех лет</li>
-                <li>Разработка и реализация программы системной поддержки и повышения качества жизни граждан старшего поколения</li>
-                <li>Формирование системы мотивации граждан к здоровому образу жизни, включая здоровое питание и отказ от вредных привычек</li>
-                <li>Создание для всех категорий и групп населения условий для занятий физической культурой и спортом, массовым
-                  спортом, в том числе повышение уровня обеспеченности населения объектами спорта, а также подготовка
-                  спортивного резерва</li>
-              </ul>
+            {nationalProjects?.map(item => (
+            <Accordion title={item.title}>
+              <div dangerouslySetInnerHTML={{ __html: item.content }} />
             </Accordion>
+            ))}
           </div>
         </div>
         <div className="page-content__navigation">
