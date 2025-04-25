@@ -40,9 +40,18 @@ export default function NationalProjects({nationalProjects}) {
             совета при Главе Ингушетии по приоритетным проектам и стратегическому развитию Ингушетии».</p>
           <p>В 2024 году на реализацию национальных проектов из федерального и областного бюджетов предусмотрено 11,19
             млрд.руб.</p>
+
+          <p>
+            <b>
+              Республика участвует в реализации следующих национальных проектов:
+            </b>
+          </p>
           <div className="accordion__items">
             {nationalProjects?.map(item => (
             <Accordion title={item.title}>
+              <div className={'inline-img'}>
+                <img src={`/storage/${item.image_main}`} alt=""/>
+              </div>
               <div dangerouslySetInnerHTML={{ __html: item.content }} />
             </Accordion>
             ))}
