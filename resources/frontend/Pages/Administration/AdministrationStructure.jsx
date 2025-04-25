@@ -48,7 +48,7 @@ export default function AdministrationStructure({administratorsByType, headMembe
                       name={admin.name}
                       avatar={`/storage/${admin.image_main}`}
                       position={admin.position}
-                      onClick={() => handleMemberClick(admin)}
+                      // onClick={() => handleMemberClick(admin)}
                     />
                   ))}
                 </div>
