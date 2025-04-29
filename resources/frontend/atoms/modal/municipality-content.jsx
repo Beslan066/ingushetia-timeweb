@@ -8,6 +8,10 @@ export default function MunicipalityContent({ municipality }) {
     return null;
   }
 
+  // Проверка на наличие supervisor
+  const hasSupervisor = municipality?.supervisor && Object.keys(municipality.supervisor).length > 0;
+
+
   return (
     <div className="municipality-content">
       <div className="municipality__body-wrapper">
@@ -36,16 +40,20 @@ export default function MunicipalityContent({ municipality }) {
             </div>
           </div>
 
-          <div className="city-head">
-            <div className="head-person-image">
-              <img src={ `/storage/${ municipality?.supervisor?.image_main }` } alt=""/>
+          {hasSupervisor && (
+            <div className="city-head">
+              <div className="head-person-image">
+                <img src={`/storage/${municipality.supervisor.image_main}`} alt="" />
+              </div>
+              <div className="head-person-info">
+                <h3>{municipality.supervisor.name}</h3>
+                {municipality.supervisor.position && (
+                  <span className="supervisor__position">{municipality.supervisor.position}</span>
+                )}
+                <div className="head-bio" dangerouslySetInnerHTML={{ __html: municipality.supervisor.bio }}></div>
+              </div>
             </div>
-            <div className="head-person-info">
-              <h3>{ municipality?.supervisor?.name }</h3>
-              <span className="supervisor__position">{municipality?.supervisor.position}</span>
-              <div className={ 'head-bio' } dangerouslySetInnerHTML={ { __html: municipality?.supervisor?.bio } }></div>
-            </div>
-          </div>
+          )}
         </div>
 
         {
