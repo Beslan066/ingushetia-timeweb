@@ -39,7 +39,7 @@ export default function News({
                                filters: initialFilters
                              }) {
   const { props } = usePage();
-  const [selectedCategory, setSelectedCategory] = useState(initialFilters.category);
+  const [selectedCategory, setSelectedCategory] = useState(initialFilters?.category || null);
   const [filters, setFilters] = useState(null);
   const [isFiltersOpened, setFiltersOpened] = useState(false);
   const [slide, isSlideOpen, setSlide] = useModal(undefined);
@@ -54,13 +54,41 @@ export default function News({
   const prevNotVisitedPage = Math.min(...visitedPages) > 1 ? Math.min(...visitedPages) - 1 : null;
   const nextNotVisitedPage = Math.max(...visitedPages) < paginator.total ? Math.max(...visitedPages) + 1 : null;
 
-
   const scrollPositionRef = useRef(0);
   const currentPageRef = useRef(pageNumber);
 
+  // Обработчик изменения категории
+  const onCategorySwitch = useCallback((categoryId) => {
+    const newCategory = categoryId !== null ? String(categoryId) : null;
+    setSelectedCategory(newCategory);
+
+    // Сбрасываем страницы и загружаем первую страницу с новой категорией
+    setIsLoading(true);
+    setPages([]);
+
+    router.reload({
+      method: 'get',
+      data: { page: 1, category: newCategory, ...filters },
+      preserveScroll: true,
+      onSuccess: ({ props: data }) => {
+        setPages([{ page: data.page, news: data.news, media: data.media }]);
+        setPaginator({ page: data.page, total: data.pages });
+        currentPageRef.current = data.page;
+
+        // Обновляем URL
+        const searchParams = new URLSearchParams();
+        if (newCategory) searchParams.set('category', newCategory);
+        if (filters?.dateFrom) searchParams.set('dateFrom', filters.dateFrom);
+        if (filters?.dateTo) searchParams.set('dateTo', filters.dateTo);
+        window.history.pushState({}, "", `/news?${searchParams.toString()}`);
+      },
+      onFinish: () => setIsLoading(false),
+    });
+  }, [filters]);
+
   const handlePost = (post) => {
     scrollPositionRef.current = window.scrollY;
-    currentPageRef.current = paginator.page; // Сохраняем текущую страницу
+    currentPageRef.current = paginator.page;
 
     router.get(`/news/${post.url}`, {}, {
       preserveScroll: true,
@@ -83,20 +111,19 @@ export default function News({
     setIsModalOpen(false);
     setCurrentPost(null);
 
-    // Восстанавливаем правильный URL с учетом текущей страницы
-    const searchParams = new URLSearchParams(window.location.search);
+    const searchParams = new URLSearchParams();
     if (selectedCategory) searchParams.set('category', selectedCategory);
+    if (filters?.dateFrom) searchParams.set('dateFrom', filters.dateFrom);
+    if (filters?.dateTo) searchParams.set('dateTo', filters.dateTo);
     searchParams.set('page', currentPageRef.current);
 
     const newUrl = `/news?${searchParams.toString()}`;
+    window.history.pushState({}, "", newUrl);
 
     setTimeout(() => {
       window.scrollTo(0, scrollPositionRef.current);
     }, 0);
-
-    window.history.pushState({}, "", newUrl);
   };
-
 
   useEffect(() => {
     if (props.showNews) {
@@ -110,11 +137,16 @@ export default function News({
 
     const currentScroll = window.scrollY;
     setIsLoading(true);
-    currentPageRef.current = page; // Обновляем текущую страницу
+    currentPageRef.current = page;
 
     router.reload({
       method: 'get',
-      data: { page, category: selectedCategory, ...filters },
+      data: {
+        page,
+        category: selectedCategory,
+        dateFrom: filters?.dateFrom,
+        dateTo: filters?.dateTo
+      },
       preserveScroll: true,
       onSuccess: ({ props: data }) => {
         const currentPage = { page: data.page, news: data.news, media: data.media };
@@ -129,21 +161,21 @@ export default function News({
           setTimeout(() => window.scrollTo(0, currentScroll), 0);
         }
 
-        window.history.replaceState(
-          null,
-          '',
-          `?page=${data.page}${selectedCategory ? `&category=${selectedCategory}` : ''}`
-        );
+        // Обновляем URL с текущими параметрами
+        const searchParams = new URLSearchParams();
+        if (selectedCategory) searchParams.set('category', selectedCategory);
+        if (filters?.dateFrom) searchParams.set('dateFrom', filters.dateFrom);
+        if (filters?.dateTo) searchParams.set('dateTo', filters.dateTo);
+        searchParams.set('page', data.page);
+        window.history.replaceState({}, "", `/news?${searchParams.toString()}`);
       },
       onFinish: () => setIsLoading(false),
     });
   }, [isLoading, selectedCategory, filters]);
 
-
   const BackToTopFixed = React.useMemo(() => {
     return () => <BackToTop key={currentPageRef.current} />;
   }, [currentPageRef.current]);
-
 
   useEffect(() => {
     const onScroll = () => {
@@ -160,35 +192,51 @@ export default function News({
       }
 
       if (scrollTop <= 100 && paginator.page !== 1) {
-        window.history.replaceState(
-          null,
-          '',
-          `?${selectedCategory ? `category=${selectedCategory}` : ''}`
-        );
+        const searchParams = new URLSearchParams();
+        if (selectedCategory) searchParams.set('category', selectedCategory);
+        if (filters?.dateFrom) searchParams.set('dateFrom', filters.dateFrom);
+        if (filters?.dateTo) searchParams.set('dateTo', filters.dateTo);
+        window.history.replaceState({}, "", `/news?${searchParams.toString()}`);
+
         setPages((prev) => prev.slice(0, 1));
         setPaginator((prev) => ({ ...prev, page: 1 }));
+        currentPageRef.current = 1;
       }
     };
 
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
-  }, [loadPage, nextNotVisitedPage, prevNotVisitedPage, isLoading, paginator.page, selectedCategory]);
+  }, [loadPage, nextNotVisitedPage, prevNotVisitedPage, isLoading, paginator.page, selectedCategory, filters]);
 
   const onFilters = (dateFrom, dateTo, selected) => {
+    const newCategory = selected !== null ? String(selected) : null;
+    const newFilters = { dateFrom, dateTo };
+
+    setIsLoading(true);
+    setSelectedCategory(newCategory);
+    setFilters(newFilters);
+    setPages([]);
+
     router.reload({
       method: 'get',
-      data: { page: 1, category: selected, dateFrom, dateTo },
+      data: { page: 1, category: newCategory, ...newFilters },
       onSuccess: ({ props: data }) => {
         setPages([{ page: data.page, news: data.news, media: data.media }]);
         setPaginator({ page: data.page, total: data.pages });
-        setFilters({ dateFrom, dateTo });
-        setSelectedCategory(selected);
+        currentPageRef.current = data.page;
+
+        // Обновляем URL
+        const searchParams = new URLSearchParams();
+        if (newCategory) searchParams.set('category', newCategory);
+        if (dateFrom) searchParams.set('dateFrom', dateFrom);
+        if (dateTo) searchParams.set('dateTo', dateTo);
+        window.history.pushState({}, "", `/news?${searchParams.toString()}`);
+      },
+      onFinish: () => {
+        setIsLoading(false);
+        setFiltersOpened(false);
       }
     });
-  };
-
-  const onCategorySwitch = (categoryId) => {
-    setSelectedCategory(categoryId !== null ? Number(categoryId) : null);
   };
 
   return (
@@ -200,13 +248,18 @@ export default function News({
           <div className="news-hero__news-wrapper">
             <div className="news-wrapper">
               <div className={'tab-row'}>
-                <Tabs tabs={categories} onTab={onCategorySwitch} selected={selectedCategory} />
+                <Tabs
+                  tabs={categories}
+                  onTab={onCategorySwitch}
+                  selected={selectedCategory}
+                />
               </div>
             </div>
             <Filters
               isActive={isFiltersOpened}
               onChange={(dateFrom, dateTo) => onFilters(dateFrom, dateTo, selectedCategory)}
               onClose={() => setFiltersOpened(false)}
+              initialCategory={selectedCategory}
             />
             <div id="news-feed-container">
               {pages.map((page, index) => (
@@ -262,7 +315,6 @@ export default function News({
           <div className={'filter-button-row'}>
             <FilterButton isActive={isFiltersOpened} onChange={setFiltersOpened} />
           </div>
-
           <PopularSpotlights
             news={spotlights}
             className="spotlight-sidebar--desktop"
