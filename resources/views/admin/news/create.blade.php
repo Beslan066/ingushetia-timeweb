@@ -69,7 +69,7 @@
 
                         <div class="form-group w-50">
                             <label for="exampleFormControlSelect1">Категория</label>
-                            <select class="form-control" id="exampleFormControlSelect1" name="category_id">
+                            <select class="form-control" id="exampleFormControlSelect1" name="category_id" required>
                                 <option value="">Выберите категорию</option>
                                 @foreach($categories as $category)
                                     <option value="{{$category->id}}">{{$category->title}}</option>

@@ -9,7 +9,7 @@ export default function Vectors ({ vectors }) {
       <div className="vectors">
         {
           vectors.map((vector) => {
-            return <VectorItem key={vector.title} image={vector.image} route={vector.route} title={vector.title} profits={ vector.profits }/>
+            return <VectorItem id={vector.id} key={vector.name} image={vector.image_main} name={vector.name} sections={ vector.sections }/>
           })
         }
       </div>

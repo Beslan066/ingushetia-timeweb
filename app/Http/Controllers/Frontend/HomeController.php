@@ -19,6 +19,7 @@ use App\Models\PhotoReportage;
 use App\Models\ManagmentReserve;
 use App\Models\Resource;
 use App\Models\Antinar;
+use App\Models\Vector;
 use App\Models\Video;
 use App\Models\Konkurs;
 use App\Models\FederalAuthority;
@@ -134,6 +135,16 @@ class HomeController extends Controller
         ->get();
     }
 
+    // Векторы развития Ингушетии
+    $vectors = Vector::query()
+      ->orderBy('created_at', 'desc')
+      ->with(['sections' => function($query) {
+        $query->orderBy('created_at', 'desc')->take(3);
+      }])
+      ->take(4)
+      ->get();
+
+
     return Inertia::render('Index', [
       'posts' => $posts,
       'categories' => $categories,
@@ -147,6 +158,7 @@ class HomeController extends Controller
       'mountains' => $mountains,
       'showNews' => $openedNews,
       'anniversary' => config('app.anniversary'),
+      'vectors' => $vectors,
     ]);
   }
 
@@ -489,6 +501,24 @@ class HomeController extends Controller
   {
     return Inertia::render('President/President');
 
+  }
+
+  public function vectors($id)
+  {
+    // Получаем вектор с его секциями
+    $vector = Vector::with('sections')->findOrFail($id);
+
+    // Получаем новости этой категории
+    $vectorNews = News::where('category_id', $vector->category_id)
+      ->whereNotNull('published_at')
+      ->orderBy('published_at', 'desc')
+      ->take(8)
+      ->get();
+
+    return Inertia::render('Vectors/VectorsSingle', [
+      'vector' => $vector,
+      'news' => $vectorNews,
+    ]);
   }
 
 }

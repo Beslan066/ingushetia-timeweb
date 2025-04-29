@@ -286,6 +286,9 @@
                       <ul class="sub-menu" aria-expanded="false">
                         <li>
                           <a href="{{route('admin.regions.index')}}" class="waves-effect">Основная информация</a></li>
+                        <li>
+                          <a href="{{route('admin.vectors.index')}}" class="waves-effect">Векторы развития</a>
+                        </li>
                         <li><a href="{{route('admin.natProjects.index')}}" class=" waves-effect"><i class="bx bxs-city"></i><span>Национальные проекты</span></a></li>
                         <li><a href="{{route('admin.implementations.index')}}" class=" waves-effect"><i
                               class='bx bxs-pen'></i><span>Реализация указов Президента</span></a></li>

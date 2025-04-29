@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('regions', function (Blueprint $table) {
+        Schema::create('vectors', function (Blueprint $table) {
           $table->id();
           $table->string('name');
           $table->text('description')->nullable();
           $table->string('image_main')->nullable();
+          $table->foreignId('category_id')->constrained();
         });
     }
 
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('regions');
+        Schema::dropIfExists('vectors');
     }
 };

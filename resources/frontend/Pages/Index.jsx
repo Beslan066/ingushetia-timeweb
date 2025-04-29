@@ -22,34 +22,10 @@ export default function Index({
                                 mountains,
                                 resources,
                                 showNews: openedNews,
-                                anniversary
+                                anniversary,
+                                vectors
                               }) {
-  const vectors = [
-    {
-      image: '/img/content/vectors/vector1.webp',
-      route: '',
-      title: 'Сельское хозяйство',
-      profits: ['Создано более 1000 рабочих мест', 'На 18% увеличен сбор с/х продуктов', '145 гектаров новых пахатных земель']
-    },
-    {
-      image: '/img/content/vectors/vector2.webp',
-      route: '',
-      title: 'Цифровая сфера',
-      profits: ['Открыт IT-университет “Школа 21”', 'Выпущено более 400 IT-специалистов']
-    },
-    {
-      image: '/img/content/vectors/vector3.webp',
-      route: '',
-      title: 'Промышленность',
-      profits: ['Запущено 3 новых предприятия', 'Создано более 2000 новых рабочих мест']
-    },
-    {
-      image: '/img/content/vectors/vector4.webp',
-      route: '',
-      title: 'Туризм',
-      profits: ['На 20% больше туристов', 'Более 2 новых туристических зон']
-    },
-  ]
+
 
   return (
     <>

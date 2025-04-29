@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('regions', function (Blueprint $table) {
-          $table->id();
-          $table->string('name');
-          $table->text('description')->nullable();
-          $table->string('image_main')->nullable();
+        Schema::table('vectors', function (Blueprint $table) {
+          $table->timestamps();
         });
     }
 
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('regions');
+        Schema::table('vectors', function (Blueprint $table) {
+          Schema::dropColumns('created_at', 'updated_at');
+        });
     }
 };

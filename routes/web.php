@@ -73,6 +73,7 @@ Route::group(['middleware' => 'auth.basic'], function () {
     return Inertia::render('Region/History');
   });
 
+  Route::get('/vectors/{id}', [HomeController::class, 'vectors'])->name('vectors');
   Route::get('/municipality', [RegionController::class, 'municipalities'])->name('municipalities');
   Route::get('/nation-projects', [RegionController::class, 'nationalProjects'])->name('nation-projects');
   Route::get('/pravitelstvo', function () {
@@ -179,6 +180,16 @@ Route::group(['namespace' => 'Admin', 'middleware' => \App\Http\Middleware\Admin
     Route::get('/regions/{region}/edit', [App\Http\Controllers\Admin\RegionController::class, 'edit'])->name('admin.regions.edit');
     Route::patch('/regions/{region}', [App\Http\Controllers\Admin\RegionController::class, 'update'])->name('admin.regions.update');
     Route::delete('/regions/{region}', [App\Http\Controllers\Admin\RegionController::class, 'destroy'])->name('admin.regions.delete');
+  });
+
+  Route::group(['namespace' => 'Vector', 'prefix' => 'raduga'], function () {
+    Route::get('/vectors', [App\Http\Controllers\Admin\VectorController::class, 'index'])->name('admin.vectors.index');
+
+    Route::get('/vectors/create', [App\Http\Controllers\Admin\VectorController::class, 'create'])->name('admin.vectors.create');
+    Route::post('/vectors/store', [App\Http\Controllers\Admin\VectorController::class, 'store'])->name('admin.vectors.store');
+    Route::get('/vectors/{vector}/edit', [App\Http\Controllers\Admin\VectorController::class, 'edit'])->name('admin.vectors.edit');
+    Route::patch('/vectors/{vector}', [App\Http\Controllers\Admin\VectorController::class, 'update'])->name('admin.vectors.update');
+    Route::delete('/vectors/{vector}', [App\Http\Controllers\Admin\VectorController::class, 'destroy'])->name('admin.vectors.delete');
 
   });
 
