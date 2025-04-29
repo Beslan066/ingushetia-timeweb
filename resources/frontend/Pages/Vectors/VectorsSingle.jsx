@@ -29,8 +29,13 @@ export default function VectorSingle({ vector, news, spotlights }) {
               src={`/storage/${vector.image_main}`}
               alt={vector.name}
             />
-            <span className="img__description">Центр города Магас, Республика Ингушетия</span>
           </div>
+
+          {vector.description &&
+            <div dangerouslySetInnerHTML={{ __html: vector.description }} className={'mb-2'}>
+
+            </div>
+          }
 
           <div className="downloadable__documents">
             {/* Выводим секции вектора в Downloadable */}
