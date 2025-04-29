@@ -6,7 +6,7 @@ export default function VectorItem({ name, image, sections, id }) {
   return (
     <div className="vector">
       <div className="vector__image">
-        <img src={image} alt={name} />
+        <img src={'storage/' + image} alt={name} />
       </div>
 
       <div className="vector__body">
