@@ -242,7 +242,12 @@ export default function News({
   return (
     <>
       <AppHeader />
-      <PageTitle title="Новости" />
+      <div className={'news-hero__news-wrapper news-page-title'}>
+        <PageTitle title="Новости" />
+        <div>
+          <FilterButton isActive={isFiltersOpened} onChange={setFiltersOpened} />
+        </div>
+      </div>
       <div className="news-hero">
         <div className="news-hero__slider-wrapper">
           <div className="news-hero__news-wrapper">
@@ -253,6 +258,7 @@ export default function News({
                   onTab={onCategorySwitch}
                   selected={selectedCategory}
                 />
+
               </div>
             </div>
             <Filters

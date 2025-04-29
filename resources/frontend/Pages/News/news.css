@@ -251,3 +251,24 @@
   transform: rotate(-45deg);
   margin-top: 5px;
 }
+
+
+.news-page-title > div {
+  display: none;
+}
+
+@media (max-width: 767px) {
+
+  .news-page-title {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .news-page-title > div {
+    display: flex;
+  }
+
+  .hero-announce-wrapper {
+    display: none;
+  }
+}
