@@ -7,10 +7,16 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Str;
 
 class News extends Model
 {
   use HasFactory;
+
+  protected $primaryKey = 'news_uid'; // Указываем, что первичный ключ - это UUID
+  protected $keyType = 'string'; // Тип ключа - строка (для UUID)
+  public $incrementing = false; // Отключаем автоинкремент, так как используем UUID
+
 
   protected $guarded = false;
 
@@ -32,7 +38,8 @@ class News extends Model
     'image_author',
     'image_description',
     'url',
-    'image_webp'
+    'image_webp',
+    'news_uid'
   ];
 
   protected $dates = ['deleted_at'];
@@ -47,6 +54,11 @@ class News extends Model
   public function category()
   {
     return $this->belongsTo(Category::class, 'category_id', 'id');
+  }
+
+  public function tags()
+  {
+    return $this->belongsToMany(Tag::class, 'news_tag', 'news_uid', 'tag_id');
   }
 
 
@@ -104,6 +116,17 @@ class News extends Model
   public function getRouteKeyName()
   {
     return 'url'; // Указываем, что для маршрутов используется поле url
+  }
+
+  protected static function boot()
+  {
+    parent::boot();
+
+    static::creating(function ($news) {
+      if (empty($news->news_uid)) {
+        $news->news_uid = (string) Str::uuid();
+      }
+    });
   }
 
   protected static function booted()

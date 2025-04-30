@@ -19,7 +19,7 @@ class NewsController extends Controller
     $dateFrom = request()->input('dateFrom') ? Carbon::parse(request()->input('dateFrom')) : null;
     $dateTo = request()->input('dateTo') ? Carbon::parse(request()->input('dateTo')) : null;
 
-    $categories = Category::query()->take(10)->get();
+    $categories = Category::all();
 
     $news = News::query()
       ->with('category')

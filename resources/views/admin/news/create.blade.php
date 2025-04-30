@@ -81,7 +81,18 @@
                         <div class="text-danger">{{ $message }}</div>
                         @enderror
 
-                        <div class="form-group w-50 mt-2">
+
+                      <div class="form-group w-50">
+                        <label for="tags">Теги</label>
+                        <select class="form-control select2" id="tags" name="tags[]" multiple>
+                          @foreach($tags as $tag)
+                            <option value="{{ $tag->id }}">{{ $tag->name }}</option>
+                          @endforeach
+                        </select>
+                      </div>
+
+
+                      <div class="form-group w-50 mt-2">
                             <select class="form-control" id="exampleFormControlSelect1" name="news_ing">
 
                                 <option value="">Выберите перевод</option>

@@ -40,6 +40,8 @@ class StoreRequest extends FormRequest
             'video_id' => 'nullable',
             'reportage_id' => 'nullable',
             'url' => 'nullable',
+            'tags' => 'nullable|array',
+            'tags.*' => 'nullable|string|max:255',
         ];
     }
 

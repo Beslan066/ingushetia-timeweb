@@ -8,10 +8,12 @@ use App\Http\Requests\Admin\News\UpdateRequest;
 use App\Models\Category;
 use App\Models\News;
 use App\Models\PhotoReportage;
+use App\Models\Tag;
 use App\Models\User;
 use App\Models\Video;
 use Binafy\LaravelUserMonitoring\Models\VisitMonitoring;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -41,9 +43,10 @@ class NewsController extends Controller
         $videos = Video::all();
         $categories = Category::all();
         $authors = User::query()->where('role', 10)->get();
+        $tags = Tag::all();
 
 
-        return view('admin.news.create', compact('authors', 'categories', 'videos', 'reportages'));
+        return view('admin.news.create', compact('authors', 'categories', 'videos', 'reportages', 'tags'));
     }
 
     /**
@@ -114,22 +117,45 @@ class NewsController extends Controller
 
   public function store(StoreRequest $request)
   {
-    $data = $request->validated();
+      $data = $request->validated();
 
-    if ($request->hasFile('image_main')) {
-      $paths = $this->processImage($request->file('image_main'));
-      $data['image_main'] = $paths['original'];
-      $data['image_webp'] = $paths['webp'];
-    }
+      if ($request->hasFile('image_main')) {
+          $paths = $this->processImage($request->file('image_main'));
+          $data['image_main'] = $paths['original'];
+          $data['image_webp'] = $paths['webp'];
+      }
 
-    $data['url'] = Str::slug($data['title']);
-    $data['main_material'] = $request->has('main_material') ? 1 : 0;
+      $data['url'] = Str::slug($data['title']);
+      $data['main_material'] = $request->has('main_material') ? 1 : 0;
 
-    News::create($data);
-    return redirect()->route('admin.news.index');
+      // Создаем новость
+      $news = News::create($data);
+
+      // Обработка тегов
+      if ($request->has('tags')) {
+          $tagIds = [];
+          foreach ($request->tags as $tagInput) {
+              if (is_string($tagInput) && !is_numeric($tagInput)) {
+                  $tag = Tag::firstOrCreate([
+                      'name' => $tagInput,
+                      'slug' => Str::slug($tagInput),
+                  ]);
+                  $tagIds[] = $tag->id;
+              } else {
+                  $tagIds[] = $tagInput;
+              }
+          }
+
+          // Используем sync с указанием UUID
+          $news->tags()->sync($tagIds);
+      }
+
+      return redirect()->route('admin.news.index');
   }
 
-    /**
+
+
+  /**
      * Display the specified resource.
      */
     public function show(string $id)
@@ -142,6 +168,9 @@ class NewsController extends Controller
      */
     public function edit(News $news)
     {
+
+        $news->load('tags');
+        dd($news->tags);
 
         $reportages = PhotoReportage::all();
         $videos = Video::all();
@@ -160,10 +189,7 @@ class NewsController extends Controller
     $data = $request->validated();
 
     if ($request->hasFile('image_main')) {
-      // Удаляем старые файлы
       Storage::delete([$news->image_main, $news->image_webp]);
-
-      // Обрабатываем новое изображение
       $paths = $this->processImage($request->file('image_main'));
       $data['image_main'] = $paths['original'];
       $data['image_webp'] = $paths['webp'];
@@ -173,10 +199,29 @@ class NewsController extends Controller
     $data['main_material'] = $request->has('main_material') ? 1 : 0;
 
     $news->update($data);
+
+    // Обработка тегов
+    if ($request->has('tags')) {
+      $tagIds = [];
+      foreach ($request->tags as $tagInput) {
+        if (is_string($tagInput) && !is_numeric($tagInput)) {
+          $tag = Tag::firstOrCreate([
+            'name' => $tagInput,
+            'slug' => Str::slug($tagInput),
+          ]);
+          $tagIds[] = $tag->id;
+        } else {
+          $tagIds[] = $tagInput;
+        }
+      }
+      $news->tags()->sync($tagIds);
+    }
+
     return redirect()->route('admin.news.index')->with('success', 'News updated successfully');
   }
 
-    /**
+
+  /**
      * Remove the specified resource from storage.
      */
     public function destroy(News $news)

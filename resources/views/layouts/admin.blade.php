@@ -20,6 +20,7 @@
   <link href="{{asset('assets/css/theme.min.css')}}" rel="stylesheet" type="text/css"/>
   <link href="{{asset('plugins/dropify/dropify.min.css')}}" rel="stylesheet" type="text/css"/>
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 
 
@@ -428,6 +429,7 @@
 <script src="{{asset('assets/pages/fileuploads-demo.js')}}"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/i18n/ru.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 
 <!-- Init js-->
@@ -693,6 +695,8 @@
     updatePreview();
   });
 </script>
+
+@stack('')
 
 </body>
 

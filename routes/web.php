@@ -149,7 +149,19 @@ Route::group(['namespace' => 'Admin', 'middleware' => \App\Http\Middleware\Admin
 
     });
 
-    Route::group(['namespace' => 'Document', 'prefix' => 'raduga'], function () {
+    Route::group(['namespace' => 'Tag', 'prefix' => 'raduga'], function () {
+      Route::get('/tags', [App\Http\Controllers\Admin\TagController::class, 'index'])->name('admin.tags.index');
+      Route::get('/tags/create', [App\Http\Controllers\Admin\TagController::class, 'create'])->name('admin.tags.create');
+      Route::post('/tags/store', [App\Http\Controllers\Admin\TagController::class, 'store'])->name('admin.tags.store');
+      Route::get('/tags/{tag}/edit', [App\Http\Controllers\Admin\TagController::class, 'edit'])->name('admin.tags.edit');
+      Route::patch('/tags/{tag}', [App\Http\Controllers\Admin\TagController::class, 'update'])->name('admin.tags.update');
+      Route::delete('/tags/{tag}', [App\Http\Controllers\Admin\TagController::class, 'destroy'])->name('admin.tags.delete');
+
+      Route::get('/tags/search', [App\Http\Controllers\Admin\TagController::class, 'search'])->name('admin.tags.search');
+    });
+
+
+  Route::group(['namespace' => 'Document', 'prefix' => 'raduga'], function () {
         Route::get('/documents', [App\Http\Controllers\Admin\DocumentController::class, 'index'])->name('admin.documents.index');
 
         Route::get('/documents/create', [App\Http\Controllers\Admin\DocumentController::class, 'create'])->name('admin.documents.create');
