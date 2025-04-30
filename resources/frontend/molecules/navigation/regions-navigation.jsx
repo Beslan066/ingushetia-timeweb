@@ -16,7 +16,7 @@ export default function RegionsNavigation() {
         <li><Link className={ `regions-nav__link ${ component === 'Region/NationalProjects' ? 'active' : ''}` } href="/nation-projects">Национальные проекты</Link></li>
         <li><Link className={ `regions-nav__link ${ component === 'Region/PresidentImplementations' ? 'active' : ''}` } href="/implementations">Реализация стратегических инициатив Президента РФ</Link></li>
         <li><Link className={ `regions-nav__link ${ component === 'Region/MilitarySupport' ? 'active' : ''}` } href="/military-support">Поддержка семей военнослужащих</Link></li>
-        <li><Link className={ `regions-nav__link ${ component === 'Region/CitizenSupport' ? 'active' : ''}` } href="/economic-support">Меры поддержки экономики и граждан</Link></li>
+        <li><Link className={ `regions-nav__link ${ component === 'Region/CitizenSupport' ? 'active' : ''}` } href="/economic-support">Поддержка экономики и граждан</Link></li>
       </ul>
     </nav>
   )

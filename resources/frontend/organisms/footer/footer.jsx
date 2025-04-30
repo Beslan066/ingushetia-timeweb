@@ -17,21 +17,20 @@ export default function AppFooter({ anniversary = false }) {
       links: [
         { link: '/president', name: 'Глава республики' },
         { link: '/government', name: 'Правительство РИ' },
-        { link: '/', name: 'Федеральные органы власти' },
       ]
     },
     {
       name: 'Регион',
       links: [
-        { link: '/', name: 'Государственная символика, гимн' },
-        { link: '/', name: 'Правовой статус и правовое устройство' },
-        { link: '/', name: 'Географическое положение и прир. ресурсы' },
-        { link: '/', name: 'Население и трудовые ресурсы' },
-        { link: '/', name: 'Промышленность и сельское хозяйство' },
-        { link: '/', name: 'Инвестиционная привлекательность' },
-        { link: '/', name: 'Культура и история' },
-        { link: '/', name: 'Исторический формуляр' },
-        { link: '/', name: 'Штандарт Главы Республики Ингушетия' },
+        { link: '/region', name: 'Государственная символика, гимн' },
+        { link: '/history', name: 'История' },
+        { link: '/economic', name: 'Экономика' },
+        { link: '/municipality', name: 'Муниципальные образования' },
+        { link: '/social-economic-development', name: 'Социально-экономическое развитие' },
+        { link: '/nation-projects', name: 'Национальные проекты' },
+        { link: '/implementations', name: 'Реализация указов Президента РФ от 07.05.2012 № 596-606\n' },
+        { link: '/military-support', name: 'Поддержка семей военнослужащих' },
+        { link: '/economic-support', name: 'Поддержка экономики и граждан' },
       ]
     },
     {

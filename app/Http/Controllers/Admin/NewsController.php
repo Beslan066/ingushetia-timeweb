@@ -168,10 +168,6 @@ class NewsController extends Controller
      */
     public function edit(News $news)
     {
-
-        $news->load('tags');
-        dd($news->tags);
-
         $reportages = PhotoReportage::all();
         $videos = Video::all();
 

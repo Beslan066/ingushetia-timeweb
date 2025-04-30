@@ -162,8 +162,7 @@ export default function AppHeader({ anniversary, logo, title }) {
               <ul className="submenu">
                 <li className="menu-item"><a href="/president">Глава Республики</a></li>
                 <li className="menu-item"><a href="/government">Правительство</a></li>
-                <li className="menu-item"><a href="#">Федеральные органы власти</a></li>
-                <li className="menu-item"><a href={ route('agencies.index') }>Министерства</a></li>
+                {/*<li className="menu-item"><a href={ route('agencies.index') }>Министерства</a></li>*/}
               </ul>
             </li>
             <li className="menu-item"><a href={ route('media') }>Медиа</a></li>
