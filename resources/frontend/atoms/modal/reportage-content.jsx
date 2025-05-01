@@ -61,16 +61,16 @@ export default function ReportageContent({ reportage }) {
 
       {reportage.video && <Video video={reportage.video} image={reportage.image_main} />}
 
-      <div className="tags__wrapper">
-        <div className="tags__title">Теги:</div>
-        <div className="tags">
-          {
-            (reportage?.tags ?? ['Спорт', 'Культура', 'Машины']).map((tag) => (
-              <Tag key={tag} tag={tag} />
-            ))
-          }
-        </div>
-      </div>
+      {/*<div className="tags__wrapper">*/}
+      {/*  <div className="tags__title">Теги:</div>*/}
+      {/*  <div className="tags">*/}
+      {/*    {*/}
+      {/*      (reportage?.tags ?? ['Спорт', 'Культура', 'Машины']).map((tag) => (*/}
+      {/*        <Tag key={tag} tag={tag} />*/}
+      {/*      ))*/}
+      {/*    }*/}
+      {/*  </div>*/}
+      {/*</div>*/}
 
       <div className="share__wrapper">
         <div className="share__title">Поделиться:</div>
