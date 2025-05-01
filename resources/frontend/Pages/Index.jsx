@@ -12,6 +12,9 @@ const ExternalResources = lazy(() => import("#/organisms/documents/external-reso
 const AppFooter = lazy(() => import("#/organisms/footer/footer.jsx"));
 const AnniversaryBanner = lazy(() => import("#/atoms/anniversary-banner/banner.jsx"));
 
+
+
+
 export default function Index({
                                 mainPosts: slides,
                                 categories,
@@ -25,7 +28,6 @@ export default function Index({
                                 anniversary,
                                 vectors
                               }) {
-
 
   return (
     <>

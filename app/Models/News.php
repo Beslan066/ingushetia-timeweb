@@ -39,8 +39,10 @@ class News extends Model
     'image_description',
     'url',
     'image_webp',
-    'news_uid'
+    'news_uid',
   ];
+
+  protected $with = ['tags'];
 
   protected $dates = ['deleted_at'];
   protected $appends = ['related_posts'];
@@ -132,13 +134,22 @@ class News extends Model
   protected static function booted()
   {
     static::saved(function ($model) {
-      // Очищаем кеш при сохранении
-      Redis::del('photo_reportages_last_4', 'videos_last_4', 'main_posts_agency_5');
+      // Очищаем все связанные кеши
+      Redis::del([
+        'news_last_12_agency_5',
+        'photo_reportages_last_4',
+        'videos_last_4',
+        'main_posts_agency_5'
+      ]);
     });
 
     static::deleted(function ($model) {
-      // Очищаем кеш при удалении
-      Redis::del('photo_reportages_last_4', 'videos_last_4', 'main_posts_agency_5');
+      Redis::del([
+        'news_last_12_agency_5',
+        'photo_reportages_last_4',
+        'videos_last_4',
+        'main_posts_agency_5'
+      ]);
     });
   }
 

@@ -95,13 +95,24 @@ class HomeController extends Controller
     // Кешируем обычные посты (без пагинации)
     $posts = Cache::remember($cacheKeys['posts'], $cacheTimeShort, function () {
       return News::query()
-        ->with('category', 'video', 'reportage')
+        ->with('category', 'video', 'reportage', 'tags')
         ->where('main_material', 0)
         ->where('agency_id', 5)
         ->orderBy('published_at', 'desc')
         ->take(6)
         ->get();
     });
+
+
+    // Векторы развития Ингушетии
+    $vectors = Vector::query()
+      ->orderBy('created_at', 'desc')
+      ->with(['sections' => function($query) {
+        $query->orderBy('created_at', 'desc')->take(3);
+      }])
+      ->take(4)
+      ->get();
+
 
     // Кешируем связанные посты
     $related = Cache::remember($cacheKeys['related'], $cacheTimeShort, function () use ($posts) {
@@ -124,7 +135,7 @@ class HomeController extends Controller
     $openedNews = null;
     if ($request->route('url')) {
       $openedNews = News::where('url', $request->route('url'))
-        ->with(['category', 'video', 'reportage'])
+        ->with(['category', 'video', 'reportage', 'tags'])
         ->firstOrFail();
 
       // Связанные новости для открытого поста
@@ -135,14 +146,6 @@ class HomeController extends Controller
         ->get();
     }
 
-    // Векторы развития Ингушетии
-    $vectors = Vector::query()
-      ->orderBy('created_at', 'desc')
-      ->with(['sections' => function($query) {
-        $query->orderBy('created_at', 'desc')->take(3);
-      }])
-      ->take(4)
-      ->get();
 
 
     return Inertia::render('Index', [

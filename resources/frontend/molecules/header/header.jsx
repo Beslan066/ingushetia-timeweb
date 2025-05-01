@@ -69,7 +69,7 @@ export default function AppHeader({ anniversary, logo, title }) {
       <header className="top-menu">
         <div className="top-menu__wrapper">
           <div className="top-menu__site-name">
-            { anniversary ? <AnniversaryLogoImage/> : <LogoImage logo={logo ?? "/img/logo.svg"}/> }
+            { anniversary ? <AnniversaryLogoImage/> : <LogoImage logo={logo ?? "/img/logoof.png"}/> }
             <a className={ `top-menu__title ${ anniversary ? 'top-menu__title--anniversary' : '' }` } href="/">
               <div className="top-menu__name">
                 <h1>

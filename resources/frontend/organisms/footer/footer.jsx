@@ -28,7 +28,7 @@ export default function AppFooter({ anniversary = false }) {
         { link: '/municipality', name: 'Муниципальные образования' },
         { link: '/social-economic-development', name: 'Социально-экономическое развитие' },
         { link: '/nation-projects', name: 'Национальные проекты' },
-        { link: '/implementations', name: 'Реализация указов Президента РФ от 07.05.2012 № 596-606\n' },
+        { link: '/implementations', name: 'Реализация указов Президента РФ' },
         { link: '/military-support', name: 'Поддержка семей военнослужащих' },
         { link: '/economic-support', name: 'Поддержка экономики и граждан' },
       ]

@@ -21,6 +21,8 @@ export default function PostContent({ post, onPost }) {
     }
   };
 
+  console.log(post.tags)
+
 
   return (
     <div className="post-content">
@@ -63,14 +65,16 @@ export default function PostContent({ post, onPost }) {
       </div>
 
       {/* Теги */}
-      <div className="tags__wrapper">
-        <div className="tags__title">Теги:</div>
-        <div className="tags">
-          {post.tags?.map((tag) => (
-            <Tag key={tag} tag={tag} />
-          ))}
+      {post.tags.length > 0 &&
+        <div className="tags__wrapper">
+          <div className="tags__title">Теги:</div>
+          <div className="tags">
+            {post.tags?.map((tag) => (
+              <Tag key={tag.id} tag={tag.name} />
+            ))}
+          </div>
         </div>
-      </div>
+      }
 
       {/* Блок "Смотрите также" */}
       {post.relatedPosts?.length > 0 && (
