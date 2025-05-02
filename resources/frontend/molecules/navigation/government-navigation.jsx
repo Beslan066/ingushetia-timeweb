@@ -22,7 +22,7 @@ export default function GovernmentNavigation() {
             )
           }
         </li>
-        <li><Link className={`regions-nav__link ${ component === 'Government/Directories' ? 'active' : ''}`} href="/government/directories">Аппарат правительства</Link></li>
+        {/*<li><Link className={`regions-nav__link ${ component === 'Government/Directories' ? 'active' : ''}`} href="/government/directories">Аппарат правительства</Link></li>*/}
         {/*<li><Link className={ `regions-nav__link ${ component === 'Administration/President' ? 'active' : ''}` } href="/government/structure">Аппарат правительства</Link></li>*/ }
         {/*<li><Link className={ `regions-nav__link ${ component === 'Administration/Projects' ? 'active' : ''}` } href="/government/projects">Проектная деятельность</Link></li>*/}
         {/*<li><Link className={ `regions-nav__link ${ component === 'Administration/GovernmentEntities' ? 'active' : ''}` } href="/government/entities">Органы исполнительной власти</Link></li>*/}
