@@ -56,9 +56,9 @@ export default function MunicipalityContent({ municipality }) {
           )}
         </div>
 
-        {
-          <Gallery gallery={ ['/img/content/magas.webp', '/img/content/magas1', '/img/content/magas2', '/img/content/Magas3.jpg', '/img/content/magas4.jpg', '/img/Rectangle 1.png'] }/>
-        }
+        {/*{*/}
+        {/*  <Gallery gallery={ ['/img/content/magas.webp', '/img/content/magas1', '/img/content/magas2', '/img/content/Magas3.jpg', '/img/content/magas4.jpg', '/img/Rectangle 1.png'] }/>*/}
+        {/*}*/}
       </div>
 
       <div className="city-contacts">
