@@ -189,7 +189,7 @@
 
 @media (min-width: 1440px) {
   .properties__list {
-    gap: 56px;
+    gap: 55px;
     flex-wrap: wrap;
   }
 
