@@ -21,9 +21,6 @@ export default function PostContent({ post, onPost }) {
     }
   };
 
-  console.log(post.tags)
-
-
   return (
     <div className="post-content">
       <div className="post__meta">

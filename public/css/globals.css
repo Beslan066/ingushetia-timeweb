@@ -16,6 +16,40 @@
 
 
 
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #print-container,
+  #print-container * {
+    visibility: visible;
+  }
+  #print-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  #print-container .post-content {
+    width: 100%;
+    max-width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  #print-container .tags__wrapper,
+  #print-container .related,
+  #print-container .post-meta__category a {
+    display: none !important;
+  }
+  #print-container img {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+}
+
+
 input {
   outline: none !important;
   --tw-ring-color: unset !important;
