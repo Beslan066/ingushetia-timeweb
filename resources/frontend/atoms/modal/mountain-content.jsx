@@ -8,6 +8,8 @@ export default function MountainContent({ mountain }) {
     return null;
   }
 
+  console.log(mountain)
+
   return (
     <div className="mountain-content">
       <div className="mountain__body-wrapper">
@@ -16,7 +18,10 @@ export default function MountainContent({ mountain }) {
         <div className="mountain-modal__image">
           <img src={ '/storage/' + mountain.image_main } alt={ mountain.title }/>
         </div>
-        <div className="mountain-image__description">{ mountain.image_description }</div>
+        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+          <div className="mountain-image__author">{ mountain.image_author }</div>
+          <div className="mountain-image__description">{ mountain.image_description }</div>
+        </div>
 
         <div className="mountain__properties">
           <div className="mountain__property">
@@ -47,14 +52,14 @@ export default function MountainContent({ mountain }) {
           ) : ''
         }
       </div>
-      <div className="tags__wrapper">
-        <div className="tags__title">Теги:</div>
-        <div className="tags">
-          {
-            (mountain?.tags ?? ['Спорт', 'Культура', 'Машины']).map((tag) => <Tag key={ tag } tag={ tag }/>)
-          }
-        </div>
-      </div>
+      {/*<div className="tags__wrapper">*/}
+      {/*  <div className="tags__title">Теги:</div>*/}
+      {/*  <div className="tags">*/}
+      {/*    {*/}
+      {/*      (mountain?.tags ?? ['Спорт', 'Культура', 'Машины']).map((tag) => <Tag key={ tag } tag={ tag }/>)*/}
+      {/*    }*/}
+      {/*  </div>*/}
+      {/*</div>*/}
       <div className="share__wrapper">
         <div className="share__title">Поделиться:</div>
         <div className="share__buttons">
