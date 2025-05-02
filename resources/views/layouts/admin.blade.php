@@ -264,6 +264,8 @@
                   @if(auth()->user()->role == 10 )
                     <li><a href="{{route('admin.categories.index')}}" class=" waves-effect"><i
                           class="bx bx-tag"></i><span>Категории</span></a></li>
+                    <li><a href="{{route('admin.tags.index')}}" class=" waves-effect"><i
+                          class="bx bx-tag-alt"></i><span>Теги</span></a></li>
                     <li><a href="{{route('admin.ministers.index')}}" class=" waves-effect"><i
                           class="bx bxs-user-badge"></i><span>Состав правительства</span></a></li>
                     <li><a href="{{route('admin.supervisors.index')}}" class=" waves-effect"><i
