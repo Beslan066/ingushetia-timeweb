@@ -102,3 +102,7 @@
     height: 520px;
   }
 }
+
+.property__wrapper.property--supervisor {
+  max-width: 200px;
+}
