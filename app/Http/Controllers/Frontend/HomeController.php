@@ -168,8 +168,8 @@ class HomeController extends Controller
   public function showPost(Request $request, $url)
   {
     // Используем те же ключи кэша, что и в index()
-    $cacheTimeShort = 300;
-    $cacheTimeLong = 3600;
+    $cacheTimeShort = 150;
+    $cacheTimeLong = 300;
 
     $cacheKeys = [
       'categories' => 'categories_data',
