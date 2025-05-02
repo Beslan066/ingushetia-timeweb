@@ -101,7 +101,6 @@ export default function President({ministers}) {
   return (
     <>
       <AppHeader anniversary={ false }/>
-      <PageTitle title="Глава Республики"/>
       <div className="page-content__wrapper">
         <div className="page-content__content">
 
