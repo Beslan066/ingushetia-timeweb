@@ -22,8 +22,8 @@ export default function PostContent({ post, onPost }) {
   };
 
   return (
-    <div className="post-content">
-      <div className="post__meta">
+    <div className="post-content printable-content">
+    <div className="post__meta">
         <Link href={route('posts.by.tag', post.category.id)}>
           <div className="post-meta__category">{post.category?.title}</div>
         </Link>

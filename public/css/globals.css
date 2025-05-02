@@ -17,35 +17,44 @@
 
 
 @media print {
-  body * {
+  body {
     visibility: hidden;
   }
-  #print-container,
-  #print-container * {
+  .modal--opened {
     visibility: visible;
-  }
-  #print-container {
     position: absolute;
-    left: 0;
     top: 0;
+    left: 0;
     width: 100%;
-    padding: 0 !important;
-    margin: 0 !important;
+    height: auto;
+    margin: 0;
+    padding: 0;
   }
-  #print-container .post-content {
-    width: 100%;
-    max-width: 100%;
-    padding: 20px;
-    box-sizing: border-box;
-  }
-  #print-container .tags__wrapper,
-  #print-container .related,
-  #print-container .post-meta__category a {
+  .modal__header, .actions, .breadcrumbs {
     display: none !important;
   }
-  #print-container img {
+  .post-content {
+    page-break-inside: avoid;
+  }
+  .post-content img {
     max-width: 100% !important;
-    height: auto !important;
+    page-break-inside: avoid;
+    page-break-after: avoid;
+  }
+}
+
+.printable-content {
+  break-inside: avoid;
+}
+
+@media print {
+  .printable-content {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .printable-content * {
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
 }
 

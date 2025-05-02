@@ -37,8 +37,8 @@ class HomeController extends Controller
   public function index(Request $request)
   {
     // Текущее время кэша (в секундах)
-    $cacheTimeShort = 300;   // 5 минут
-    $cacheTimeLong = 3600;   // 1 час
+    $cacheTimeShort = 150;   // 2.5 минуты
+    $cacheTimeLong = 300;   // 5 минут
 
     //Чтобы обновить данные используем php artisan tinker
     // Cache::forget('Значение ключа');

@@ -22,72 +22,68 @@ export default function Modal({ children, breadcrumbs, handleClose, isOpen }) {
   });
 
   const handlePrint = () => {
-    // Находим элемент с контентом поста
     const postContent = document.querySelector('.post-content');
     if (!postContent) return;
 
-    // Сохраняем текущие стили body
-    const originalBodyStyle = document.body.style.cssText;
+    // Создаем iframe для изолированной печати
+    const iframe = document.createElement('iframe');
+    iframe.style.position = 'absolute';
+    iframe.style.width = '0';
+    iframe.style.height = '0';
+    iframe.style.border = 'none';
+    document.body.appendChild(iframe);
 
-    // Создаем временный контейнер для печати
-    const printContainer = document.createElement('div');
-    printContainer.id = 'print-container';
+    const iframeDoc = iframe.contentWindow?.document || iframe.contentDocument;
 
-    // Клонируем содержимое поста
-    const printContent = postContent.cloneNode(true);
-    printContainer.appendChild(printContent);
-    document.body.appendChild(printContainer);
+    if (iframeDoc) {
+      // Копируем стили
+      const styles = Array.from(document.querySelectorAll('style, link[rel="stylesheet"]'));
+      styles.forEach(style => {
+        iframeDoc.head.appendChild(style.cloneNode(true));
+      });
 
-    // Временные стили для печати
-    document.body.style.cssText = `
-    visibility: hidden;
-    height: auto;
-    overflow: visible;
-  `;
-
-    // Стили для печатного содержимого
-    printContainer.style.cssText = `
-    visibility: visible;
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    padding: 20px;
-    background: white;
-  `;
-
-    // Добавляем медиа-запрос для печати прямо в элемент
-    const printStyles = document.createElement('style');
-    printStyles.innerHTML = `
-    @media print {
-      body * {
-        visibility: hidden;
+      // Добавляем специальные стили для печати
+      const printStyle = document.createElement('style');
+      printStyle.innerHTML = `
+      @page {
+        size: auto;
+        margin: 15mm;
       }
-      #print-container,
-      #print-container * {
-        visibility: visible;
+      body {
+        margin: 0;
+        padding: 20px;
+        font-family: Arial, sans-serif;
+        font-size: 12pt;
       }
-      #print-container {
-        position: absolute;
-        left: 0;
-        top: 0;
+      .post-content {
         width: 100%;
-        height: auto;
-        padding: 0;
+        max-width: 100%;
       }
-      .tags__wrapper, .related, .post-meta__category a {
-        display: none;
+      .post-content img {
+        max-width: 100% !important;
+        height: auto !important;
       }
+      .tags__wrapper, .related, .modal__header {
+        display: none !important;
+      }
+      .post__title {
+        font-size: 18pt;
+        margin-top: 0;
+      }
+    `;
+      iframeDoc.head.appendChild(printStyle);
+
+      // Клонируем контент
+      const contentClone = postContent.cloneNode(true);
+      iframeDoc.body.appendChild(contentClone);
+
+      // Запускаем печать после загрузки контента
+      setTimeout(() => {
+        iframe.contentWindow?.focus();
+        iframe.contentWindow?.print();
+        document.body.removeChild(iframe);
+      }, 500);
     }
-  `;
-    printContainer.appendChild(printStyles);
-
-    // Печатаем
-    window.print();
-
-    // Удаляем временные элементы и восстанавливаем стили
-    document.body.removeChild(printContainer);
-    document.body.style.cssText = originalBodyStyle;
   };
 
   return (
