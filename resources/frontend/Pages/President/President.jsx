@@ -110,7 +110,7 @@ export default function President({ministers}) {
             name={headMember.name}
             avatar={headMember.avatar}
             position={headMember.position}
-            onClick={() => handleMemberClick(headMember)}
+            // onClick={() => handleMemberClick(headMember)}
           />
 
           <div className="accordion__items">

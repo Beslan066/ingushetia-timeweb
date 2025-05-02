@@ -48,6 +48,10 @@
 
 @media (min-width: 1366px) {
  .government-team__container {
-   grid-template-columns: 160px 1fr;
+   grid-template-columns: 300px 1fr;
  }
+}
+
+.government-team__avatar {
+  max-width: 300px;
 }

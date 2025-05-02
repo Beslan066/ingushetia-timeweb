@@ -52,7 +52,7 @@
                     @foreach($tags as $tag)
                       <tr role="row" class="odd">
                         <td class="" tabindex="0">{{$tag->id}}</td>
-                        <td class="" tabindex="0">{{$tag->title}}</td>
+                        <td class="" tabindex="0">{{$tag->name}}</td>
                         <td>Нет</td>
                         <td class="sorting_1">{{$tag->created_at}}</td>
                         <td style="">
