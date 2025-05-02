@@ -19,7 +19,7 @@ export default function MountainContent({ mountain }) {
           <img src={ '/storage/' + mountain.image_main } alt={ mountain.title }/>
         </div>
         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
-          <div className="mountain-image__author">{ mountain.image_author }</div>
+          <div className="mountain-image__description">Фото:{ mountain.image_author }</div>
           <div className="mountain-image__description">{ mountain.image_description }</div>
         </div>
 
