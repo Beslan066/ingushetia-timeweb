@@ -162,3 +162,24 @@
     max-width: 1212px;
   }
 }
+
+
+@media (min-width: 768px) {
+  .government-team__container {
+    grid-template-columns: 180px 1fr;
+    }
+}
+
+@media (min-width: 1366px) {
+  .government-team__container {
+    grid-template-columns: 300px 1fr;
+  }
+}
+
+.government-team__container {
+  grid-template-columns:152px 1fr;
+}
+
+.government-team__avatar {
+  max-width: 300px;
+}
