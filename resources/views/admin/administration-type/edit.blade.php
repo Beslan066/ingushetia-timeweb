@@ -12,7 +12,7 @@
                         @method('patch')
                         <div class="form-group w-50">
                             <label for="">Заголовок</label>
-                            <input class="form-control form-control-lg mb-3" type="text" placeholder="Введите заголовок" name="name" value="{{$category->title}}">
+                            <input class="form-control form-control-lg mb-3" type="text" placeholder="Введите заголовок" name="name" value="{{$administrationType->title}}">
                         </div>
                         @error('title')
                         <div class="text-danger">{{ $message }}</div>
