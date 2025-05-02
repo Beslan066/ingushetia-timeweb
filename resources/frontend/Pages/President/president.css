@@ -180,3 +180,10 @@
 .government-team__avatar {
   max-width: 300px;
 }
+
+
+@media (max-width: 480px) {
+  .government-team__container {
+    grid-template-columns: 150px 1fr;
+  }
+}
