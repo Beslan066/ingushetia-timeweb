@@ -101,6 +101,7 @@ export default function President({ministers}) {
   return (
     <>
       <AppHeader anniversary={ false }/>
+      <PageTitle title=""/>
       <div className="page-content__wrapper">
         <div className="page-content__content">
 

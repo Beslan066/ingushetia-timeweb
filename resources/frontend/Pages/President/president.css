@@ -177,10 +177,6 @@
   }
 }
 
-.government-team__container {
-  grid-template-columns:152px 1fr;
-}
-
 .government-team__avatar {
   max-width: 300px;
 }
