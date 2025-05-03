@@ -34,3 +34,7 @@
     max-width: 1216px;
   }
 }
+
+.content span {
+  font-size: 16px;
+}
