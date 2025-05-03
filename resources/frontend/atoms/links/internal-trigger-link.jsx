@@ -3,7 +3,7 @@ import './internal-trigger.css'
 
 export default function InternalTriggerLink({ title, description, onClick }) {
   return (
-    <div className="internal-trigger" style={{marginBottom: '32.5px'}}>
+    <div className="internal-trigger" style={{marginBottom: '20px'}}>
       <div className="internal-trigger__info">
         <h4 className="internal-trigger__title">{ title }</h4>
         { !!description && <span className="internal-trigger__description">{ description }</span> }
