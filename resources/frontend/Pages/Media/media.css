@@ -41,3 +41,7 @@
     margin: 0;
   }
 }
+
+.media-default .print-icon {
+  display: none;
+}

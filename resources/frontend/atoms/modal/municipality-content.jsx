@@ -13,7 +13,7 @@ export default function MunicipalityContent({ municipality }) {
 
 
   return (
-    <div className="municipality-content">
+    <div className="municipality-content printable-content">
       <div className="municipality__body-wrapper">
 
         <div className="municipality-modal__body">

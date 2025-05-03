@@ -17,11 +17,7 @@
 
 
 @media print {
-  body {
-    visibility: hidden;
-  }
   .modal--opened {
-    visibility: visible;
     position: absolute;
     top: 0;
     left: 0;

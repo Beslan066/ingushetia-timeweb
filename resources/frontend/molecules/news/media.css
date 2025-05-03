@@ -47,3 +47,7 @@
     display: flex;
   }
 }
+
+.media .print-icon {
+  display: none;
+}

@@ -355,9 +355,19 @@ iframe {
 }
 
 .head-bio {
-    font-size: 16px;
+    font-size: 16px !important;
     line-height: 24px;
 }
+.head-bio p{
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.head-bio span{
+  font-size: 16px !important;
+  line-height: 24px;
+}
+
 
 .municipality-gallery {
     padding-bottom: 24px;

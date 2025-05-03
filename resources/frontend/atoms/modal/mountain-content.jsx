@@ -11,7 +11,7 @@ export default function MountainContent({ mountain }) {
   console.log(mountain)
 
   return (
-    <div className="mountain-content">
+    <div className="mountain-content printable-content">
       <div className="mountain__body-wrapper">
 
         <h2 className="mountain-modal__title">{ mountain.title }</h2>

@@ -22,10 +22,14 @@ export default function Modal({ children, breadcrumbs, handleClose, isOpen }) {
   });
 
   const handlePrint = () => {
-    const postContent = document.querySelector('.post-content');
-    if (!postContent) return;
+    // Ищем основной контейнер с контентом внутри модального окна
+    const contentContainer = modal.current.querySelector('.printable-content, .post-content');
+    if (!contentContainer) {
+      console.error('Контент для печати не найден');
+      return;
+    }
 
-    // Создаем iframe для изолированной печати
+    // Создаем iframe для печати
     const iframe = document.createElement('iframe');
     iframe.style.position = 'absolute';
     iframe.style.width = '0';
@@ -36,8 +40,8 @@ export default function Modal({ children, breadcrumbs, handleClose, isOpen }) {
     const iframeDoc = iframe.contentWindow?.document || iframe.contentDocument;
 
     if (iframeDoc) {
-      // Копируем стили
-      const styles = Array.from(document.querySelectorAll('style, link[rel="stylesheet"]'));
+      // Копируем основные стили
+      const styles = Array.from(document.querySelectorAll('link[rel="stylesheet"]'));
       styles.forEach(style => {
         iframeDoc.head.appendChild(style.cloneNode(true));
       });
@@ -54,30 +58,43 @@ export default function Modal({ children, breadcrumbs, handleClose, isOpen }) {
         padding: 20px;
         font-family: Arial, sans-serif;
         font-size: 12pt;
+        visibility: visible !important;
       }
-      .post-content {
+      .printable-content, .post-content {
         width: 100%;
         max-width: 100%;
+        page-break-inside: avoid;
       }
-      .post-content img {
-        max-width: 100% !important;
-        height: auto !important;
-      }
-      .tags__wrapper, .related, .modal__header {
-        display: none !important;
-      }
-      .post__title {
+      .post__title, .mountain-modal__title, .municipality-modal__title {
         font-size: 18pt;
         margin-top: 0;
+        page-break-after: avoid;
+      }
+      img {
+        max-width: 100% !important;
+        height: auto !important;
+        page-break-inside: avoid;
+      }
+      .tags__wrapper, .related, .modal__header, .share__wrapper,
+      .mountain__properties, .mountain-image__description,
+      .post-meta__category, .post-meta__date {
+        display: none !important;
       }
     `;
       iframeDoc.head.appendChild(printStyle);
 
-      // Клонируем контент
-      const contentClone = postContent.cloneNode(true);
+      // Клонируем контент, удаляя ненужные элементы
+      const contentClone = contentContainer.cloneNode(true);
+
+      // Удаляем элементы, которые не должны печататься
+      const elementsToRemove = contentClone.querySelectorAll(
+        '.tags__wrapper, .related, .share__wrapper, .mountain__properties, .post__meta'
+      );
+      elementsToRemove.forEach(el => el.remove());
+
       iframeDoc.body.appendChild(contentClone);
 
-      // Запускаем печать после загрузки контента
+      // Запускаем печать
       setTimeout(() => {
         iframe.contentWindow?.focus();
         iframe.contentWindow?.print();
@@ -91,7 +108,7 @@ export default function Modal({ children, breadcrumbs, handleClose, isOpen }) {
       <div className="modal__header">
         {breadcrumbs?.length ? <Breadcrumbs breadcrumbs={breadcrumbs} /> : <div></div>}
         <div className="actions">
-          <button onClick={handlePrint}>
+          <button onClick={handlePrint} className={'print-icon'}>
             <PrintIcon color="neutral-darkest" />
           </button>
           <button onClick={handleClose}>

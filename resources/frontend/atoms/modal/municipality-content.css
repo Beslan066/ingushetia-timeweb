@@ -87,6 +87,11 @@
   line-height: 24px;
 }
 
+.head-bio span{
+  font-size: 16px !important;
+  line-height: 24px !important;
+}
+
 .municipality-gallery {
   padding-bottom: 24px;
   border-bottom: 2px solid #F6F6F6;
@@ -161,5 +166,9 @@
     padding: 24px;
     flex: 1 1 0;
   }
+}
+
+.millitary-bottom-line-none {
+  border-bottom: unset;
 }
 

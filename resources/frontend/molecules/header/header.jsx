@@ -161,6 +161,7 @@ export default function AppHeader({ anniversary, logo, title }) {
               <button onClick={ e => e.target.parentNode.classList.toggle('menu-item--opened') }>Органы власти</button>
               <ul className="submenu">
                 <li className="menu-item"><a href="/president">Глава Республики</a></li>
+                <li className="menu-item"><a href="/president-administration">Администрация Главы</a></li>
                 <li className="menu-item"><a href="/government">Правительство</a></li>
                 {/*<li className="menu-item"><a href={ route('agencies.index') }>Министерства</a></li>*/}
               </ul>

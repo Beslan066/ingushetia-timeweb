@@ -101,5 +101,9 @@ body:has(.modal--opened) {
   }
 }
 
+.print-icon-disabled {
+  display: none;
+}
+
 
 

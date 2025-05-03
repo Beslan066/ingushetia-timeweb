@@ -34,7 +34,7 @@ export default function Media({ media: mediaProps }) {
     <>
       <AppHeader/>
       <PageTitle title="Медиа"/>
-      <div className="page-content__wrapper">
+      <div className="page-content__wrapper media-default">
         <div className="tabs-wrapper">
           <Tabs tabs={ categories } selected={ selected } onTab={ (id) => onFilters(filters?.dateFrom, filters?.dateTo, id) }/>
           <FilterButton isActive={ isFiltersOpened } onChange={ setFiltersOpened }/>
