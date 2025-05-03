@@ -243,7 +243,7 @@ class HomeController extends Controller
   public function nationalProjects()
   {
     $natProjects = NationalProject::all();
-    return Inertia::render('Culture/NationalProjects', [
+    return Inertia::render('Region/NationalProjects', [
       'natProjects' => $natProjects
     ]);
   }
@@ -252,7 +252,7 @@ class HomeController extends Controller
   {
     $supports = MilitarySupport::all();
 
-    return Inertia::render('Culture/MilitarySupport', [
+    return Inertia::render('Region/MilitarySupport', [
       'documents' => $supports
     ]);
   }
@@ -269,16 +269,15 @@ class HomeController extends Controller
   {
     $implementations = Implementation::query()->orderBy('id', 'desc')->get();
 
-    return Inertia::render('Culture/PresidentImplementations', [
+    return Inertia::render('Region/PresidentImplementations', [
       'implementations' => $implementations
     ]);
   }
-
   public function anticorruptions()
   {
     $anticorruptions = Anticorruption::query()->orderBy('id', 'desc')->get();
 
-    return Inertia::render('Culture/Anticorruption', [
+    return Inertia::render('Region/Anticorruption', [
       'anticorruptions' => $anticorruptions
     ]);
   }
@@ -288,7 +287,7 @@ class HomeController extends Controller
     $economicSupports = EconomicSupport::query()->where('type', 0)->orderBy('id', 'desc')->get();
     $economicSupportsBuisness = EconomicSupport::query()->where('type', 1)->orderBy('id', 'desc')->get();
 
-    return Inertia::render('Culture/CitizenSupport', [
+    return Inertia::render('Region/CitizenSupport', [
       'citizenSupportPackages' => $economicSupports,
       'businessSupportPackages' => $economicSupportsBuisness
     ]);
