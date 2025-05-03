@@ -141,7 +141,7 @@ class HomeController extends Controller
       // Связанные новости для открытого поста
       $openedNews->relatedPosts = News::where('category_id', $openedNews->category_id)
         ->where('id', '!=', $openedNews->id)
-        ->select(['id', 'title', 'url', 'category_id', 'image_main', 'published_at'])
+        ->select(['id', 'title', 'lead', 'url', 'category_id', 'image_main', 'published_at'])
         ->limit(3)
         ->get();
     }
@@ -243,7 +243,7 @@ class HomeController extends Controller
   public function nationalProjects()
   {
     $natProjects = NationalProject::all();
-    return Inertia::render('Region/NationalProjects', [
+    return Inertia::render('Culture/NationalProjects', [
       'natProjects' => $natProjects
     ]);
   }
@@ -252,7 +252,7 @@ class HomeController extends Controller
   {
     $supports = MilitarySupport::all();
 
-    return Inertia::render('Region/MilitarySupport', [
+    return Inertia::render('Culture/MilitarySupport', [
       'documents' => $supports
     ]);
   }
@@ -269,7 +269,7 @@ class HomeController extends Controller
   {
     $implementations = Implementation::query()->orderBy('id', 'desc')->get();
 
-    return Inertia::render('Region/PresidentImplementations', [
+    return Inertia::render('Culture/PresidentImplementations', [
       'implementations' => $implementations
     ]);
   }
@@ -278,7 +278,7 @@ class HomeController extends Controller
   {
     $anticorruptions = Anticorruption::query()->orderBy('id', 'desc')->get();
 
-    return Inertia::render('Region/Anticorruption', [
+    return Inertia::render('Culture/Anticorruption', [
       'anticorruptions' => $anticorruptions
     ]);
   }
@@ -288,7 +288,7 @@ class HomeController extends Controller
     $economicSupports = EconomicSupport::query()->where('type', 0)->orderBy('id', 'desc')->get();
     $economicSupportsBuisness = EconomicSupport::query()->where('type', 1)->orderBy('id', 'desc')->get();
 
-    return Inertia::render('Region/CitizenSupport', [
+    return Inertia::render('Culture/CitizenSupport', [
       'citizenSupportPackages' => $economicSupports,
       'businessSupportPackages' => $economicSupportsBuisness
     ]);
@@ -523,5 +523,4 @@ class HomeController extends Controller
       'news' => $vectorNews,
     ]);
   }
-
 }

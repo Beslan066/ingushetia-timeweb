@@ -1,12 +1,13 @@
 import './vector.css';
 import AppLink from "#/atoms/buttons/link.jsx";
 import Checkmark from "#/atoms/icons/checkmark.jsx";
+import React from "react";
 
 export default function VectorItem({ name, image, sections, id }) {
   return (
     <div className="vector">
       <div className="vector__image">
-        <img src={'storage/' + image} alt={name} />
+        <img src={ `/storage/${image}` } alt={ `Изображение ${ name }` }/>
       </div>
 
       <div className="vector__body">

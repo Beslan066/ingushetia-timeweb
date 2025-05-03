@@ -175,7 +175,7 @@ export default function AppHeader({ anniversary, logo, title }) {
             <li className="menu-item"><a href={route('judicialAuthorities.index')}>Органы судебной системы РИ</a></li>
             <li className="menu-item"><a href={route('awardPolitics.index')}>Наградная политика </a></li>
             <li className="menu-item"><a href={route('civilServices.index')}>Государственная служба</a></li>
-            <li className="menu-item"><a href="">Культура и история</a></li>
+            <li className="menu-item"><a href={route('culture')}>Культура</a></li>
             <li className="menu-item"><a href={route('gloryTour')}>Виртуальный тур по Залу славы</a></li>
             <li className="menu-item"><a href={route('federalAuthorities.index')}>Территориальные органы фед.органов власти</a></li>
             <li className="menu-item"><a href={route('antinars.index')}>Антинаркотическая комиссия</a></li>

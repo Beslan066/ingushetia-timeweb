@@ -70,7 +70,7 @@
     font-weight: 400;
 }
 
-    /* Region page list */
+    /* Culture page list */
 
 .region-pager {
     padding: unset !important;
@@ -248,7 +248,7 @@ iframe {
     font-size: 12px;
 }
 
-/* Region modal */
+/* Culture modal */
 
 .region-modal {
     display: none;

@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\ImplementationController;
 use App\Http\Controllers\Admin\SupportController;
 use App\Http\Controllers\Frontend\AdministrationController;
 use App\Http\Controllers\Frontend\AgencyController;
+use App\Http\Controllers\Frontend\CultureController;
 use App\Http\Controllers\Frontend\GovernmentController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\NewsController;
@@ -72,6 +73,18 @@ Route::group(['middleware' => 'auth.basic'], function () {
   Route::get('/history', function () {
     return Inertia::render('Region/History');
   });
+
+  // Страница культура
+  Route::get('/culture', [CultureController::class, 'culture'])->name('culture');
+  Route::get('/architecture', [CultureController::class, 'architecture'])->name('architecture');
+  Route::get('/folklore', [CultureController::class, 'folklore'])->name('folklore');
+  Route::get('/islam', [CultureController::class, 'islam'])->name('islam');
+  Route::get('/crafts', [CultureController::class, 'crafts'])->name('crafts');
+  Route::get('/tools', [CultureController::class, 'tools'])->name('tools');
+  Route::get('/weapon', [CultureController::class, 'weapon'])->name('weapon');
+
+
+
 
   Route::get('/vectors/{id}', [HomeController::class, 'vectors'])->name('vectors');
   Route::get('/municipality', [RegionController::class, 'municipalities'])->name('municipalities');

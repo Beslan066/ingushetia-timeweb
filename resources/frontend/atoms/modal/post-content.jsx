@@ -45,6 +45,15 @@ export default function PostContent({ post, onPost }) {
 
       {/* Контент с учетом типа */}
       <div className="content">
+
+        {post.lead &&
+          <p>
+            <b>
+              {post.lead}
+            </b>
+          </p>
+        }
+
         {post.type === 'video' && (
           <div className="video-embed" dangerouslySetInnerHTML={{__html: post.content}} />
         )}
