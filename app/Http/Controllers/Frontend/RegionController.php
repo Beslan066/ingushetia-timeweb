@@ -26,7 +26,7 @@ class RegionController extends Controller
     $sections = RegionSection::all();
 
 
-    return Inertia::render('Culture/Culture', [
+    return Inertia::render('Region/Region', [
       'region' => $region,
       'sections' => $sections,
     ]);
@@ -34,12 +34,12 @@ class RegionController extends Controller
 
     public function economic()
     {
-        return Inertia::render('Culture/Economics');
+        return Inertia::render('Region/Economics');
     }
 
     public function history()
     {
-        return Inertia::render('Culture/History');
+        return Inertia::render('Region/History');
     }
 
     public function municipalities()
@@ -47,7 +47,7 @@ class RegionController extends Controller
         $cities = Municipality::query()->with('supervisor')->where('type', 2)->get();
         $districts = Municipality::query()->with('supervisor')->where('type', 20)->get();
 
-        return Inertia::render('Culture/Municipality', [
+        return Inertia::render('Region/Municipality', [
             'cities' => $cities,
             'districts' => $districts
         ]);
@@ -57,7 +57,7 @@ class RegionController extends Controller
     {
         $socialEconomicDevelopment = SocialEconomicDevelopment::query()->orderBy('id', 'desc')->get();
 
-        return Inertia::render('Culture/SocialEconomics', [
+        return Inertia::render('Region/SocialEconomics', [
             'socialEconomicDevelopment' => $socialEconomicDevelopment
         ]);
     }
@@ -67,7 +67,7 @@ class RegionController extends Controller
 
     $nationalProjects = NationalProject::query()->orderBy('id', 'asc')->get();
 
-    return Inertia::render('Culture/NationalProjects', [
+    return Inertia::render('Region/NationalProjects', [
       'nationalProjects' => $nationalProjects
     ]);
   }
