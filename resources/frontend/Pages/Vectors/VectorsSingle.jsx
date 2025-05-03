@@ -9,12 +9,15 @@ import './vectors.css';
 import PopularSpotlights from "#/molecules/spotlights/popular-spotlights.jsx";
 import DownloadIcon from "@/Components/DownloadIcon.jsx";
 import Checkmark from "#/atoms/icons/checkmark.jsx";
+import MilitaryContent from "#/atoms/modal/military-content.jsx";
+import Modal from "#/atoms/modal/modal.jsx";
+import useModal from "#/hooks/useModal.js";
 
 export default function VectorSingle({ vector, news, spotlights }) {
-  // Функция для форматирования даты
   const formatDate = (dateString) => {
     return format(new Date(dateString), 'dd MMMM yyyy', { locale: ru });
   };
+  const [modal, isOpen, setModal] = useModal(null);
 
   return (
     <>
@@ -23,7 +26,6 @@ export default function VectorSingle({ vector, news, spotlights }) {
 
       <div className="page-content__wrapper">
         <div className="page-content__content">
-
           <div className="post__image">
             <img
               src={`/storage/${vector.image_main}`}
@@ -33,15 +35,21 @@ export default function VectorSingle({ vector, news, spotlights }) {
 
           {vector.description &&
             <div dangerouslySetInnerHTML={{ __html: vector.description }} className={'mb-2'}>
-
             </div>
           }
 
           <div className="downloadable__documents">
-            {/* Выводим секции вектора в Downloadable */}
             {vector.sections && vector.sections.map((section) => (
-
-              <div className="downloadable" style={{justifyContent: 'start'}}>
+              <div
+                className="downloadable"
+                style={{justifyContent: 'start'}}
+                onClick={() => setModal({
+                  title: section.title,
+                  content: section.content,
+                  // Добавьте другие необходимые поля
+                })}
+                key={section.id} // Добавьте ключ для лучшей производительности
+              >
                 <div className="vector__checkmark">
                   <Checkmark color="primary-medium" />
                 </div>
@@ -56,13 +64,20 @@ export default function VectorSingle({ vector, news, spotlights }) {
 
         <div className="hero-announce-wrapper">
           <PopularSpotlights
-            news={news} // Передаем новости вектора вместо spotlights
+            news={news}
             className="spotlight-sidebar--desktop"
           />
         </div>
       </div>
 
       <AppFooter />
+      <Modal
+        breadcrumbs={[{ title: 'Векторы развития РИ' }, { title: vector.name }]}
+        isOpen={isOpen}
+        handleClose={() => setModal(null)}
+      >
+        <MilitaryContent document={modal} />
+      </Modal>
     </>
   );
 }
