@@ -9,17 +9,30 @@ import { ru } from "date-fns/locale";
 import { router } from "@inertiajs/react";
 import './documents.css';
 
-export default function Documents({ documents: initialDocuments }) {
+export default function Documents({ documents: initialDocuments, documentTypes }) {
   const [documents, setDocuments] = useState(initialDocuments.data);
   const [nextPage, setNextPage] = useState(initialDocuments.next_page_url);
   const [loading, setLoading] = useState(false);
+  const [currentFilter, setCurrentFilter] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('type_id') || null;
+  });
 
-  // Функция загрузки следующей страницы
+  // Функция загрузки следующей страницы с учетом фильтра
   const loadMore = () => {
     if (!nextPage || loading) return;
 
     setLoading(true);
-    router.get(nextPage, {}, {
+
+    // Создаем URL для запроса с сохранением фильтра
+    const url = new URL(nextPage);
+    if (currentFilter) {
+      url.searchParams.set('type_id', currentFilter);
+    } else {
+      url.searchParams.delete('type_id');
+    }
+
+    router.get(url.toString(), {}, {
       preserveState: true,
       preserveScroll: true,
       only: ["documents"],
@@ -31,10 +44,16 @@ export default function Documents({ documents: initialDocuments }) {
     });
   };
 
-  // Функция обновления списка при возврате вверх
+  // Обновление списка при возврате вверх
   const refreshDocuments = () => {
-    router.get(window.location.pathname, {}, {
-      preserveState: false, // Сбрасываем состояние
+    const url = new URL(window.location.pathname, window.location.origin);
+
+    if (currentFilter) {
+      url.searchParams.set('type_id', currentFilter);
+    }
+
+    router.get(url.toString(), {}, {
+      preserveState: false,
       onSuccess: ({ props }) => {
         setDocuments(props.documents.data);
         setNextPage(props.documents.next_page_url);
@@ -42,17 +61,35 @@ export default function Documents({ documents: initialDocuments }) {
     });
   };
 
-  // Следим за скроллом страницы
+  // Обработчик изменения фильтра
+  const handleFilterChange = (typeId) => {
+    setCurrentFilter(typeId);
+    const url = new URL(window.location.pathname, window.location.origin);
+
+    if (typeId) {
+      url.searchParams.set('type_id', typeId);
+    }
+
+    router.get(url.toString(), {}, {
+      preserveState: false,
+      onSuccess: ({ props }) => {
+        setDocuments(props.documents.data);
+        setNextPage(props.documents.next_page_url);
+      },
+    });
+  };
+
+  // Обработчик скролла
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY === 0) {
-        refreshDocuments(); // Обновить данные, если пользователь вернулся вверх
+        refreshDocuments();
       }
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [currentFilter]);
 
   const formatDate = (dateString) => {
     if (!dateString) return "";
@@ -93,7 +130,11 @@ export default function Documents({ documents: initialDocuments }) {
             </button>
           )}
         </div>
-        <DocumentsNavigation />
+        <DocumentsNavigation
+          documentTypes={documentTypes}
+          currentFilter={currentFilter}
+          onFilterChange={handleFilterChange}
+        />
       </div>
       <AppFooter />
     </>
