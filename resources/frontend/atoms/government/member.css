@@ -58,6 +58,6 @@
 
 @media (max-width: 480px) {
   .government-team__info {
-    width: unset;
+    width: 260px;
   }
 }

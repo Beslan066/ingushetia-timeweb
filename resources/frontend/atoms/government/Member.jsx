@@ -3,7 +3,7 @@ import './member.css';
 export default function GovernmentMember({isHead, avatar, name, position, onClick}) {
   const hasAvatar = avatar && !avatar.endsWith('/storage/null');
   const containerStyle = {
-    height: '160px',
+    height: !hasAvatar ?'160px' : 'auto',
     backgroundColor: !hasAvatar ? '#f2f2f2' : undefined,
     padding: '10px'
   };

@@ -47,8 +47,6 @@ export default function Contacts({ contacts }) {
           </div>
 
           <div className="contact-us">
-            <p>По всем вопросам обращайтесь по указанным номерам телефонов круглосуточных ЕДДС муниципальных образований
-              Республики Ингушетия</p>
             <Button handleClick={() => setModal(true)}>Написать нам</Button>
           </div>
         </div>
