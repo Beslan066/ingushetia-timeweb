@@ -55,3 +55,9 @@
 .government-team__info {
   width: 300px;
 }
+
+@media (max-width: 480px) {
+  .government-team__info {
+    width: unset;
+  }
+}
