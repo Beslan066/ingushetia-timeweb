@@ -162,3 +162,7 @@
     max-width: 1212px;
   }
 }
+
+.government-team__info {
+  width: unset !important;
+}
