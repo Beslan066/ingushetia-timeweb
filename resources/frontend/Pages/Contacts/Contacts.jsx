@@ -19,7 +19,16 @@ export default function Contacts({ contacts }) {
       <div className="page-content__wrapper">
         <div className="page-content__content">
           <div className="img">
-            <img src="/img/yamap.png" alt="Республика Ингушетия, г. Магас, ул. Зязикова, 14"/>
+            <div style={{position: 'relative', overflow: 'hidden',}}><a
+              href="https://yandex.ru/maps/org/administratsiya_glavy_i_pravitelstva_respubliki_ingushetiya/139756145867/?utm_medium=mapframe&utm_source=maps"
+              style={{color: '#eee', fontSize: '12px', position: 'absolute', top: '0px'}}>Администрация Главы и Правительства
+              республики Ингушетия</a><a
+              href="https://yandex.ru/maps/20181/magas/category/administration/184105658/?utm_medium=mapframe&utm_source=maps"
+              style={{color: '#eee', fontSize: '12px', position: 'absolute', top: '14px'}}>Администрация в Магасе</a>
+              <iframe
+                src="https://yandex.ru/map-widget/v1/org/administratsiya_glavy_i_pravitelstva_respubliki_ingushetiya/139756145867/?ll=44.806664%2C43.166531&z=17"
+                width="100%"  height={'600px'} frameBorder="1" allowFullScreen="true" style={{position: 'relative'}}></iframe>
+            </div>
           </div>
           <div className="address">
             <div className="address__caption">Адрес</div>
@@ -29,9 +38,9 @@ export default function Contacts({ contacts }) {
           <div className="contacts">
             {
               contacts && contacts.map((contact) => (
-                <div className="contact" key={ contact.id }>
-                  <div className="contact__title">{ contact.title }</div>
-                  <div className="contact__content" dangerouslySetInnerHTML={ { __html: contact.content } }></div>
+                <div className="contact" key={contact.id}>
+                  <div className="contact__title">{contact.title}</div>
+                  <div className="contact__content" dangerouslySetInnerHTML={{__html: contact.content}}></div>
                 </div>
               ))
             }
@@ -42,9 +51,6 @@ export default function Contacts({ contacts }) {
               Республики Ингушетия</p>
             <Button handleClick={() => setModal(true)}>Написать нам</Button>
           </div>
-        </div>
-        <div className="page-content__navigation">
-          <GovernmentNavigation/>
         </div>
       </div>
 

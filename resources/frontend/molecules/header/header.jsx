@@ -171,7 +171,6 @@ export default function AppHeader({ anniversary, logo, title }) {
             <li className="menu-item"><a href={ route('contacts') }>Контакты</a></li>
           </ul>
           <ul className="menu additional-menu">
-            <li className="menu-item"><a >Государственная символика</a></li>
             <li className="menu-item"><a href={route('judicialAuthorities.index')}>Органы судебной системы РИ</a></li>
             <li className="menu-item"><a href={route('awardPolitics.index')}>Наградная политика </a></li>
             <li className="menu-item"><a href={route('civilServices.index')}>Государственная служба</a></li>

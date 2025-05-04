@@ -39,6 +39,14 @@
   padding-top: 24px;
 }
 
+.accordion-body__content p{
+  font-size: 16px !important;
+}
+
+.accordion-body__content span{
+  font-size: 16px !important;
+}
+
 .accordion__body p:last-child {
   margin-bottom: 0;
 }

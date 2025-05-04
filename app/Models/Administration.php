@@ -18,6 +18,7 @@ class Administration extends Model
     'user_id',
     'priority',
     'administration_types_id',
+    'contact',
   ];
 
 

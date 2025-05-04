@@ -20,7 +20,7 @@ export default function Region() {
   return (
     <>
       <AppHeader anniversary={ false }/>
-      <PageTitle title="О республике Ингушетия"/>
+      <PageTitle title="О Республике Ингушетия"/>
       <div className="page-content__wrapper">
         <div className="page-content__content">
           <div className="post__image">

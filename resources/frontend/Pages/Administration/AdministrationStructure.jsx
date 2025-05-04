@@ -19,7 +19,7 @@ export default function AdministrationStructure({administratorsByType, headMembe
   return (
     <>
       <AppHeader anniversary={ false }/>
-      <PageTitle title="Администрация Главы РИ"/>
+      <PageTitle title="Администрация Главы и Правительства Республики"/>
       <div className="page-content__wrapper">
         <div className="page-content__content">
           {/* Выводим главу отдельно */}

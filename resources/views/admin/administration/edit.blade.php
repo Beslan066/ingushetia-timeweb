@@ -33,6 +33,9 @@
                             <div class="text-danger">{{ $message }}</div>
                             @enderror
 
+
+
+
                             <div class="row w-50">
                                 <div class="col-12">
                                     <div class="card">
@@ -50,6 +53,11 @@
                             <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
+
+                      <div class="form-group w-50">
+                        <label for="">Контакт</label>
+                        <input class="form-control form-control-lg mb-3" type="text" placeholder="Введите email или номер телефона" name="contact" value="{{$administration->contact}}">
+                      </div>
 
                         <div class="form-group w-50">
                           <label for="">Приоритет(чем больше цифра тем ниже будет на странице Состав Правитльства)</label>

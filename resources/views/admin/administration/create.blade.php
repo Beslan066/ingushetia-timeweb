@@ -52,6 +52,11 @@
                             @enderror
                         </div>
 
+                      <div class="form-group w-50">
+                        <label for="">Контакт</label>
+                        <input class="form-control form-control-lg mb-3" type="text" placeholder="Введите email или номер телефона" name="contact">
+                      </div>
+
 
                       <div class="form-group w-50">
                         <label for="exampleFormControlSelect1">Категория</label>

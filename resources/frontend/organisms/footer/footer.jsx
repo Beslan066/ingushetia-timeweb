@@ -22,7 +22,7 @@ export default function AppFooter({ anniversary = false }) {
     {
       name: 'Регион',
       links: [
-        { link: '/region', name: 'Государственная символика, гимн' },
+        { link: '/region', name: 'Регион' },
         { link: '/history', name: 'История' },
         { link: '/economic', name: 'Экономика' },
         { link: '/municipality', name: 'Муниципальные образования' },
