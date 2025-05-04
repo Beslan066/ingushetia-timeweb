@@ -51,3 +51,7 @@
    grid-template-columns: 160px 1fr;
  }
 }
+
+.government-team__info {
+  width: 300px;
+}
