@@ -10,20 +10,37 @@ import Modal from "#/atoms/modal/modal.jsx";
 import PostContent from "#/atoms/modal/post-content.jsx";
 import "./hero.css";
 
-export default function Hero({ categories, slides, news, showNews }) {
+export default function Hero({ categories, slides, news, showNews, spotlights }) {
   const { props } = usePage();
   const [isModalOpen, setIsModalOpen] = useState(!!showNews);
   const [currentPost, setCurrentPost] = useState(showNews || null);
   const [selectedCategory, setSelectedCategory] = useState(null);
-
+  const [filteredNews, setFilteredNews] = useState(news.slice(0, 3));
+  const [isLoading, setIsLoading] = useState(false);
 
   const onCategorySwitch = (categoryId) => {
-    setSelectedCategory(categoryId !== null ? String(categoryId) : null);
-  };
+    const newCategory = categoryId !== null ? String(categoryId) : null;
+    setSelectedCategory(newCategory);
+    setIsLoading(true);
 
-  const filteredArticles = selectedCategory !== null
-    ? news.filter(post => String(post.category_id) === String(selectedCategory))
-    : news;
+    router.reload({
+      method: 'get',
+      data: {
+        category: newCategory,
+        from: 'main_page'
+      },
+      preserveScroll: true,
+      only: ['news'],
+      onSuccess: ({ props: data }) => {
+        setFilteredNews(data.news.slice(0, 3));
+        
+        const searchParams = new URLSearchParams();
+        if (newCategory) searchParams.set('category', newCategory);
+        window.history.pushState({}, "", `/?${searchParams.toString()}`);
+      },
+      onFinish: () => setIsLoading(false),
+    });
+  };
 
   const handlePost = (post) => {
     router.get(`/post/${post.url}`, {}, {
@@ -64,10 +81,15 @@ export default function Hero({ categories, slides, news, showNews }) {
               onTab={onCategorySwitch}
               selected={selectedCategory}
             />
-            {filteredArticles.length > 0 ? (
+            {isLoading ? (
+              <div>Загрузка...</div>
+            ) : filteredNews.length > 0 ? (
               <>
-                <News news={filteredArticles.slice(0, 3)} onPost={handlePost} />
-                <AppLink to="/news" title="Все новости" />
+                <News news={filteredNews} onPost={handlePost} />
+                <AppLink
+                  to={selectedCategory ? `/news?category=${selectedCategory}` : "/news"}
+                  title="Все новости"
+                />
               </>
             ) : (
               <div>Нет новостей в этой категории</div>
@@ -75,7 +97,7 @@ export default function Hero({ categories, slides, news, showNews }) {
           </div>
         </div>
         <div className="hero__sidebar-wrapper">
-          <Spotlights news={news} onPost={handlePost} />
+          <Spotlights news={spotlights} onPost={handlePost} />
           <Important />
         </div>
       </div>

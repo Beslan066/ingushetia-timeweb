@@ -13,7 +13,7 @@ import './index.css';
 export default function Index({
                                 mainPosts: slides,
                                 categories,
-                                posts: news,
+                                news: news,
                                 cities: settlements,
                                 districts,
                                 media,
@@ -21,7 +21,8 @@ export default function Index({
                                 resources,
                                 showNews: openedNews,
                                 anniversary,
-                                vectors
+                                vectors,
+                                spotlights
                               }) {
   return (
     <>
@@ -30,7 +31,8 @@ export default function Index({
         categories={categories}
         slides={slides}
         news={news}
-        openedNews={openedNews}
+        showNews={openedNews}
+        spotlights={spotlights}
       />
 
       <Vectors vectors={vectors} />

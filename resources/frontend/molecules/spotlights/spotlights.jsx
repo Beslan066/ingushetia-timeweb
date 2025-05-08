@@ -2,7 +2,7 @@ import './spotlights.css';
 import Spotlight from "#/atoms/news/spotlight.jsx";
 import AppLink from "#/atoms/buttons/link.jsx";
 
-export default function Spotlights({ news, onPost }) {
+export default function Spotlights({ news = [], onPost }) {
   return (
     <div className="spotlight-sidebar">
       <div className="spotlights">
