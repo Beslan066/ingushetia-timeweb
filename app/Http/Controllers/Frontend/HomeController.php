@@ -112,7 +112,6 @@ class HomeController extends Controller
       // Основные новости (фильтруются по категории если нужно)
       $newsQuery = News::query()
           ->with('category', 'video', 'reportage', 'tags')
-          ->where('main_material', 0)
           ->where('agency_id', 5)
           ->orderBy('published_at', 'desc');
 
