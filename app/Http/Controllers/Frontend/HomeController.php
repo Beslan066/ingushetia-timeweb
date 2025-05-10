@@ -156,14 +156,14 @@ if ($request->route('url')) {
         ->where('category_id', $openedNews->category_id)
         ->where('id', '!=', $openedNews->id)
         ->select(['id', 'title', 'lead', 'url', 'category_id', 'image_main', 'published_at'])
-        ->orderBy('published_at', 'desc') // Изменено с 'asc' на 'desc'
+        ->orderBy('published_at', 'desc')
         ->limit(3)
         ->get();
 }
 
       return Inertia::render('Index', [
           'news' => $news,
-          'spotlights' => $spotlights, // Статичные данные
+          'spotlights' => $spotlights,
           'categories' => $categories,
           'mainPosts' => $mainPosts,
           'resources' => $resources,
@@ -237,6 +237,7 @@ if ($request->route('url')) {
     $openedNews->relatedPosts = News::where('category_id', $openedNews->category_id)
       ->where('id', '!=', $openedNews->id)
       ->select(['id', 'title', 'url', 'category_id', 'image_main', 'published_at'])
+      ->orderBy('published_at', 'desc')
       ->limit(3)
       ->get();
 
