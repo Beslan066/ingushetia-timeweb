@@ -147,17 +147,19 @@ class HomeController extends Controller
 
       // Открытая новость (если есть в URL)
       $openedNews = null;
-      if ($request->route('url')) {
-          $openedNews = News::where('url', $request->route('url'))
-              ->with(['category', 'video', 'reportage', 'tags'])
-              ->firstOrFail();
+if ($request->route('url')) {
+    $openedNews = News::where('url', $request->route('url'))
+        ->with(['category', 'video', 'reportage', 'tags'])
+        ->firstOrFail();
 
-          $openedNews->relatedPosts = News::where('category_id', $openedNews->category_id)
-              ->where('id', '!=', $openedNews->id)
-              ->select(['id', 'title', 'lead', 'url', 'category_id', 'image_main', 'published_at'])
-              ->limit(3)
-              ->get();
-      }
+    $openedNews->relatedPosts = News::query()
+        ->where('category_id', $openedNews->category_id)
+        ->where('id', '!=', $openedNews->id)
+        ->select(['id', 'title', 'lead', 'url', 'category_id', 'image_main', 'published_at'])
+        ->orderBy('published_at', 'desc') // Изменено с 'asc' на 'desc'
+        ->limit(3)
+        ->get();
+}
 
       return Inertia::render('Index', [
           'news' => $news,
@@ -176,7 +178,6 @@ class HomeController extends Controller
           'showNews' => $openedNews,
           'anniversary' => config('app.anniversary'),
           'vectors' => $vectors,
-          'spotlights' => $spotlights
       ]);
   }
 

@@ -85,7 +85,7 @@ export default function President({ministers}) {
   // Данные
   const headMember = {
     name: "Калиматов Махмуд-Али Макшарипович",
-    avatar: "/storage/images/VB30CajzIs1HEFV4LZEunFVmtxnSB0NRNDOpu63Q.png",
+    avatar: "/storage/images/8edOBQZDkBuxsEAIiAurI3ZKEsRroQKctkaYCRzZ.jpg",
     position: "Глава Республики Ингушетия",
     contacts: [
       { title: 'Телефон', value: '+7 495 888-47-25' },

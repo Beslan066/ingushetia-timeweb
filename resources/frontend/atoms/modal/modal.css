@@ -17,7 +17,7 @@
 
 @media (min-width: 1366px) {
   .modal {
-    left: calc((100vw - 60% + 10px) / 2);
+    left: calc((100vw - 50% + 10px) / 2);
   }
 }
 
@@ -72,8 +72,8 @@ body:has(.modal--opened) {
 
 @media (min-width: 1366px) {
   .modal {
-    width: 60%;
-    left: calc((100vw - 60% + 10px) / 2);
+    width: 50%;
+    left: calc((100vw - 50% + 10px) / 2);
   }
 
   .modal--opened.modal--default {
