@@ -47,7 +47,7 @@
                   <thead>
                   <tr role="row">
                     <th class="sorting" tabindex="0" aria-controls="selection-datatable" rowspan="1" colspan="1"
-                        style="width: 272px;" aria-label="Name: activate to sort column ascending">id
+                        style="width: 272px;" aria-label="Name: activate to sort column ascending">Позиция
                     </th>
                     <th class="sorting" tabindex="0" aria-controls="selection-datatable" rowspan="1" colspan="1"
                         style="width: 272px;" aria-label="Name: activate to sort column ascending">Заголовок
@@ -76,7 +76,7 @@
                   @if(isset($ministers))
                     @foreach($ministers as $item)
                       <tr role="row" class="odd">
-                        <td class="" tabindex="0">{{$item->id}}</td>
+                        <td class="" tabindex="0">{{$item->priority}}</td>
                         <td class="" tabindex="0">{{$item->name}}</td>
                         <td style="">
                           <div class="btn-group">

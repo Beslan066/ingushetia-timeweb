@@ -16,9 +16,19 @@ class GovernmentController extends Controller
   public function structure()
   {
 
+    $headMember = Minister::query()
+      ->where('priority', 1)
+      ->orderBy('priority', 'desc')
+      ->take(1)
+      ->first();
+
     $ministers = Minister::query()->whereNot('priority', 1)->get();
 
-    return Inertia::render('Government/GovernmentStructure', ['ministers' => $ministers]);
+    return Inertia::render('Government/GovernmentStructure',
+      [
+        'ministers' => $ministers,
+        'headMember' => $headMember,
+      ]);
   }
   public function abilities()
   {

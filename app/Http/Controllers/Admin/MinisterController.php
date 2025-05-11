@@ -24,7 +24,7 @@ class MinisterController extends Controller
     {
 
 
-        $ministers = Minister::query()->orderBy('id', 'desc')->paginate(10);
+        $ministers = Minister::query()->orderBy('priority', 'asc')->paginate(10);
 
         return view('admin.minister.index', compact('ministers', ));
     }
@@ -89,7 +89,7 @@ class MinisterController extends Controller
         if ($minister->image_main) {
             Storage::delete($minister->image_main);
         }
-        
+
         // сохраняем новое изображение
         $data['image_main'] = Storage::put('images', $data['image_main']);
     } else {
