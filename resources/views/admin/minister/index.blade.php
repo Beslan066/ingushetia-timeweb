@@ -52,15 +52,6 @@
                     <th class="sorting" tabindex="0" aria-controls="selection-datatable" rowspan="1" colspan="1"
                         style="width: 272px;" aria-label="Name: activate to sort column ascending">Заголовок
                     </th>
-                    <th class="sorting" tabindex="0" aria-controls="selection-datatable" rowspan="1" colspan="1"
-                        style="width: 394px;" aria-label="Position: activate to sort column ascending">Автор
-                    </th>
-                    <th class="sorting" tabindex="0" aria-controls="selection-datatable" rowspan="1" colspan="1"
-                        style="width: 200px;" aria-label="Office: activate to sort column ascending">Категория
-                    </th>
-                    <th class="sorting" tabindex="0" aria-controls="selection-datatable" rowspan="1" colspan="1"
-                        style="width: 107px; " aria-label="Age: activate to sort column ascending">Перевод
-                    </th>
                     <th class="sorting_asc" tabindex="0" aria-controls="selection-datatable" rowspan="1" colspan="1"
                         style="width: 193px;" aria-label="Start date: activate to sort column descending"
                         aria-sort="ascending">Опубликованно

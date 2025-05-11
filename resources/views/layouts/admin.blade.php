@@ -266,8 +266,6 @@
                           class="bx bx-tag"></i><span>Категории</span></a></li>
                     <li><a href="{{route('admin.tags.index')}}" class=" waves-effect"><i
                           class="bx bx-tag-alt"></i><span>Теги</span></a></li>
-                    <li><a href="{{route('admin.ministers.index')}}" class=" waves-effect"><i
-                          class="bx bxs-user-badge"></i><span>Состав правительства</span></a></li>
                     <li><a href="{{route('admin.supervisors.index')}}" class=" waves-effect"><i
                           class="bx bxs-user-badge"></i><span>Руководители</span></a></li>
                     <li><a href="{{route('admin.municipalities.index')}}" class=" waves-effect"><i
@@ -275,14 +273,34 @@
                     <li><a href="{{route('admin.agencies.index')}}" class=" waves-effect"><i
                           class="bx bx-buildings"></i><span>Министерства</span></a></li>
 
-                    <li><a href="{{route('admin.administrationTypes.index')}}" class=" waves-effect"><i
-                          class="bx bx-buildings"></i><span>Категории Администрации Главы</span></a></li>
-
-                    <li><a href="{{route('admin.administrations.index')}}" class=" waves-effect"><i
-                          class="bx bx-buildings"></i><span>Администрация Главы</span></a></li>
-
                     <li><a href="{{route('admin.mountains.index')}}" class=" waves-effect"><i
                           class="bx bx-mountain"></i><span>Родина башен</span></a></li>
+
+
+                    <li>
+                      <a href="javascript: void(0);" class="has-arrow waves-effect"><i
+                          class="bx bx-file"></i><span>Администрация Главы</span></a>
+                      <ul class="sub-menu" aria-expanded="false">
+                        <li><a href="{{route('admin.administrationTypes.index')}}" class=" waves-effect"><i
+                              class="bx bx-buildings"></i><span>Категории Администрации Главы</span></a></li>
+
+                        <li><a href="{{route('admin.administrations.index')}}" class=" waves-effect"><i
+                              class="bx bx-buildings"></i><span>Администрация Главы</span></a></li>
+                      </ul>
+                    </li>
+
+                    <li>
+                      <a href="javascript: void(0);" class="has-arrow waves-effect"><i
+                          class="bx bx-file"></i><span>Правительство</span></a>
+                      <ul class="sub-menu" aria-expanded="false">
+                        <li>
+                          <a href="{{route('admin.governments.index')}}" class="waves-effect">Основная информация</a></li>
+                        <li><a href="{{route('admin.ministers.index')}}" class=" waves-effect"><i
+                              class="bx bxs-user-badge"></i><span>Состав правительства</span></a></li>
+                        </ul>
+                    </li>
+
+
                     <li>
                       <a href="javascript: void(0);" class="has-arrow waves-effect"><i
                           class="bx bx-file"></i><span>Регион</span></a>

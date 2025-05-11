@@ -14,9 +14,6 @@ export default function Region() {
   const { props } = usePage();
   const { region, sections } = props;
 
-
-  console.log(region)
-
   return (
     <>
       <AppHeader anniversary={ false }/>

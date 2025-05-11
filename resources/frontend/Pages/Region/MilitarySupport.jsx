@@ -9,6 +9,7 @@ import MunicipalityContent from "#/atoms/modal/municipality-content.jsx";
 import Modal from "#/atoms/modal/modal.jsx";
 import MilitaryContent from "#/atoms/modal/military-content.jsx";
 import useModal from "#/hooks/useModal.js";
+import Accordion from "#/molecules/accordion/Accordion.jsx";
 
 export default function MilitarySupport({ documents }) {
   const [modal, isOpen, setModal] = useModal(undefined);
@@ -37,11 +38,13 @@ export default function MilitarySupport({ documents }) {
           <p>По всем вопросам, касающимся помощи участникам СВО и их семьям, можно обращаться на «горячую линию» Центра
             социального сопровождения семей участников спецоперации 8-800-707-34-45 (режим работы пн-пт с 09:00 до
             18:00).</p>
-          <div className="social-economics__documents">
-            {
-              documents && documents.map((document) =>
-                <InternalTriggerLink title={ document.title } key={ document.id } onClick={ () => setModal(document) }/>)
-            }
+
+          <div className="accordion__items">
+            {documents?.map(document => (
+              <Accordion title={document.title} key={document.id}>
+                <div dangerouslySetInnerHTML={{ __html: document.content }} />
+              </Accordion>
+            ))}
           </div>
         </div>
         <div className="page-content__navigation">

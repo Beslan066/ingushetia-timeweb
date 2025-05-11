@@ -8,12 +8,12 @@
         <div class="card-body">
           <div class="mb-2 d-flex justify-content-between">
             <div>
-              <h2>Основная информация региона</h2>
+              <h2>Основная информация правительства</h2>
             </div>
 
-            @if($regionCount < 1)
+            @if($governmentCount < 1)
               <div>
-                <a href="{{route('admin.regions.create')}}">
+                <a href="{{route('admin.governments.create')}}">
                   <button type="button" class="btn btn-primary waves-effect waves-light">Добавить</button>
                 </a>
               </div>
@@ -47,27 +47,27 @@
 
                   <tbody>
 
-                  @if($regionCount !== 0)
+                  @if($governmentCount !== 0)
                       <tr role="row" class="odd">
-                        @if(isset($region->id))
-                          <td class="" tabindex="0">{{$region->id}}</td>
+                        @if(isset($government->id))
+                          <td class="" tabindex="0">{{$government->id}}</td>
                         @endif
 
-                        @if(isset($region->name))
-                           <td class="" tabindex="0">{{mb_substr($region->name, 0, 80)}}</td>
+                        @if(isset($government->name))
+                           <td class="" tabindex="0">{{mb_substr($government->name, 0, 80)}}</td>
                         @endif
-                        @if(isset($region->created_at))
-                            <td>{{$region->created_at}}</td>
+                        @if(isset($government->created_at))
+                            <td>{{$government->created_at}}</td>
                         @endif
                         <td style="">
                           <div class="btn-group">
-                            @if(isset($region->id))
-                              <a href="{{route('admin.regions.edit', $region->id)}}"
+                            @if(isset($government->id))
+                              <a href="{{route('admin.governments.edit', $government->id)}}"
                                  class="btn btn-outline-primary waves-effect waves-light">Редактировать</a>
                             @endif
 
-                            @if(isset($region->id))
-                                <form action="{{route('admin.regions.delete', $region->id)}}" method="post">
+                            @if(isset($government->id))
+                                <form action="{{route('admin.governments.delete', $government->id)}}" method="post">
                                   @csrf
                                   @method('delete')
                                   <button type="submit" class="btn btn-outline-danger waves-effect waves-light">Удалить

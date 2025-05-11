@@ -5,14 +5,24 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Minister;
+use App\Models\Government;
+use App\Models\GovernmentSection;
 use Inertia\Inertia;
 
 class GovernmentController extends Controller
 {
   public function government()
   {
-    return Inertia::render('Government/Government');
+
+    $government = Government::first();
+    $sections = GovernmentSection::all();
+
+    return Inertia::render('Government/Government', [
+      'government' => $government,
+      'sections' => $sections,
+    ]);
   }
+
   public function structure()
   {
 

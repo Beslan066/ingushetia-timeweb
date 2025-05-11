@@ -383,6 +383,17 @@ Route::group(['namespace' => 'Admin', 'middleware' => \App\Http\Middleware\Admin
 
     });
 
+
+  Route::group(['namespace' => 'Government', 'prefix' => 'raduga'], function () {
+    Route::get('/governments', [App\Http\Controllers\Admin\GovernmentController::class, 'index'])->name('admin.governments.index');
+
+    Route::get('/governments/create', [App\Http\Controllers\Admin\GovernmentController::class, 'create'])->name('admin.governments.create');
+    Route::post('/governments/store', [App\Http\Controllers\Admin\GovernmentController::class, 'store'])->name('admin.governments.store');
+    Route::get('/governments/{government}/edit', [App\Http\Controllers\Admin\GovernmentController::class, 'edit'])->name('admin.governments.edit');
+    Route::patch('/governments/{government}', [App\Http\Controllers\Admin\GovernmentController::class, 'update'])->name('admin.governments.update');
+    Route::delete('/governments/{government}', [App\Http\Controllers\Admin\GovernmentController::class, 'destroy'])->name('admin.governments.delete');
+  });
+
   Route::group(['namespace' => 'Minister', 'prefix' => 'raduga'], function () {
     Route::get('/ministers', [App\Http\Controllers\Admin\MinisterController::class, 'index'])->name('admin.ministers.index');
 
