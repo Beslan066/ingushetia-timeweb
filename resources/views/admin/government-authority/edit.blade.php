@@ -4,17 +4,17 @@
   <div class="row">
     <div class="col-12">
       <div class="card">
-        <form action="{{ route('admin.governments.update', $government->id) }}" method="post" enctype="multipart/form-data">
+        <form action="{{ route('admin.governmentAuthoritys.update', $governmentAuthority->id) }}" method="post" enctype="multipart/form-data">
           @csrf
           @method('patch')
           <div class="card-body">
-            <h4>Основная информация о регионе</h4>
+            <h4>Основная информация</h4>
 
             <div class="form-group w-50">
               <label for="name">Название</label>
               <input class="form-control form-control-lg mb-3" type="text"
                      placeholder="Введите название" name="name" id="name"
-                     value="{{ old('name', $government->name) }}" required>
+                     value="{{ old('name', $governmentAuthority->name) }}" required>
               @error('name')
               <div class="text-danger">{{ $message }}</div>
               @enderror
@@ -24,39 +24,17 @@
               <label for="description">Описание</label>
               <textarea class="form-control summernote"
                         placeholder="Введите описание"
-                        name="description" id="description">{{ old('description', $government->description) }}</textarea>
+                        name="description" id="description">{{ old('description', $governmentAuthority->description) }}</textarea>
               @error('description')
               <div class="text-danger">{{ $message }}</div>
               @enderror
             </div>
 
-            <div class="row w-50">
-                                <div class="col-12">
-                                    <div class="card">
-                                        <div class="card-body">
-
-                                            <h4 class="card-title">Изображение</h4>
-                                            <input type="file" class="dropify" data-height="300" name="image_main" multiple
-                                                   @if($government->image_main)
-                                                       data-default-file="{{ asset('storage/' . $government->image_main) }}"
-                                                @endif
-                                            />
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-
-            @error('image_main')
-            <div class="text-danger">{{ $message }}</div>
-            @enderror
-
             <hr class="my-4">
 
             <h4>Секции</h4>
             <div id="sections-container">
-              @foreach($government->sections as $index => $section)
+              @foreach($governmentAuthority->sections as $index => $section)
                 <div class="card mb-3 w-50" id="section-{{ $section->id }}">
                   <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Секция #{{ $index + 1 }}</h5>
@@ -91,7 +69,7 @@
             </div>
 
             <div class="btn-group mt-4">
-              <a href="{{ route('admin.regions.index') }}" class="btn btn-light mr-2">Назад</a>
+              <a href="{{ route('admin.governmentAuthoritys.index') }}" class="btn btn-light mr-2">Назад</a>
               <button type="submit" class="btn btn-primary">Обновить</button>
             </div>
           </div>
@@ -104,7 +82,7 @@
 @push('scripts')
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      let sectionCount = {{ count($government->sections) }};
+      let sectionCount = {{ count($governmentAuthority->sections) }};
       const container = document.getElementById('sections-container');
 
       document.getElementById('add-section').addEventListener('click', function() {

@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\GovernmentAuthority;
+use App\Models\GovernmentAuthoritySection;
 use App\Models\Minister;
 use App\Models\Government;
 use App\Models\GovernmentSection;
@@ -42,7 +44,14 @@ class GovernmentController extends Controller
   }
   public function abilities()
   {
-    return Inertia::render('Government/GovernmentAbilities');
+
+    $governmentAuthority = GovernmentAuthority::first();
+    $sections = GovernmentAuthoritySection::all();
+
+    return Inertia::render('Government/GovernmentAbilities', [
+      'governmentAuthority' => $governmentAuthority,
+      'sections' => $sections,
+    ]);
   }
   public function sessions()
   {

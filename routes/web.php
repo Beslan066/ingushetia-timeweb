@@ -394,6 +394,16 @@ Route::group(['namespace' => 'Admin', 'middleware' => \App\Http\Middleware\Admin
     Route::delete('/governments/{government}', [App\Http\Controllers\Admin\GovernmentController::class, 'destroy'])->name('admin.governments.delete');
   });
 
+  Route::group(['namespace' => 'GovernmentAuthority', 'prefix' => 'raduga'], function () {
+    Route::get('/governmentAuthority', [App\Http\Controllers\Admin\GovernmentAuthorityController::class, 'index'])->name('admin.governmentAuthoritys.index');
+
+    Route::get('/governmentAuthority/create', [App\Http\Controllers\Admin\GovernmentAuthorityController::class, 'create'])->name('admin.governmentAuthoritys.create');
+    Route::post('/governmentAuthority/store', [App\Http\Controllers\Admin\GovernmentAuthorityController::class, 'store'])->name('admin.governmentAuthoritys.store');
+    Route::get('/governmentAuthority/{governmentAuthority}/edit', [App\Http\Controllers\Admin\GovernmentAuthorityController::class, 'edit'])->name('admin.governmentAuthoritys.edit');
+    Route::patch('/governmentAuthority/{governmentAuthority}', [App\Http\Controllers\Admin\GovernmentAuthorityController::class, 'update'])->name('admin.governmentAuthoritys.update');
+    Route::delete('/governmentAuthority/{governmentAuthority}', [App\Http\Controllers\Admin\GovernmentAuthorityController::class, 'destroy'])->name('admin.governmentAuthoritys.delete');
+  });
+
   Route::group(['namespace' => 'Minister', 'prefix' => 'raduga'], function () {
     Route::get('/ministers', [App\Http\Controllers\Admin\MinisterController::class, 'index'])->name('admin.ministers.index');
 

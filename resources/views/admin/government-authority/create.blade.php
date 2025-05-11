@@ -4,10 +4,10 @@
   <div class="row">
     <div class="col-12">
       <div class="card">
-        <form action="{{ route('admin.governments.store') }}" method="post" enctype="multipart/form-data">
+        <form action="{{ route('admin.governmentAuthoritys.store') }}" method="post" enctype="multipart/form-data">
           @csrf
           <div class="card-body">
-            <h4>Основная информация о регионе</h4>
+            <h4>Основная информация</h4>
 
             <div class="form-group w-50">
               <label for="name">Название</label>
@@ -28,23 +28,6 @@
               @enderror
             </div>
 
-            <div class="row w-50">
-              <div class="col-12">
-                <div class="card">
-                  <div class="card-body">
-
-                    <h4 class="card-title">Изображение</h4>
-                    <input type="file" class="dropify" data-height="300" name="image_main" multiple/>
-
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            @error('image_main')
-            <div class="text-danger">{{ $message }}</div>
-            @enderror
-
             <hr class="my-4">
 
             <h4>Секции</h4>
@@ -59,7 +42,7 @@
             </div>
 
             <div class="btn-group mt-4">
-              <a href="{{ route('admin.governments.index') }}" class="btn btn-light mr-2">Назад</a>
+              <a href="{{ route('admin.governmentAuthoritys.index') }}" class="btn btn-light mr-2">Назад</a>
               <button type="submit" class="btn btn-primary">Создать</button>
             </div>
           </div>
