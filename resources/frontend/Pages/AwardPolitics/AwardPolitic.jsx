@@ -13,17 +13,25 @@ export default function AwardPolitic({ documents: initialDocuments }) {
   const [documents, setDocuments] = useState(initialDocuments.data);
   const [nextPage, setNextPage] = useState(initialDocuments.next_page_url);
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    setDocuments(initialDocuments.data);
-    setNextPage(initialDocuments.next_page_url);
-  }, [initialDocuments]);
+  const [currentFilter, setCurrentFilter] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('type_id') || null;
+  });
 
   const loadMore = () => {
     if (!nextPage || loading) return;
 
     setLoading(true);
-    router.get(nextPage, {}, {
+
+    // Создаем URL для запроса с сохранением фильтра
+    const url = new URL(nextPage);
+    if (currentFilter) {
+      url.searchParams.set('type_id', currentFilter);
+    } else {
+      url.searchParams.delete('type_id');
+    }
+
+    router.get(url.toString(), {}, {
       preserveState: true,
       preserveScroll: true,
       only: ["documents"],
@@ -35,6 +43,52 @@ export default function AwardPolitic({ documents: initialDocuments }) {
     });
   };
 
+  // Обновление списка при возврате вверх
+  const refreshDocuments = () => {
+    const url = new URL(window.location.pathname, window.location.origin);
+
+    if (currentFilter) {
+      url.searchParams.set('type_id', currentFilter);
+    }
+
+    router.get(url.toString(), {}, {
+      preserveState: false,
+      onSuccess: ({ props }) => {
+        setDocuments(props.documents.data);
+        setNextPage(props.documents.next_page_url);
+      },
+    });
+  };
+
+  // Обработчик изменения фильтра
+  const handleFilterChange = (typeId) => {
+    setCurrentFilter(typeId);
+    const url = new URL(window.location.pathname, window.location.origin);
+
+    if (typeId) {
+      url.searchParams.set('type_id', typeId);
+    }
+
+    router.get(url.toString(), {}, {
+      preserveState: false,
+      onSuccess: ({ props }) => {
+        setDocuments(props.documents.data);
+        setNextPage(props.documents.next_page_url);
+      },
+    });
+  };
+
+  // Обработчик скролла
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY === 0) {
+        refreshDocuments();
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [currentFilter]);
   return (
     <>
       <AppHeader anniversary={false} />
