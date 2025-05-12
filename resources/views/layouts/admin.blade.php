@@ -299,6 +299,10 @@
                               class="bx bxs-user-badge"></i><span>Состав правительства</span></a></li>
                         <li><a href="{{route('admin.governmentAuthoritys.index')}}" class=" waves-effect"><i
                               class="bx bxs-user-badge"></i><span>Полномочия правительства</span></a></li>
+                        <li><a href="{{route('admin.governmentDocumentCategorys.index')}}" class=" waves-effect"><i
+                              class="bx bxs-user-badge"></i><span>Категории документов</span></a></li>
+                        <li><a href="{{route('admin.governmentDocuments.index')}}" class=" waves-effect"><i
+                              class="bx bxs-user-badge"></i><span>Документы правительства</span></a></li>
                         </ul>
                     </li>
 

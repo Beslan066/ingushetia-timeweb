@@ -10,7 +10,7 @@ import MilitaryContent from "#/atoms/modal/military-content.jsx";
 import MemberContent from "#/atoms/modal/member-content.jsx";
 import Downloadable from "#/atoms/downloadable/downloadable.jsx";
 
-export default function GovernmentColleagues() {
+export default function GovernmentColleagues({documents}) {
 
   return (
     <>
@@ -18,7 +18,12 @@ export default function GovernmentColleagues() {
       <PageTitle title="Коллегии правительства"/>
       <div className="page-content__wrapper">
         <div className="page-content__content">
-          <p>К сожалению, информации пока нет</p>
+          <div className="downloadable__documents">
+            {
+              documents && documents.map((document) =>
+                <Downloadable title={ document.title }   key={ document.id } link={ `/storage/${ document.file }` }/>)
+            }
+          </div>
         </div>
         <div className="page-content__navigation">
           <GovernmentNavigation/>

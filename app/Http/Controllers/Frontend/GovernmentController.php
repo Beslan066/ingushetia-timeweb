@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Models\GovernmentAuthority;
 use App\Models\GovernmentAuthoritySection;
+use App\Models\GovernmentDocument;
 use App\Models\Minister;
 use App\Models\Government;
 use App\Models\GovernmentSection;
@@ -34,7 +35,10 @@ class GovernmentController extends Controller
       ->take(1)
       ->first();
 
-    $ministers = Minister::query()->whereNot('priority', 1)->get();
+    $ministers = Minister::query()
+      ->whereNot('priority', 1)
+      ->orderBy('priority', 'desc')
+      ->get();
 
     return Inertia::render('Government/GovernmentStructure',
       [
@@ -55,15 +59,35 @@ class GovernmentController extends Controller
   }
   public function sessions()
   {
-    return Inertia::render('Government/GovernmentSessions');
+
+    $sessions = GovernmentDocument::whereHas('governmentDocumentCategory', function($query) {
+      $query->where('title', 'Заседания правительства');
+    })->get();
+
+    return Inertia::render('Government/GovernmentSessions', [
+      'sessions' => $sessions,
+    ]);
   }
   public function plan()
   {
-    return Inertia::render('Government/GovernmentPlan');
+
+    $documents = GovernmentDocument::whereHas('governmentDocumentCategory', function($query) {
+      $query->where('title', 'План работы правительства');
+    })->get();
+
+    return Inertia::render('Government/GovernmentPlan', [
+        'documents' => $documents,
+    ]);
   }
   public function colleagues()
   {
-    return Inertia::render('Government/GovernmentColleagues');
+    $documents = GovernmentDocument::whereHas('governmentDocumentCategory', function($query) {
+      $query->where('title', 'Коллегии правительства');
+    })->get();
+
+    return Inertia::render('Government/GovernmentColleagues', [
+      'documents' => $documents,
+    ]);
   }
   public function directories()
   {

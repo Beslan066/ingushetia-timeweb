@@ -394,6 +394,28 @@ Route::group(['namespace' => 'Admin', 'middleware' => \App\Http\Middleware\Admin
     Route::delete('/governments/{government}', [App\Http\Controllers\Admin\GovernmentController::class, 'destroy'])->name('admin.governments.delete');
   });
 
+  Route::group(['namespace' => 'GovernmentDocumentCategory', 'prefix' => 'raduga'], function () {
+    Route::get('/government-categories', [App\Http\Controllers\Admin\GovernmentDocumentCategoryController::class, 'index'])->name('admin.governmentDocumentCategorys.index');
+
+    Route::get('/government-categories/create', [App\Http\Controllers\Admin\GovernmentDocumentCategoryController::class, 'create'])->name('admin.governmentDocumentCategorys.create');
+    Route::post('/government-categories/store', [App\Http\Controllers\Admin\GovernmentDocumentCategoryController::class, 'store'])->name('admin.governmentDocumentCategorys.store');
+    Route::get('/government-categories/{category}/edit', [App\Http\Controllers\Admin\GovernmentDocumentCategoryController::class, 'edit'])->name('admin.governmentDocumentCategorys.edit');
+    Route::patch('/government-categories/{category}', [App\Http\Controllers\Admin\GovernmentDocumentCategoryController::class, 'update'])->name('admin.governmentDocumentCategorys.update');
+    Route::delete('/government-categories/{category}', [App\Http\Controllers\Admin\GovernmentDocumentCategoryController::class, 'destroy'])->name('admin.governmentDocumentCategorys.delete');
+
+  });
+
+  Route::group(['namespace' => 'GovernmentDocument', 'prefix' => 'raduga'], function () {
+    Route::get('/government-documents', [App\Http\Controllers\Admin\GovernmentDocumentController::class, 'index'])->name('admin.governmentDocuments.index');
+
+    Route::get('/government-documents/create', [App\Http\Controllers\Admin\GovernmentDocumentController::class, 'create'])->name('admin.governmentDocuments.create');
+    Route::post('/government-documents/store', [App\Http\Controllers\Admin\GovernmentDocumentController::class, 'store'])->name('admin.governmentDocuments.store');
+    Route::get('/government-documents/{document}/edit', [App\Http\Controllers\Admin\GovernmentDocumentController::class, 'edit'])->name('admin.governmentDocuments.edit');
+    Route::patch('/government-documents/{document}', [App\Http\Controllers\Admin\GovernmentDocumentController::class, 'update'])->name('admin.governmentDocuments.update');
+    Route::delete('/government-documents/{document}', [App\Http\Controllers\Admin\GovernmentDocumentController::class, 'destroy'])->name('admin.governmentDocuments.delete');
+
+  });
+
   Route::group(['namespace' => 'GovernmentAuthority', 'prefix' => 'raduga'], function () {
     Route::get('/governmentAuthority', [App\Http\Controllers\Admin\GovernmentAuthorityController::class, 'index'])->name('admin.governmentAuthoritys.index');
 
