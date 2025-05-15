@@ -34,9 +34,9 @@ export default function Media({ media: mediaProps }) {
     <>
       <AppHeader/>
       <div className={'news-hero__news-wrapper news-page-title'}>
-        <PageTitle title="Новости" />
+        <PageTitle title="Медиа" />
         <div>
-          <Filters isActive={ isFiltersOpened } onChange={(dateFrom, dateTo) => onFilters(dateFrom, dateTo, selected)} onClose={ () => setFiltersOpened(false) }/>
+          <FilterButton isActive={ isFiltersOpened } onChange={ setFiltersOpened }/>
         </div>
       </div>
       <div className="page-content__wrapper media-default">

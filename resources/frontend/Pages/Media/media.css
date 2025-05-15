@@ -63,6 +63,13 @@
 
 @media (max-width: 480px) {
 
+  .news-hero__news-wrapper  {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 96%;
+  }
+
   .news-hero__news-wrapper div {
     display: flex;
   }
