@@ -258,7 +258,6 @@ export default function News({
                   onTab={onCategorySwitch}
                   selected={selectedCategory}
                 />
-
               </div>
             </div>
             <Filters

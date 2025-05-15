@@ -33,11 +33,19 @@ export default function Media({ media: mediaProps }) {
   return (
     <>
       <AppHeader/>
-      <PageTitle title="Медиа"/>
+      <div className={'news-hero__news-wrapper news-page-title'}>
+        <PageTitle title="Новости" />
+        <div>
+          <Filters isActive={ isFiltersOpened } onChange={(dateFrom, dateTo) => onFilters(dateFrom, dateTo, selected)} onClose={ () => setFiltersOpened(false) }/>
+        </div>
+      </div>
       <div className="page-content__wrapper media-default">
-        <div className="tabs-wrapper">
-          <Tabs tabs={ categories } selected={ selected } onTab={ (id) => onFilters(filters?.dateFrom, filters?.dateTo, id) }/>
-          <FilterButton isActive={ isFiltersOpened } onChange={ setFiltersOpened }/>
+        <div className="news-wrapper">
+            <div className="tab-row">
+              <Tabs tabs={ categories } selected={ selected } onTab={ (id) => onFilters(filters?.dateFrom, filters?.dateTo, id) }/>
+              <FilterButton isActive={ isFiltersOpened } onChange={ setFiltersOpened }/>
+
+            </div>
         </div>
         <Filters isActive={ isFiltersOpened } onChange={(dateFrom, dateTo) => onFilters(dateFrom, dateTo, selected)} onClose={ () => setFiltersOpened(false) }/>
         <MediaCollection media={media}/>

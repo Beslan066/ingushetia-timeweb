@@ -45,3 +45,29 @@
 .media-default .print-icon {
   display: none;
 }
+
+
+.news-hero__news-wrapper div {
+  display: none;
+}
+
+.tab-row {
+  display: flex !important;
+}
+
+@media (max-width: 768px) {
+  .tabs-container {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+
+  .news-hero__news-wrapper div {
+    display: flex;
+  }
+
+  .news-wrapper .filter-trigger {
+    display: none;
+  }
+}

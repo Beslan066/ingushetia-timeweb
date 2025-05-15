@@ -37,7 +37,7 @@ class GovernmentController extends Controller
 
     $ministers = Minister::query()
       ->whereNot('priority', 1)
-      ->orderBy('priority', 'desc')
+      ->orderBy('priority', 'asc')
       ->get();
 
     return Inertia::render('Government/GovernmentStructure',
