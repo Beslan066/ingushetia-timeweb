@@ -25,7 +25,7 @@ class UpdateRequest extends FormRequest
       'title' => 'sometimes|string|max:255|min:3',
       'lead' => 'nullable|string|max:500',
       'image_main' => 'sometimes|mimes:webp,jpeg,png,jpg|max:130',
-      'slides' => 'nullable|array|max:20',
+      'slides' => 'nullable|array|max:50',
       'slides.*' => 'sometimes|mimes:webp,jpeg,png,jpg|max:250',
       'user_id' => 'sometimes|exists:users,id',
       'news_id' => 'nullable|exists:news,id',
@@ -51,7 +51,7 @@ class UpdateRequest extends FormRequest
       'image_main.max' => 'Размер главного изображения не должен превышать 130КБ.',
       'image_main.dimensions' => 'Главное изображение должно быть минимум 600x400 пикселей.',
 
-      'slides.max' => 'Можно загрузить не более 10 слайдов.',
+      'slides.max' => 'Можно загрузить не более 50 слайдов.',
       'slides.*.mimes' => 'Слайды должны быть в формате: webp, jpeg, png, jpg.',
       'slides.*.max' => 'Размер каждого слайда не должен превышать 250KB.',
       'slides.*.dimensions' => 'Слайды должны быть минимум 600x400 пикселей.',

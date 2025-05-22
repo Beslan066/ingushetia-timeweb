@@ -90,8 +90,10 @@ class PhotoReportageController extends Controller
 
       // Сохранение слайдов
       if ($request->hasFile('slides')) {
+        Log::info('Количество полученных слайдов: ' . count($request->file('slides')));
         $slides = [];
-        foreach ($request->file('slides') as $file) {
+        foreach ($request->file('slides') as $index => $file) {
+          Log::info("Обработка слайда #{$index}");
           $slides[] = $file->store('photo_reportages/slides');
         }
         $data['slides'] = json_encode($slides);

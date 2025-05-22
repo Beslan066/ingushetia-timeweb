@@ -76,7 +76,7 @@
               <div class="form-group w-50">
                 <label for="slides">Добавить новые слайды</label>
                 <input type="file" class="form-control" name="slides[]" id="slides" multiple>
-                <small class="text-muted">Максимум 20 слайдов (включая текущие)</small>
+                <small class="text-muted">Максимум 50 слайдов (включая текущие)</small>
               </div>
 
               @error('slides')
@@ -221,7 +221,7 @@
         const files = Array.from(this.files);
         const preview = $('#slides-preview');
         const existingSlidesCount = $('#slides-preview .existing-slide').length;
-        const maxAllowed = 20 - existingSlidesCount;
+        const maxAllowed = 50 - existingSlidesCount;
 
         // Очищаем предыдущие новые слайды
         $('.new-slide').remove();
