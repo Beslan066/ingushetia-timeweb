@@ -23,7 +23,7 @@ class UpdateRequest extends FormRequest
     {
         return [
             'title' => 'required|string',
-            'content' => 'required',
+            'content' => 'nullable',
             'user_id' => 'required',
         ];
     }
@@ -33,7 +33,6 @@ class UpdateRequest extends FormRequest
         return [
             'title.required' => 'Заголовок обязателен для заполнения.',
             'title.string' => 'Заголовок должен быть строкой.',
-            'content.required' => 'Заполните содержимое новости.',
         ];
     }
 }
