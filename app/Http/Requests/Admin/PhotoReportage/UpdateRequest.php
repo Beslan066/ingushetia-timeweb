@@ -25,12 +25,13 @@ class UpdateRequest extends FormRequest
       'title' => 'sometimes|string|max:255|min:3',
       'lead' => 'nullable|string|max:500',
       'image_main' => 'sometimes|mimes:webp,jpeg,png,jpg|max:130',
-      'slides' => 'nullable|array|max:50',
+      'slides' => 'sometimes|array|max:50',
       'slides.*' => 'sometimes|mimes:webp,jpeg,png,jpg|max:250',
       'user_id' => 'sometimes|exists:users,id',
       'news_id' => 'nullable|exists:news,id',
       'agency_id' => 'sometimes|exists:agencies,id',
       'published_at' => 'sometimes|date_format:Y-m-d\TH:i',
+      'removed_slides' => 'nullable|json',
     ];
   }
 

@@ -149,43 +149,57 @@ class PhotoReportageController extends Controller
 
   public function update(UpdateRequest $request, PhotoReportage $reportage)
   {
-    $data = $request->validated();
+    try {
+      DB::beginTransaction();
 
-    $currentSlides = $reportage->slides_array;
+      $data = $request->validated();
+      $currentSlides = $reportage->slides_array;
 
-    // Удаляем отмеченные слайды
-    $removedSlides = json_decode($request->input('removed_slides'), true) ?? [];
-    foreach ($removedSlides as $slidePath) {
-      Storage::delete($slidePath);
-    }
+      // Удаляем отмеченные слайды
+      $removedSlides = json_decode($request->input('removed_slides'), true) ?? [];
+      $updatedSlides = array_values(array_diff($currentSlides, $removedSlides));
 
-    $updatedSlides = array_values(array_diff($currentSlides, $removedSlides));
-
-    // Добавляем новые слайды
-    if ($request->hasFile('slides')) {
-      foreach ($request->file('slides') as $file) {
-        $updatedSlides[] = $file->store('photo_reportages/slides');
+      // Добавляем новые слайды (используем getUploadedFiles для обработки)
+      if ($request->has('slides')) {
+        foreach ($request->file('slides') ?? [] as $file) {
+          if ($file->isValid()) {
+            $updatedSlides[] = $file->store('photo_reportages/slides');
+          }
+        }
       }
-    }
 
-    // Удаляем старое главное изображение
-    if ($request->hasFile('image_main')) {
-      if ($reportage->image_main) {
-        Storage::delete($reportage->image_main);
+      // Проверка, что остался хотя бы один слайд
+      if (empty($updatedSlides)) {
+        throw new \Exception('Должен остаться хотя бы один слайд');
       }
-      $data['image_main'] = $request->file('image_main')->store('photo_reportages');
+
+      // Удаляем старое главное изображение
+      if ($request->hasFile('image_main')) {
+        if ($reportage->image_main && Storage::exists($reportage->image_main)) {
+          Storage::delete($reportage->image_main);
+        }
+        $data['image_main'] = $request->file('image_main')->store('photo_reportages');
+      }
+
+      // Обновляем slides
+      $data['slides'] = json_encode($updatedSlides);
+
+      $reportage->update($data);
+
+      DB::commit();
+
+      return redirect()->route('admin.photoReportage.index')
+        ->with('success', 'Фоторепортаж успешно обновлен');
+
+    } catch (\Exception $e) {
+      DB::rollBack();
+      Log::error('Ошибка при обновлении фоторепортажа: ' . $e->getMessage());
+
+      return back()
+        ->withInput()
+        ->with('error', 'Произошла ошибка при обновлении фоторепортажа: ' . $e->getMessage());
     }
-
-    // Обновляем slides
-    $data['slides'] = json_encode($updatedSlides);
-
-    $reportage->update($data);
-
-    return redirect()->route('admin.photoReportage.index')
-      ->with('success', 'Фоторепортаж успешно обновлен');
   }
-
-
 
 
   /**

@@ -50,11 +50,6 @@ class PhotoReportage extends Model
 
   public function getSlidesArrayAttribute()
   {
-    $slides = json_decode($this->slides, true) ?: [];
-
-    return array_map(function($path) {
-      // Удаляем лишние части пути если нужно
-      return str_replace('photo_reportages/slides/', '', $path);
-    }, $slides);
+    return $this->slides ? json_decode($this->slides, true) : [];
   }
 }

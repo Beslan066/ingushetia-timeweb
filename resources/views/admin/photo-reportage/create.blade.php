@@ -153,11 +153,14 @@
 @endsection
 
 @push('scripts')
+  <script src="{{asset('assets/js/jquery.min.js')}}"></script>
+
   <script src="https://cdn.jsdelivr.net/npm/dropify/dist/js/dropify.min.js"></script>
   <script>
+    $(document).ready(function() {
+      // Хранилище для файлов
+      let slidesFiles = [];
 
-
-    $(document).ready(function () {
       // Инициализация Dropify
       $('.dropify').dropify({
         messages: {
@@ -168,12 +171,109 @@
         },
         error: {
           'fileSize': 'Файл слишком большой (макс. {{ config('app.upload_max_size') ?? '130K' }}).',
-          'fileExtension': 'Разрешены только файлы .webp'
         }
       });
 
+      // Обработчик изменения input файлов
+      $('#slides').on('change', function() {
+        handleFileSelection(this.files);
+      });
+
+      // Обработчик drag and drop (дополнительная функциональность)
+      $('#slides-preview').on('dragover', function(e) {
+        e.preventDefault();
+        $(this).addClass('border-primary');
+      }).on('dragleave', function(e) {
+        e.preventDefault();
+        $(this).removeClass('border-primary');
+      }).on('drop', function(e) {
+        e.preventDefault();
+        $(this).removeClass('border-primary');
+        if (e.originalEvent.dataTransfer.files.length) {
+          handleFileSelection(e.originalEvent.dataTransfer.files);
+        }
+      });
+
+      // Функция обработки выбранных файлов
+      function handleFileSelection(files) {
+        const maxFiles = 50;
+        const newFiles = Array.from(files);
+
+        // Проверка на максимальное количество файлов
+        if (slidesFiles.length + newFiles.length > maxFiles) {
+          alert(`Максимальное количество слайдов - ${maxFiles}`);
+          return;
+        }
+
+
+        // Добавляем новые файлы в хранилище
+        slidesFiles = [...slidesFiles, ...newFiles];
+
+        // Обновляем предпросмотр
+        updatePreview();
+
+        // Обновляем input files
+        updateFileInput();
+      }
+
+      // Функция обновления предпросмотра
+      function updatePreview() {
+        const preview = $('#slides-preview');
+        preview.empty();
+
+        if (slidesFiles.length === 0) {
+          preview.html('<div class="text-muted w-100 text-center">Нет загруженных изображений</div>');
+          return;
+        }
+
+        slidesFiles.forEach((file, index) => {
+          const reader = new FileReader();
+
+          reader.onload = function(e) {
+            const previewItem = $(`
+                    <div class="position-relative slide-preview-item" data-index="${index}">
+                        <img src="${e.target.result}" class="img-thumbnail">
+                        <span class="badge bg-primary position-absolute top-0 start-0">${index + 1}</span>
+                        <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 remove-slide">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `);
+
+            preview.append(previewItem);
+          };
+
+          reader.readAsDataURL(file);
+        });
+      }
+
+      // Функция обновления input files
+      function updateFileInput() {
+        const dataTransfer = new DataTransfer();
+        slidesFiles.forEach(file => dataTransfer.items.add(file));
+        $('#slides')[0].files = dataTransfer.files;
+      }
+
+      // Обработчик удаления слайда
+      $(document).on('click', '.remove-slide', function() {
+        const index = $(this).closest('.slide-preview-item').data('index');
+        slidesFiles.splice(index, 1);
+        updatePreview();
+        updateFileInput();
+      });
+
+      // Валидация при отправке формы
+      $('#photoReportageForm').on('submit', function(e) {
+        if (slidesFiles.length === 0) {
+          e.preventDefault();
+          alert('Пожалуйста, добавьте хотя бы один слайд');
+          return false;
+        }
+        return true;
+      });
+
+      // Инициализация предпросмотра при загрузке страницы
+      updatePreview();
     });
-
-
   </script>
 @endpush

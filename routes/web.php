@@ -151,6 +151,8 @@ Route::group(['namespace' => 'Admin', 'middleware' => \App\Http\Middleware\Admin
 
     });
 
+
+
     Route::group(['namespace' => 'Category', 'prefix' => 'raduga'], function () {
         Route::get('/categories', [App\Http\Controllers\Admin\CategoryController::class, 'index'])->name('admin.categories.index');
 
