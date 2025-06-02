@@ -28,6 +28,7 @@ use App\Models\CivilService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
@@ -310,30 +311,63 @@ if ($request->route('url')) {
     ]);
   }
 
-  public function media()
+
+
+  public function media(Request $request)
   {
-    $dateFrom = request()->input('dateFrom') ? Carbon::parse(request()->input('dateFrom')) : null;
-    $dateTo = request()->input('dateTo') ? Carbon::parse(request()->input('dateTo')) : null;
+    $category = $request->input('category');
+    $page = $request->input('page', 1);
+    $perPage = 12;
 
-    $videos = Video::query()->publishedBetween($dateFrom, $dateTo)->orderBy('published_at', 'desc')->get();
-    $photoReportages = PhotoReportage::query()->publishedBetween($dateFrom, $dateTo)->orderBy('published_at', 'desc')->get();
+    $videos = Video::query()->get()->map(function ($video) {
+      return [
+        'id' => $video->id,
+        'type' => 'video',
+        'title' => $video->title,
+        'lead' => $video->lead,
+        'image_main' => $video->image_main,
+        'published_at' => $video->published_at,
+        'timestamp' => Carbon::parse($video->published_at)->timestamp,
+      ];
+    });
 
-    $media = [];
-    switch (request()->input('category')) {
+    $photoReportages = PhotoReportage::query()->get()->map(function ($photo) {
+      return [
+        'id' => $photo->id,
+        'type' => 'photo',
+        'title' => $photo->title,
+        'lead' => $photo->lead,
+        'image_main' => $photo->image_main,
+        'published_at' => $photo->published_at,
+        'timestamp' => Carbon::parse($photo->published_at)->timestamp,
+      ];
+    });
+
+    $media = collect();
+
+    switch ($category) {
       case 'video':
-        $media = $videos;
+        $media = $videos->sortByDesc('timestamp')->values();
         break;
       case 'photo':
-        $media = $photoReportages;
+        $media = $photoReportages->sortByDesc('timestamp')->values();
         break;
       default:
-        $media = collect($photoReportages)->merge($videos)->sortByDesc('published_at')->flatten()->toArray();
+        $media = $photoReportages->merge($videos)->sortByDesc('timestamp')->values();
+        break;
     }
 
+    $paginated = new LengthAwarePaginator(
+      $media->forPage($page, $perPage)->values(),
+      $media->count(),
+      $perPage,
+      $page,
+      ['path' => $request->url(), 'query' => $request->except(['page', 'dateFrom', 'dateTo'])]
+    );
+
     return Inertia::render('Media/Media', [
-      'videos' => $videos,
-      'photoReportages' => $photoReportages,
-      'media' => $media,
+      'media' => $paginated,
+      'selectedCategory' => $category,
     ]);
   }
 
