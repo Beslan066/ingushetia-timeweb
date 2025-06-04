@@ -96,7 +96,10 @@ class HomeController extends Controller
 
       // Горные территории
       $mountains = Cache::remember($cacheKeys['mountains'], $cacheTimeLong, function () {
-          return Mountain::with('reportage')->get();
+          return Mountain::query()
+            ->with('reportage')
+            ->orderBy('published_at', 'desc')
+            ->get();
       });
 
       // Главные материалы
