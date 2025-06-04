@@ -46,9 +46,11 @@ export default function Mountains({ mountains }) {
                 transform: `translateX(-${ currentSlide * 100 }%)`,
                 transition: 'transform 0.3s ease-in-out'
               } }>
-                <div className="mountain__image">
-                  <img src={ `/storage/${ mountain.image_main }` } alt={ `Изображение ${ mountain.title }` }/>
-                </div>
+                {mountain.image_main &&
+                  <div className="mountain__image">
+                    <img src={ `/storage/${ mountain.image_main }` } alt={ `Изображение ${ mountain.title }` }/>
+                  </div>
+                }
 
                 <div className="mountain__body">
                   <div>

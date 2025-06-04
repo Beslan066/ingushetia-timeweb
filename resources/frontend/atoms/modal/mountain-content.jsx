@@ -16,34 +16,50 @@ export default function MountainContent({ mountain }) {
 
         <h2 className="mountain-modal__title">{ mountain.title }</h2>
         <div className="mountain-modal__image">
-          <img src={ '/storage/' + mountain.image_main } alt={ mountain.title }/>
+          {mountain.image_main &&
+            <img src={ '/storage/' + mountain.image_main } alt={ mountain.title }/>
+          }
         </div>
         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
-          <div className="mountain-image__description">Фото:{ mountain.image_author }</div>
-          <div className="mountain-image__description">{ mountain.image_description }</div>
+          {mountain.image_author &&
+            <div className="mountain-image__description">Фото:{ mountain.image_author }</div>
+          }
+          {mountain.image_description &&
+            <div className="mountain-image__description">{ mountain.image_description }</div>
+          }
         </div>
 
         <div className="mountain__properties">
-          <div className="mountain__property">
-            <div className="mountain-property__title">Дата начала строительства</div>
-            <div className="mountain-property__value">{ mountain.year }</div>
-          </div>
-          <div className="mountain__property">
-            <div className="mountain-property__title">Расположение</div>
-            <div className="mountain-property__value">{ mountain.location }</div>
-          </div>
-          <div className="mountain__property">
-            <div className="mountain-property__title">Координаты</div>
-            <div className="mountain-property__value">{ mountain.coordinates }</div>
-          </div>
-          <div className="mountain__property">
-            <div className="mountain-property__title">Высота над уровнем моря</div>
-            <div className="mountain-property__value">{ mountain.see_height }</div>
-          </div>
-          <div className="mountain__property">
-            <div className="mountain-property__title">Состав</div>
-            <div className="mountain-property__value">{ mountain.structure }</div>
-          </div>
+          {mountain.year &&
+            <div className="mountain__property">
+              <div className="mountain-property__title">Дата начала строительства</div>
+              <div className="mountain-property__value">{ mountain.year }</div>
+            </div>
+          }
+          {mountain.location &&
+            <div className="mountain__property">
+              <div className="mountain-property__title">Расположение</div>
+              <div className="mountain-property__value">{ mountain.location }</div>
+            </div>
+          }
+          {mountain.coordinates &&
+            <div className="mountain__property">
+              <div className="mountain-property__title">Координаты</div>
+              <div className="mountain-property__value">{ mountain.coordinates }</div>
+            </div>
+          }
+          {mountain.see_height &&
+            <div className="mountain__property">
+              <div className="mountain-property__title">Высота над уровнем моря</div>
+              <div className="mountain-property__value">{ mountain.see_height }</div>
+            </div>
+          }
+          {mountain.structure &&
+            <div className="mountain__property">
+              <div className="mountain-property__title">Состав</div>
+              <div className="mountain-property__value">{ mountain.structure }</div>
+            </div>
+          }
         </div>
         <div className="mountain-content" dangerouslySetInnerHTML={ { __html: mountain.content } }></div>
         {
