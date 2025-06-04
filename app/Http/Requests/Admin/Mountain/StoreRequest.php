@@ -26,7 +26,7 @@ class StoreRequest extends FormRequest
     {
         return [
             'title' => 'required|string',
-            'lead' => 'required|string|max:255',
+            'lead' => 'required|string',
             'year' => 'nullable|string|max:255',
             'location' => 'nullable|string|max:255',
             'coordinates' => 'nullable|string|max:255',
@@ -48,7 +48,6 @@ class StoreRequest extends FormRequest
             'title.string' => 'Заголовок должен быть строкой.',
             'lead.required' => 'Заполните краткое описание.',
             'lead.string' => 'Краткое описание должно быть строкой.',
-            'lead.max' => 'Длина краткого описания не должна превышать 255 символов.',
 
             'year.string' => 'Краткое year должно быть строкой.',
             'year.max' => 'Длина краткого year не должна превышать 255 символов.',

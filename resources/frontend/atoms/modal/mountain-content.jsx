@@ -59,6 +59,14 @@ export default function MountainContent({ mountain }) {
             </div>
           }
         </div>
+
+        {mountain.lead &&
+          <p>
+            <b>
+              {mountain.lead}
+            </b>
+          </p>
+        }
         <div className="mountain-content" dangerouslySetInnerHTML={ { __html: mountain.content } }></div>
         {
           mountain.reportage ? (
