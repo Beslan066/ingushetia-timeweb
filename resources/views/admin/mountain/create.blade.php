@@ -37,6 +37,15 @@
                                 </div>
                             </div>
 
+                          <div class="form-group w-50">
+                            <label for="exampleFormControlTextarea1">Лид новости</label>
+                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" style="height: 101px;"
+                                      placeholder="Введите лид" name="lead"></textarea>
+                          </div>
+                          @error('lead')
+                          <div class="text-danger">{{ $message }}</div>
+                          @enderror
+
                             <div class="form-group w-50">
                                 <textarea class="summernote" placeholder="Введите что-нибудь" name="content"></textarea>
                             </div>
