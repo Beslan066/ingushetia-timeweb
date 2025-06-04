@@ -8,8 +8,6 @@ export default function MountainContent({ mountain }) {
     return null;
   }
 
-  console.log(mountain)
-
   return (
     <div className="mountain-content printable-content">
       <div className="mountain__body-wrapper">

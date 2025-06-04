@@ -101,3 +101,11 @@
     align-items: center;
   }
 }
+
+.mountain-content p {
+  font-size: 16px;
+}
+
+.mountain-content span {
+  font-size: 16px;
+}
