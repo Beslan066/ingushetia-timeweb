@@ -1,6 +1,6 @@
 .top-menu {
   position: relative;
-  background-color: var(--color-neutral-lightest);
+  background-color: #051945;
   z-index: 10100;
   width: 100%;
 }
@@ -34,7 +34,7 @@
   font-size: var(--font-size-h4);
   font-weight: var(--font-weight-semibold);
   line-height: var(--line-height-h4);
-  color: var(--color-neutral-black);
+  color: #fff;
   margin-bottom: 0 !important;
 }
 
@@ -43,7 +43,7 @@
   font-size: var(--font-size-caption);
   font-weight: var(--font-weight-regular);
   line-height: var(--line-height-caption);
-  color: var(--color-neutral-black);
+  color: #fff;
 }
 
 .top-menu__logo--default {
@@ -362,7 +362,7 @@ button:has(svg) {
   font-size: var(--font-size-body);
   font-weight: var(--font-weight-regular);
   line-height: var(--line-height-body);
-  color: var(--color-neutral-black);
+  color: #fff;
   padding: 5px 0;
 }
 
@@ -370,7 +370,7 @@ button:has(svg) {
   display: block;
   position: absolute;
   width: 350px;
-  background: var(--color-neutral-white);
+  background: #051945;
   top: calc(100%);
 
   padding: 0;
