@@ -70,7 +70,7 @@ export default function Media({media: mediaProps, selectedCategory}) {
         <Filters
           isActive={filtersOpened}
           onChange={() => {
-          }} // убрали фильтрацию по дате, поэтому пустая
+          }}
           onClose={() => setFiltersOpened(false)}
         />
 
