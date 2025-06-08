@@ -101,6 +101,10 @@
       justify-content: space-between;
       flex-wrap: wrap;
     }
+
+    table.dataTable.nowrap th, table.dataTable.nowrap td {
+      white-space: unset;
+    }
   </style>
 </head>
 
