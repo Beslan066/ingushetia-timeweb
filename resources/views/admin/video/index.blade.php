@@ -72,6 +72,7 @@
                       <tr role="row" class="odd">
                         <td class="" tabindex="0">{{$item->id}}</td>
                         <td class="" tabindex="0">{{$item->title}}</td>
+                        <td class="" tabindex="0">{{$item->video}}</td>
                         <td>{{$item->user->name}}</td>
                         <td style="display: none;">Нет</td>
                         <td class="sorting_1">{{$item->published_at}}</td>
