@@ -319,6 +319,7 @@ button:has(+ .submenu) {
 button:has(+ .submenu)::after {
   display: block;
   content: '';
+  background-image: url('/img/icons/dropdown.svg');
   background-repeat: no-repeat;
   background-size: cover;
   width: 16px;
