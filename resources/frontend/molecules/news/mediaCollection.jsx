@@ -62,7 +62,7 @@ export default function MediaCollection({ media }) {
               count={slides}
               date={item.published_at}
               image={item.image_main}
-              video={item.video_url}  // Убедитесь, что это поле есть в данных
+              video={item.video}
               handleOpen={() => setSlide(item)}
             />
           );

@@ -32,7 +32,6 @@ const getSlidesCount = (slides) => {
 export default function News({
                                news,
                                categories,
-                               media,
                                spotlights,
                                page: pageNumber,
                                pages: totalPages,
@@ -43,7 +42,7 @@ export default function News({
   const [filters, setFilters] = useState(null);
   const [isFiltersOpened, setFiltersOpened] = useState(false);
   const [slide, isSlideOpen, setSlide] = useModal(undefined);
-  const [pages, setPages] = useState([{ page: pageNumber, news: news, media: media }]);
+  const [pages, setPages] = useState([{ page: pageNumber, news: news }]);
   const [paginator, setPaginator] = useState({ page: pageNumber, total: totalPages });
   const [reportage, isReportageOpen, setReportage] = useModal(undefined);
   const [isLoading, setIsLoading] = useState(false);
@@ -71,7 +70,7 @@ export default function News({
       data: { page: 1, category: newCategory, ...filters },
       preserveScroll: true,
       onSuccess: ({ props: data }) => {
-        setPages([{ page: data.page, news: data.news, media: data.media }]);
+        setPages([{ page: data.page, news: data.news }]);
         setPaginator({ page: data.page, total: data.pages });
         currentPageRef.current = data.page;
 
@@ -149,7 +148,7 @@ export default function News({
       },
       preserveScroll: true,
       onSuccess: ({ props: data }) => {
-        const currentPage = { page: data.page, news: data.news, media: data.media };
+        const currentPage = { page: data.page, news: data.news };
         setPaginator({ page: data.page, total: data.pages });
 
         if (direction === 'prev') {
@@ -221,7 +220,7 @@ export default function News({
       method: 'get',
       data: { page: 1, category: newCategory, ...newFilters },
       onSuccess: ({ props: data }) => {
-        setPages([{ page: data.page, news: data.news, media: data.media }]);
+        setPages([{ page: data.page, news: data.news }]);
         setPaginator({ page: data.page, total: data.pages });
         currentPageRef.current = data.page;
 
@@ -269,32 +268,6 @@ export default function News({
             <div id="news-feed-container">
               {pages.map((page, index) => (
                 <React.Fragment key={page.page}>
-                  {(index === 0 && page.media?.length > 0) && (
-                    <div className="media-feed__wrapper">
-                      <div className="media-feed">
-                        {page.media.map((item) => {
-                          const isVideo = !!item.video;
-                          const slides = isVideo ? null : getSlidesCount(item?.slides);
-                          return (
-                            <MediaNews
-                              key={item.id}
-                              id={item.id}
-                              type={isVideo ? 'video' : 'gallery'}
-                              title={item.title}
-                              count={slides}
-                              date={item.published_at}
-                              image={item.image_main}
-                              video={item.video}
-                              handleOpen={() => setReportage(item)}
-                            />
-                          );
-                        })}
-                      </div>
-                      <div className="media-link__wrapper">
-                        <AppLink to="/media" title="Все репортажи" />
-                      </div>
-                    </div>
-                  )}
                   <div className="news-feed__wrapper">
                     <div className="news-feed">
                       {page.news.map((item) => (

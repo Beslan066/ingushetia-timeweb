@@ -37,17 +37,10 @@ class NewsController extends Controller
       ->take(8)
       ->get();
 
-    $media = [];
-    if ($page > 0) {
-      $photoMedia = PhotoReportage::query()->orderBy('published_at', 'desc')->offset(($page - 1) * 2)->limit(2)->get();
-      $videoMedia = Video::query()->orderBy('published_at', 'desc')->offset(($page - 1) * 2)->limit(2)->get();
-      $media = collect($photoMedia)->merge($videoMedia)->sortByDesc('published_at');
-    }
 
     return Inertia::render('News/News', [
       'news' => $news->items(),
       'categories' => $categories,
-      'media' => $media,
       'spotlights' => $popularNews,
       'page' => $page + 1,
       'pages' => ceil($news->total() / $news->perPage()),

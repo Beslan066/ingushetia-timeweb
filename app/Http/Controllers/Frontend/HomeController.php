@@ -329,6 +329,7 @@ if ($request->route('url')) {
         'title' => $video->title,
         'lead' => $video->lead,
         'image_main' => $video->image_main,
+        'video' => $video->video,
         'published_at' => $video->published_at,
         'timestamp' => Carbon::parse($video->published_at)->timestamp,
       ];
