@@ -17,7 +17,8 @@ class Minister extends Model
     'image_main',
     'position',
     'user_id',
-    'priority'
+    'priority',
+    'contact'
   ];
   protected $dates = ['deleted_at'];
 

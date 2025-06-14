@@ -29,6 +29,7 @@ export default function AdministrationStructure({administratorsByType, headMembe
               name={headMember.name}
               avatar={`/storage/${headMember.image_main}`}
               position={headMember.position}
+              contact={headMember.contact}
             />
           </div>
 
@@ -48,6 +49,7 @@ export default function AdministrationStructure({administratorsByType, headMembe
                       name={admin.name}
                       avatar={`/storage/${admin.image_main}`}
                       position={admin.position}
+                      contact={admin.contact}
                       // onClick={() => handleMemberClick(admin)}
                     />
                   ))}

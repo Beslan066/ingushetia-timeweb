@@ -59,6 +59,14 @@
                         <div class="text-danger">{{ $message }}</div>
                         @enderror
 
+                        <div class="form-group w-50">
+                            <label for="">Контакт</label>
+                            <input class="form-control form-control-lg mb-3" type="text" placeholder="Email или номер" name="contact" value="{{$administration->contact}}">
+                        </div>
+                        @error('title')
+                        <div class="text-danger">{{ $message }}</div>
+                        @enderror
+
 
                         <div class="form-group w-50">
                             <label for="exampleFormControlSelect1">Автор</label>

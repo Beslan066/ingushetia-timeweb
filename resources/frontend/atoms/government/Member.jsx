@@ -1,6 +1,6 @@
 import './member.css';
 
-export default function GovernmentMember({isHead, avatar, name, position, onClick}) {
+export default function GovernmentMember({isHead, avatar, name, position, onClick, contact}) {
   const hasAvatar = avatar && !avatar.endsWith('/storage/null');
   const containerStyle = {
     height: !hasAvatar ?'160px' : 'auto',
@@ -20,8 +20,13 @@ export default function GovernmentMember({isHead, avatar, name, position, onClic
       </div>
       }
       <div className="government-team__info">
-        <h2 className="government-team__title">{name}</h2>
-        <div className="government-team__position">{position}</div>
+        <div>
+          <h2 className="government-team__title">{name}</h2>
+          <div className="government-team__position">{position}</div>
+        </div>
+        <div className="government-team__contact" style={{marginTop: '8px'}}>
+          {contact}
+        </div>
       </div>
     </button>
   )

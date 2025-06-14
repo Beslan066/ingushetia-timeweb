@@ -31,6 +31,8 @@ class StoreRequest extends FormRequest
             'user_id' => 'required',
             'priority' => 'nullable',
             'image_main' => 'required|image|mimes:jpg,jpeg,webp,png',
+            'contact' => 'nullable|string',
+
         ];
     }
 

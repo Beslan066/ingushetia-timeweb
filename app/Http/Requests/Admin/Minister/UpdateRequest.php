@@ -28,6 +28,8 @@ class UpdateRequest extends FormRequest
             'bio' => 'nullable',
             'priority' => 'nullable',
             'image_main' => 'nullable|image|mimes:jpg,jpeg,webp,png',
+            'contact' => 'nullable|string',
+
         ];
     }
 
