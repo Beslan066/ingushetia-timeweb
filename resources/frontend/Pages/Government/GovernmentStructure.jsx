@@ -28,6 +28,7 @@ export default function GovernmentStructure({ministers, headMember}) {
               name={headMember.name}
               avatar={`/storage/${headMember.image_main}`}
               position={headMember.position}
+              contact={headMember.contact}
             />
             {ministers &&
               ministers.map((minister) => {
@@ -38,6 +39,7 @@ export default function GovernmentStructure({ministers, headMember}) {
                     name={minister.name}
                     avatar={`/storage/${minister.image_main}`}
                     position={minister.position}
+                    contact={minister.contact}
                     // onClick={() => handleMemberClick(minister)}
                   />
                 )

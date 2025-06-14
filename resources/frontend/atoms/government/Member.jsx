@@ -24,7 +24,7 @@ export default function GovernmentMember({isHead, avatar, name, position, onClic
           <h2 className="government-team__title">{name}</h2>
           <div className="government-team__position">{position}</div>
         </div>
-        <div className="government-team__contact" style={{marginTop: '8px'}}>
+        <div className="government-team__contact">
           {contact}
         </div>
       </div>
