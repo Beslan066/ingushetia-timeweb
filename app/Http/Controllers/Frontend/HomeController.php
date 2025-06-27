@@ -341,6 +341,7 @@ if ($request->route('url')) {
         'type' => 'photo',
         'title' => $photo->title,
         'lead' => $photo->lead,
+        'slides' => $photo->slides,
         'image_main' => $photo->image_main,
         'published_at' => $photo->published_at,
         'timestamp' => Carbon::parse($photo->published_at)->timestamp,

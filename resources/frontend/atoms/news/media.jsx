@@ -45,9 +45,9 @@ export default function MediaNews({ type = 'gallery', image, title, date, count,
 
   return (
     <div className="media-card">
-      <div className="media__image" onClick={() => handleOpen(id)}>
+      <div className="media__image" onClick={() => handleOpen()}>
         {type === 'gallery' ? (
-          <img src={`/storage/${image}`} alt={title} />
+          <img src={`/storage/${image}`} alt={title} loading="lazy" />
         ) : (
           <Video video={video} image={image} />
         )}
@@ -55,13 +55,13 @@ export default function MediaNews({ type = 'gallery', image, title, date, count,
           {getTypeIcon(type)}
         </div>
         {!!count && (
-          <a onClick={() => handleOpen(id)} className="media__label">
+          <div className="media__label">
             <Label text={count} />
-          </a>
+          </div>
         )}
       </div>
       <div className="media__body">
-        <a onClick={() => handleOpen(id)} className="media__title">{title}</a>
+        <div className="media__title" onClick={() => handleOpen()}>{title}</div>
         {formatDate(date) && (
           <div className="media__date">{formatDate(date)}</div>
         )}

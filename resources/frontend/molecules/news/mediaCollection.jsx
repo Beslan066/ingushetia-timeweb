@@ -1,6 +1,6 @@
 import MediaNews from "#/atoms/news/media.jsx";
 import AppLink from "#/atoms/buttons/link.jsx";
-import './media.css'
+import './media.css';
 import React from "react";
 import Modal from "#/atoms/modal/modal.jsx";
 import ReportageContent from "#/atoms/modal/reportage-content.jsx";
@@ -15,8 +15,12 @@ export default function MediaCollection({ media }) {
 
   const getSlidesCount = (slides) => {
     if (!slides) return null;
-    const arr = JSON.parse(slides);
-    return arr.length ? arr.length + ' фото' : null;
+    try {
+      const arr = JSON.parse(slides);
+      return arr.length ? arr.length + ' фото' : null;
+    } catch {
+      return null;
+    }
   };
 
   const [slide, isOpen, setSlide] = useModal(null);
@@ -46,12 +50,21 @@ export default function MediaCollection({ media }) {
     }
   };
 
+  const prepareItemForModal = (item) => {
+    // Для совместимости с главной страницей и страницей медиа
+    const type = item.video ? 'video' : 'photo';
+    return {
+      ...item,
+      type,
+      slides: type === 'photo' && item.slides ? JSON.parse(item.slides) : []
+    };
+  };
+
   return (
     <div className="media">
       <div className="media__wrapper">
         {media.map((item) => {
-          // Определяем тип контента
-          const isVideo = !!item.video; // Если есть видео - это видео
+          const isVideo = !!item.video;
           const type = isVideo ? 'video' : 'gallery';
           const slides = type === 'gallery' ? getSlidesCount(item?.slides) : null;
 
@@ -65,7 +78,7 @@ export default function MediaCollection({ media }) {
               date={item.published_at}
               image={item.image_main}
               video={item.video}
-              handleOpen={() => setSlide(item)}
+              handleOpen={() => setSlide(prepareItemForModal(item))}
             />
           );
         })}
@@ -81,7 +94,7 @@ export default function MediaCollection({ media }) {
         isOpen={isOpen}
         handleClose={() => setSlide(null)}
       >
-        <ReportageContent reportage={slide}/>
+        {slide && <ReportageContent reportage={slide} />}
       </Modal>
     </div>
   );
