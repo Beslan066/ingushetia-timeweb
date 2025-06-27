@@ -51,7 +51,7 @@ export default function ReportageContent({ reportage }) {
         {
           slides.map((slide, i) => (
             <button key={slide} className="photo-item" onClick={() => setSlide(i)}>
-              <img src={slide} alt={'Слайд ' + i} />
+              <img src={'storage/' + slide} alt={'Слайд ' + i} />
             </button>
           ))
         }
