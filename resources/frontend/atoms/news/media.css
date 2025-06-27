@@ -9,6 +9,7 @@
   position: relative;
   height: 260px;
   overflow: hidden;
+  cursor: pointer;
 }
 
 @media (min-width: 1440px) {

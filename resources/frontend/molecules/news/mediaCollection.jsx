@@ -50,7 +50,9 @@ export default function MediaCollection({ media }) {
     <div className="media">
       <div className="media__wrapper">
         {media.map((item) => {
-          const type = item.type === 'video' ? 'video' : 'gallery';
+          // Определяем тип контента
+          const isVideo = !!item.video; // Если есть видео - это видео
+          const type = isVideo ? 'video' : 'gallery';
           const slides = type === 'gallery' ? getSlidesCount(item?.slides) : null;
 
           return (

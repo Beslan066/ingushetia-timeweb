@@ -45,7 +45,7 @@ export default function MediaNews({ type = 'gallery', image, title, date, count,
 
   return (
     <div className="media-card">
-      <div className="media__image">
+      <div className="media__image" onClick={() => handleOpen(id)}>
         {type === 'gallery' ? (
           <img src={`/storage/${image}`} alt={title} />
         ) : (

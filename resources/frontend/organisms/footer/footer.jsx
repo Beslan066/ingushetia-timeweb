@@ -8,7 +8,7 @@ import ContactsContent from "#/atoms/modal/contacts-content.jsx";
 import React, { useState } from "react";
 import useModal from "#/hooks/useModal.js";
 
-export default function AppFooter({ anniversary = false }) {
+export default function AppFooter({ anniversary = false, logo }) {
   const [modal, isOpen, setModal] = useModal(false);
 
   const groups = [
@@ -77,7 +77,7 @@ export default function AppFooter({ anniversary = false }) {
         </div>
         <div className="footer__about">
           <div className="about__site">
-            { anniversary ? <AnniversaryLogoImage/> : <LogoImage/> }
+            { anniversary ? <AnniversaryLogoImage/> : <LogoImage logo={logo ?? "/img/logoof.png"}/> }
             <div className="footer__name">Официальный сайт администрации Республики Ингушетия</div>
           </div>
           <Button text="Задать вопрос" handleClick={ () => setModal(true) } />
