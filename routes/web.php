@@ -10,101 +10,99 @@ use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\NewsController;
 use App\Http\Controllers\Frontend\RegionController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Middleware\Admin;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 
 
-Route::group(['middleware' => 'auth.basic'], function () {
-  Route::get('/', [HomeController::class, 'index'])->name('home');
-  Route::get('/post/{url}', [HomeController::class, 'showPost'])->name('post.show.home');
-  Route::get('/search', [App\Http\Controllers\Frontend\SearchController::class, 'searchResults'])->name('search.index');
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/post/{url}', [HomeController::class, 'showPost'])->name('post.show.home');
+Route::get('/search', [App\Http\Controllers\Frontend\SearchController::class, 'searchResults'])->name('search.index');
 
-  Route::get('/search/page', [App\Http\Controllers\Frontend\SearchController::class, 'searchPage'])->name('search.page');
-  Route::get('/national-projects', [HomeController::class, 'nationalProjects'])->name('natProjects');
-  Route::get('/military-support', [HomeController::class, 'svoSupport'])->name('svoSupport');
-  Route::get('/contacts', [HomeController::class, 'contacts'])->name('contacts');
-  Route::get('/media', [HomeController::class, 'media'])->name('media');
-  Route::get('/implementations', [HomeController::class, 'implementations'])->name('implementations');
-  Route::get('/anticorruptions', [HomeController::class, 'anticorruptions'])->name('anticorruptions');
-  Route::get('/economic-support', [HomeController::class, 'economicSupport'])->name('economicSupport');
-  Route::get('/konkurses', [HomeController::class, 'konkurs'])->name('konkurs');
-  Route::get('/simvols', [HomeController::class, 'simvols'])->name('simvols');
-  Route::get('/3d-tour-glory', [HomeController::class, 'gloryTour'])->name('gloryTour');
-  Route::get('/managment-reserves', [HomeController::class, 'managmentReserves'])->name('homeManagmentReserves.index');
-  Route::get('/judicial-authorities', [HomeController::class, 'judicialAuthorities'])->name('judicialAuthorities.index');
-  Route::get('/federal-authorities', [HomeController::class, 'federalAuthorities'])->name('federalAuthorities.index');
-  Route::get('/antinar', [HomeController::class, 'antinar'])->name('antinars.index');
-  Route::get('/smi', [HomeController::class, 'smi'])->name('smi.index');
-  Route::get('/award-politic', [HomeController::class, 'awardPolitic'])->name('awardPolitics.index');
-  Route::get('/civil-service', [HomeController::class, 'civilService'])->name('civilServices.index');
-
-
-
-
-  Route::get('/president', [HomeController::class, 'president'])->name('president');
-  Route::get('/president-administration', [AdministrationController::class, 'index'])->name('presidentAdministration');
-
-
-  Route::prefix('government')->group(function () {
-    Route::get('/', [GovernmentController::class, 'government'])->name('government');
-    Route::get('/structure', [GovernmentController::class, 'structure'])->name('structure');
-    Route::get('/abilities', [GovernmentController::class, 'abilities'])->name('abilities');
-    Route::get('/sessions', [GovernmentController::class, 'sessions'])->name('sessions');
-    Route::get('/plans', [GovernmentController::class, 'plan'])->name('plan');
-    Route::get('/colleagues', [GovernmentController::class, 'colleagues'])->name('colleagues');
-    Route::get('/directories', [GovernmentController::class, 'directories'])->name('directories');
-  });
-
-  Route::get('/documents', [HomeController::class, 'documents'])->name('documents');
-
-  Route::get('/region', [RegionController::class, 'index'])->name('region');
-  Route::get('/economic', [RegionController::class, 'economic'])->name('economic');
-  Route::get('/social-economic-development', [RegionController::class, 'socialEconomicDevelopment'])->name('socialEconomicDevelopment');
-  Route::get('/municipalities', [RegionController::class, 'municipalities'])->name('municipality');
-  Route::get('/history', [RegionController::class, 'history'])->name('history');
-
-  Route::get('/agencies', [AgencyController::class, 'index'])->name('agencies.index');
-  Route::get('/agencies/{agency:slug}', [AgencyController::class, 'singleAgency'])->name('agencies.single');
-  Route::get('/economic', function () {
-    return Inertia::render('Region/Economics');
-  });
-  Route::get('/history', function () {
-    return Inertia::render('Region/History');
-  });
-
-  // Страница культура
-  Route::get('/culture', [CultureController::class, 'culture'])->name('culture');
-  Route::get('/architecture', [CultureController::class, 'architecture'])->name('architecture');
-  Route::get('/folklore', [CultureController::class, 'folklore'])->name('folklore');
-  Route::get('/islam', [CultureController::class, 'islam'])->name('islam');
-  Route::get('/crafts', [CultureController::class, 'crafts'])->name('crafts');
-  Route::get('/tools', [CultureController::class, 'tools'])->name('tools');
-  Route::get('/weapon', [CultureController::class, 'weapon'])->name('weapon');
+Route::get('/search/page', [App\Http\Controllers\Frontend\SearchController::class, 'searchPage'])->name('search.page');
+Route::get('/national-projects', [HomeController::class, 'nationalProjects'])->name('natProjects');
+Route::get('/military-support', [HomeController::class, 'svoSupport'])->name('svoSupport');
+Route::get('/contacts', [HomeController::class, 'contacts'])->name('contacts');
+Route::get('/media', [HomeController::class, 'media'])->name('media');
+Route::get('/implementations', [HomeController::class, 'implementations'])->name('implementations');
+Route::get('/anticorruptions', [HomeController::class, 'anticorruptions'])->name('anticorruptions');
+Route::get('/economic-support', [HomeController::class, 'economicSupport'])->name('economicSupport');
+Route::get('/konkurses', [HomeController::class, 'konkurs'])->name('konkurs');
+Route::get('/simvols', [HomeController::class, 'simvols'])->name('simvols');
+Route::get('/3d-tour-glory', [HomeController::class, 'gloryTour'])->name('gloryTour');
+Route::get('/managment-reserves', [HomeController::class, 'managmentReserves'])->name('homeManagmentReserves.index');
+Route::get('/judicial-authorities', [HomeController::class, 'judicialAuthorities'])->name('judicialAuthorities.index');
+Route::get('/federal-authorities', [HomeController::class, 'federalAuthorities'])->name('federalAuthorities.index');
+Route::get('/antinar', [HomeController::class, 'antinar'])->name('antinars.index');
+Route::get('/smi', [HomeController::class, 'smi'])->name('smi.index');
+Route::get('/award-politic', [HomeController::class, 'awardPolitic'])->name('awardPolitics.index');
+Route::get('/civil-service', [HomeController::class, 'civilService'])->name('civilServices.index');
 
 
 
 
-  Route::get('/vectors/{id}', [HomeController::class, 'vectors'])->name('vectors');
-  Route::get('/municipality', [RegionController::class, 'municipalities'])->name('municipalities');
-  Route::get('/nation-projects', [RegionController::class, 'nationalProjects'])->name('nation-projects');
-  Route::get('/pravitelstvo', function () {
-    return Inertia::render('Authority/Authority');
-  });
-
-  Route::get('/sostav-pravitelstva', function () {
-    return Inertia::render('Authority/GovernmentTeam');
-  });
+Route::get('/president', [HomeController::class, 'president'])->name('president');
+Route::get('/president-administration', [AdministrationController::class, 'index'])->name('presidentAdministration');
 
 
-  Route::get('/news', [NewsController::class, 'index'])->name('news.index');
-  Route::get('/news/{url}', [NewsController::class, 'show'])->name('post.show.news');
-  Route::get('/news-by-category/{categoryId}', [NewsController::class, 'getPostsByCategory'])->name('posts.by.tag');
-
+Route::prefix('government')->group(function () {
+  Route::get('/', [GovernmentController::class, 'government'])->name('government');
+  Route::get('/structure', [GovernmentController::class, 'structure'])->name('structure');
+  Route::get('/abilities', [GovernmentController::class, 'abilities'])->name('abilities');
+  Route::get('/sessions', [GovernmentController::class, 'sessions'])->name('sessions');
+  Route::get('/plans', [GovernmentController::class, 'plan'])->name('plan');
+  Route::get('/colleagues', [GovernmentController::class, 'colleagues'])->name('colleagues');
+  Route::get('/directories', [GovernmentController::class, 'directories'])->name('directories');
 });
 
-Route::group(['namespace' => 'Admin', 'middleware' => \App\Http\Middleware\Admin::class], function () {
+Route::get('/documents', [HomeController::class, 'documents'])->name('documents');
+
+Route::get('/region', [RegionController::class, 'index'])->name('region');
+Route::get('/economic', [RegionController::class, 'economic'])->name('economic');
+Route::get('/social-economic-development', [RegionController::class, 'socialEconomicDevelopment'])->name('socialEconomicDevelopment');
+Route::get('/municipalities', [RegionController::class, 'municipalities'])->name('municipality');
+Route::get('/history', [RegionController::class, 'history'])->name('history');
+
+Route::get('/agencies', [AgencyController::class, 'index'])->name('agencies.index');
+Route::get('/agencies/{agency:slug}', [AgencyController::class, 'singleAgency'])->name('agencies.single');
+Route::get('/economic', function () {
+  return Inertia::render('Region/Economics');
+});
+Route::get('/history', function () {
+  return Inertia::render('Region/History');
+});
+
+// Страница культура
+Route::get('/culture', [CultureController::class, 'culture'])->name('culture');
+Route::get('/architecture', [CultureController::class, 'architecture'])->name('architecture');
+Route::get('/folklore', [CultureController::class, 'folklore'])->name('folklore');
+Route::get('/islam', [CultureController::class, 'islam'])->name('islam');
+Route::get('/crafts', [CultureController::class, 'crafts'])->name('crafts');
+Route::get('/tools', [CultureController::class, 'tools'])->name('tools');
+Route::get('/weapon', [CultureController::class, 'weapon'])->name('weapon');
+
+
+
+
+Route::get('/vectors/{id}', [HomeController::class, 'vectors'])->name('vectors');
+Route::get('/municipality', [RegionController::class, 'municipalities'])->name('municipalities');
+Route::get('/nation-projects', [RegionController::class, 'nationalProjects'])->name('nation-projects');
+Route::get('/pravitelstvo', function () {
+  return Inertia::render('Authority/Authority');
+});
+
+Route::get('/sostav-pravitelstva', function () {
+  return Inertia::render('Authority/GovernmentTeam');
+});
+
+
+Route::get('/news', [NewsController::class, 'index'])->name('news.index');
+Route::get('/news/{url}', [NewsController::class, 'show'])->name('post.show.news');
+Route::get('/news-by-category/{categoryId}', [NewsController::class, 'getPostsByCategory'])->name('posts.by.tag');
+
+Route::group(['namespace' => 'Admin', 'middleware' => ['auth', Admin::class]], function () {
     Route::get('/raduga', [\App\Http\Controllers\Admin\IndexController::class, 'index'])->middleware(['auth', 'verified'])->name('admin');
 
 

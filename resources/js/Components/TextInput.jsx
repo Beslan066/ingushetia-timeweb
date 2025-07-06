@@ -17,6 +17,10 @@ export default forwardRef(function TextInput({ type = 'text', className = '', is
                 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm ' +
                 className
             }
+            style={{
+              border: '1px solid #07A267',
+              padding: '5px'
+        }}
             ref={input}
         />
     );

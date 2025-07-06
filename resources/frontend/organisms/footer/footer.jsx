@@ -30,7 +30,7 @@ export default function AppFooter({ anniversary = false, logo }) {
         { link: '/nation-projects', name: 'Национальные проекты' },
         { link: '/implementations', name: 'Реализация указов Президента РФ' },
         { link: '/military-support', name: 'Поддержка семей военнослужащих' },
-        { link: '/economic-support', name: 'Поддержка экономики и граждан' },
+        // { link: '/economic-support', name: 'Поддержка экономики и граждан' },
       ]
     },
     {

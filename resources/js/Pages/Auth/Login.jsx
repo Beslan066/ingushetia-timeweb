@@ -33,7 +33,7 @@ export default function Login({ status, canResetPassword }) {
             {status && <div className="mb-4 font-medium text-sm text-green-600">{status}</div>}
 
             <form onSubmit={submit} className={'p-40'}>
-                <div className={'w-50'}>
+                <div className={'w-50'} style={{display: 'flex', flexDirection: 'column'}}>
                     <InputLabel htmlFor="email" value="Email" />
 
                     <TextInput

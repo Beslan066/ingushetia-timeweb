@@ -195,9 +195,9 @@ export default function Welcome() {
                                     <li>
                                         <Link href={route('implementations')}>Реализация указов Президента РФ</Link>
                                     </li>
-                                    <li>
-                                        <Link href={route('economicSupport')}>Поддержка экономики и граждан</Link>
-                                    </li>
+                                    {/*<li>*/}
+                                    {/*    <Link href={route('economicSupport')}>Поддержка экономики и граждан</Link>*/}
+                                    {/*</li>*/}
                                     <li>
                                         <Link href={route('anticorruptions')}>Противодействие коррупции</Link>
                                     </li>

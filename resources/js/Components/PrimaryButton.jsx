@@ -8,6 +8,7 @@ export default function PrimaryButton({ className = '', disabled, children, ...p
                 } ` + className
             }
             disabled={disabled}
+            style={{background: '#07A267'}}
         >
             {children}
         </button>
