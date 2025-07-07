@@ -9,6 +9,9 @@ import ExternalResources from "#/organisms/documents/external-resources.jsx";
 import AppFooter from "#/organisms/footer/footer.jsx";
 import AnniversaryBanner from "#/atoms/anniversary-banner/banner.jsx";
 import './index.css';
+import CookieConsent from "#/molecules/CookieConsent.jsx";
+
+
 
 export default function Index({
                                 mainPosts: slides,
@@ -42,6 +45,7 @@ export default function Index({
       <Mountains mountains={mountains} />
       <ExternalResources resources={resources} />
       <AppFooter />
+      <CookieConsent />
     </>
   );
 }

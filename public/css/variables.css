@@ -1,4 +1,5 @@
 :root {
+  /* Размеры шрифтов (стандартные значения) */
   --font-size-h1: 32px;
   --font-size-h2: 24px;
   --font-size-h3: 20px;
@@ -7,6 +8,7 @@
   --font-size-caption: 12px;
   --font-size-quote: 16px;
 
+  /* Межстрочные интервалы */
   --line-height-h1: 40px;
   --line-height-h2: 32px;
   --line-height-h3: 28px;
@@ -15,35 +17,21 @@
   --line-height-caption: 20px;
   --line-height-quote: 24px;
 
-  --font-weight-bold: bold;
-  --font-weight-semibold: 600;
-  --font-weight-regular: 400;
-
-  --font-style-italic: italic;
-
+  /* Цвета */
   --color-neutral-black: #000000;
-  --color-neutral-darkest: #484848;
-  --color-neutral-dark: #6c6c6c;
-  --color-neutral-medium: #b3b3b3;
-  --color-neutral-light: #dfdfdf;
-  --color-neutral-lightest: #f2f2f2;
   --color-neutral-white: #ffffff;
-
   --color-primary-darkest: #055335;
-  --color-primary-dark: #077c50;
   --color-primary-medium: #07a267;
   --color-primary-light: #20d792;
-  --color-primary-lightest: #d6f7eb;
-
-  --color-negative-darkest: #790707;
-  --color-negative-dark: #aa0909;
-  --color-negative-medium: #e22a2a;
-  --color-negative-light: #ff6a6a;
-  --color-negative-lightest: #ffd2d2;
 }
 
 body {
   font-family: 'Inter', sans-serif;
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  color: var(--color-neutral-black);
+  background-color: var(--color-neutral-white);
+  transition: all 0.3s ease;
 }
 
 

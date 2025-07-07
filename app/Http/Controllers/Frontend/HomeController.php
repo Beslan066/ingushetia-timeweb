@@ -297,8 +297,15 @@ class HomeController extends Controller
   public function nationalProjects()
   {
     $natProjects = NationalProject::all();
+
+    $meta = [
+      'title' => 'Национальные проекты Ингушетии',
+      'description' => 'Официальный сайт Республики Ингушетия. Новости, документы, информация о регионе.',
+    ];
+
     return Inertia::render('Region/NationalProjects', [
-      'natProjects' => $natProjects
+      'natProjects' => $natProjects,
+      'meta' => $meta
     ]);
   }
 

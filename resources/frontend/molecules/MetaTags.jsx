@@ -26,5 +26,3 @@ export default function ( title, description, keywords, og_image, canonical ) {
     </Head>
   );
 };
-
-export default MetaTags;
