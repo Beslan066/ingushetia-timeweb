@@ -8,12 +8,17 @@ import Modal from "#/atoms/modal/modal.jsx";
 import MilitaryContent from "#/atoms/modal/military-content.jsx";
 import DownloadIcon from "@/Components/DownloadIcon.jsx";
 import Downloadable from "#/atoms/downloadable/downloadable.jsx";
+import {Head} from "@inertiajs/react";
 
-export default function Anticorruption({ anticorruptions }) {
+export default function Anticorruption({ anticorruptions, meta = {} }) {
   const [modal, setModal] = useState(undefined);
 
   return (
     <>
+      <Head>
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
+      </Head>
       <AppHeader anniversary={ false }/>
       <PageTitle title="Противодействие коррупции"/>
       <div className="page-content__wrapper">

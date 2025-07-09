@@ -6,10 +6,10 @@ import Tabs from "#/atoms/tabs/tabs.jsx";
 import FilterButton from "#/atoms/filters/filter-button.jsx";
 import Filters from "#/molecules/filters/filters.jsx";
 import MediaCollection from "#/molecules/news/mediaCollection.jsx";
-import {router} from "@inertiajs/react";
+import {Head, router} from "@inertiajs/react";
 import './media.css';
 
-export default function Media({media: mediaProps, selectedCategory}) {
+export default function Media({media: mediaProps, selectedCategory, meta = {}}) {
   const categories = [
     {title: 'Фоторепортажи', id: 'photo'},
     {title: 'Видеорепортажи', id: 'video'}
@@ -54,6 +54,10 @@ export default function Media({media: mediaProps, selectedCategory}) {
 
   return (
     <>
+      <Head>
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
+      </Head>
       <AppHeader/>
       <div className={'news-hero__news-wrapper news-page-title'}><PageTitle title="Медиа"/>
         <div><FilterButton isActive={filtersOpened} onChange={setFiltersOpened}/></div>

@@ -4,10 +4,10 @@ import PageTitle from "#/atoms/texts/PageTitle.jsx";
 import Downloadable from "#/atoms/downloadable/downloadable.jsx";
 import AppFooter from "#/organisms/footer/footer.jsx";
 import AwardNavigation from "#/molecules/navigation/award-navigation.jsx";
-import { usePage, router } from "@inertiajs/react";
+import {usePage, router, Head} from "@inertiajs/react";
 import './awardpol.css';
 
-export default function AwardPolitic({ documents: initialDocuments }) {
+export default function AwardPolitic({ documents: initialDocuments, meta = {} }) {
   const { props, url } = usePage();
   const documentTypes = props?.documentTypes || [];
   const [documents, setDocuments] = useState(initialDocuments.data);
@@ -91,6 +91,10 @@ export default function AwardPolitic({ documents: initialDocuments }) {
   }, [currentFilter]);
   return (
     <>
+      <Head>
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
+      </Head>
       <AppHeader anniversary={false} />
       <PageTitle title="Наградная политика"/>
       <div className="page-content__wrapper">

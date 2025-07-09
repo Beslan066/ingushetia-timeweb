@@ -8,8 +8,9 @@ import GovernmentMember from "#/atoms/government/Member.jsx";
 import Modal from "#/atoms/modal/modal.jsx";
 import MilitaryContent from "#/atoms/modal/military-content.jsx";
 import MemberContent from "#/atoms/modal/member-content.jsx";
+import {Head} from "@inertiajs/react";
 
-export default function AdministrationStructure({administratorsByType, headMember}) {
+export default function AdministrationStructure({administratorsByType, headMember, meta = {}}) {
   const [selectedMember, setSelectedMember] = useState(null);
 
   const handleMemberClick = (member) => {
@@ -18,6 +19,10 @@ export default function AdministrationStructure({administratorsByType, headMembe
 
   return (
     <>
+      <Head>
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
+      </Head>
       <AppHeader anniversary={ false }/>
       <PageTitle title="Администрация Главы и Правительства Республики"/>
       <div className="page-content__wrapper">

@@ -4,11 +4,11 @@ import PageTitle from "#/atoms/texts/PageTitle.jsx";
 import Downloadable from "#/atoms/downloadable/downloadable.jsx";
 import AppFooter from "#/organisms/footer/footer.jsx";
 import AwardNavigation from "#/molecules/navigation/award-navigation.jsx";
-import { usePage, router } from "@inertiajs/react";
+import {usePage, router, Head} from "@inertiajs/react";
 import './civil.css';
 import CivilserviceNavigation from "#/molecules/navigation/civilservice-navigation.jsx";
 
-export default function CivilService({ documents: initialDocuments }) {
+export default function CivilService({ documents: initialDocuments, meta = {} }) {
   const { props, url } = usePage();
   const documentTypes = props?.documentTypes || [];
   const [documents, setDocuments] = useState(initialDocuments.data);
@@ -38,6 +38,10 @@ export default function CivilService({ documents: initialDocuments }) {
 
   return (
     <>
+      <Head>
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
+      </Head>
       <AppHeader anniversary={false} />
       <PageTitle title="Прохождение государственной гражданской службы в Администрации Главы и Правительства Республики Ингушетия"/>
       <div className="page-content__wrapper">

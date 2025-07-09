@@ -4,10 +4,18 @@ import RegionsNavigation from "#/molecules/navigation/regions-navigation.jsx";
 import AppFooter from "#/organisms/footer/footer.jsx";
 import React from "react";
 import './region.css';
+import {Head, usePage} from "@inertiajs/react";
 
 export default function Economics() {
+  const { props } = usePage();
+  const { meta = {} } = props;
+
   return (
     <>
+      <Head>
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
+      </Head>
       <AppHeader anniversary={ false }/>
       <PageTitle title="Экономика Ингушетии"/>
       <div className="page-content__wrapper">

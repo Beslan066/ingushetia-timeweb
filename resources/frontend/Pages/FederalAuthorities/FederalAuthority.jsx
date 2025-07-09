@@ -1,7 +1,7 @@
 import AppHeader from "#/molecules/header/header.jsx";
 import PageTitle from "#/atoms/texts/PageTitle.jsx";
 import Downloadable from "#/atoms/downloadable/downloadable.jsx";
-import {Link, usePage} from '@inertiajs/react';
+import {Head, Link, usePage} from '@inertiajs/react';
 import AppFooter from "#/organisms/footer/footer.jsx";
 import React from "react";
 import './federal-authority.css';
@@ -11,13 +11,14 @@ import ExternalLinkIcon from "#/atoms/icons/external-link.jsx";
 
 export default function FederalAuthority() {
 
-  let {federalAuthorities} = usePage().props;
-
-  console.log(federalAuthorities);
-
+  let {federalAuthorities, meta = {}} = usePage().props;
 
   return (
     <>
+      <Head>
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
+      </Head>
       <AppHeader anniversary={ false }/>
       <PageTitle title="Территориальные органы федеральных органов власти"/>
       <div className="page-content__wrapper">

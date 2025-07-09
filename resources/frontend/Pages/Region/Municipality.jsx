@@ -9,11 +9,16 @@ import MunicipalityElement from "#/atoms/municipality/element.jsx";
 import MunicipalityContent from "#/atoms/modal/municipality-content.jsx";
 import Modal from "#/atoms/modal/modal.jsx";
 import useModal from "#/hooks/useModal.js";
+import {Head} from "@inertiajs/react";
 
-export default function Municipality({ cities, districts }) {
+export default function Municipality({ cities, districts, meta = {} }) {
   const [selected, isOpen, setSelected] = useModal(undefined)
   return (
     <>
+      <Head>
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
+      </Head>
       <AppHeader anniversary={ false }/>
       <PageTitle title="О республике Ингушетия"/>
       <div className="page-content__wrapper">

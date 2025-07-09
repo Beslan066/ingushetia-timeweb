@@ -5,10 +5,15 @@ import AppFooter from "#/organisms/footer/footer.jsx";
 import React from "react";
 import './simvols.css';
 import DocumentsNavigation from "#/molecules/navigation/documents-navigation.jsx";
+import {Head} from "@inertiajs/react";
 
-export default function Simvols() {
+export default function Simvols({meta = {}}) {
   return (
     <>
+      <Head>
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
+      </Head>
       <AppHeader anniversary={ false }/>
       <PageTitle title="Государственная символика"/>
       <div className="page-content__wrapper">

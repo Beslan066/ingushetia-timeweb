@@ -5,12 +5,17 @@ import AppFooter from "#/organisms/footer/footer.jsx";
 import React from "react";
 import './manreserves.css';
 import DocumentsNavigation from "#/molecules/navigation/documents-navigation.jsx";
+import {Head} from "@inertiajs/react";
 
-export default function ManagmentReserve({ documents }) {
+export default function ManagmentReserve({ documents, meta = {} }) {
 
 
   return (
     <>
+      <Head>
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
+      </Head>
       <AppHeader anniversary={ false }/>
       <PageTitle title="Резерв управленческих кадров"/>
       <div className="page-content__wrapper">

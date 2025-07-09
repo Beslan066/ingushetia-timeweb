@@ -5,7 +5,7 @@ import LeftArrowIcon from "#/atoms/icons/left-arrow-icon.jsx";
 import RightArrowIcon from "#/atoms/icons/right-arrow-icon.jsx";
 
 export default function ExternalResources({ resources }) {
-  if (!resources && !resources.length) {
+  if (!resources || !resources.length) {
     return null;
   }
 
@@ -33,18 +33,18 @@ export default function ExternalResources({ resources }) {
     <div className="external-resources__wrapper">
       <h2 className="external-resources__title">Полезные ресурсы</h2>
       <div className="external-resources">
-        {
-          visibleResources.map((resource) => <ExternalResource key={ resource.id } title={ resource.title } link={ resource.link } />)
-        }
+        {visibleResources.map((resource) => (
+          <ExternalResource key={resource.id} title={resource.title} link={resource.link} />
+        ))}
       </div>
       <div className="external-resources__controls">
-        <button onClick={ handleNext }>
-          <LeftArrowIcon color={ 'neutral-black' }/>
+        <button onClick={handlePrev}>
+          <LeftArrowIcon color={'neutral-black'} />
         </button>
-        <button onClick={ handleNext }>
-          <RightArrowIcon color={ 'neutral-black' }/>
+        <button onClick={handleNext}>
+          <RightArrowIcon color={'neutral-black'} />
         </button>
       </div>
     </div>
-  )
+  );
 }

@@ -25,50 +25,90 @@ class RegionController extends Controller
     $region = Region::first();
     $sections = RegionSection::all();
 
+    $meta = [
+      'title' => 'Республика Ингушетия',
+      'description' => 'Правовой статус, правовое устройство, Географическое положение,природные ресурсы, история, население и трудовые ресурсы Ингушетии'
+    ];
+
 
     return Inertia::render('Region/Region', [
       'region' => $region,
       'sections' => $sections,
+      'meta' => $meta
     ]);
   }
 
-    public function economic()
-    {
-        return Inertia::render('Region/Economics');
-    }
+  public function economic()
+  {
 
-    public function history()
-    {
-        return Inertia::render('Region/History');
-    }
+    $meta = [
+      'title' => 'Экономика Ингушетии',
+      'description' => 'Основная информация по экономике Ингушетии'
+    ];
 
-    public function municipalities()
-    {
-        $cities = Municipality::query()->with('supervisor')->where('type', 2)->get();
-        $districts = Municipality::query()->with('supervisor')->where('type', 20)->get();
+    return Inertia::render('Region/Economics', [
+      'meta' => $meta,
+    ]);
+  }
 
-        return Inertia::render('Region/Municipality', [
-            'cities' => $cities,
-            'districts' => $districts
-        ]);
-    }
+  public function history()
+  {
+    $meta = [
+      'title' => 'История Ингушетии',
+      'description' => 'Основная информация по истории Ингушетии'
+    ];
 
-    public function socialEconomicDevelopment()
-    {
-        $socialEconomicDevelopment = SocialEconomicDevelopment::query()->orderBy('id', 'desc')->get();
+    return Inertia::render('Region/History', [
+      'meta' => $meta,
+    ]);
+  }
 
-        return Inertia::render('Region/SocialEconomics', [
-            'socialEconomicDevelopment' => $socialEconomicDevelopment
-        ]);
-    }
+  public function municipalities()
+  {
+    $cities = Municipality::query()->with('supervisor')->where('type', 2)->get();
+    $districts = Municipality::query()->with('supervisor')->where('type', 20)->get();
+
+    $meta = [
+      'title' => 'Города и районы Ингушетии',
+      'description' => 'Основная информация по муниципальным образованиям Ингушетии'
+    ];
+
+    return Inertia::render('Region/Municipality', [
+      'cities' => $cities,
+      'districts' => $districts,
+      'meta' => $meta
+    ]);
+  }
+
+  public function socialEconomicDevelopment()
+  {
+    $socialEconomicDevelopment = SocialEconomicDevelopment::query()->orderBy('id', 'desc')->get();
+
+    $meta = [
+      'title' => 'Социально-экономическое развитие Ингушетии',
+      'description' => 'Основная информация по Социально-экономическому развитию Ингушетии'
+    ];
+
+    return Inertia::render('Region/SocialEconomics', [
+      'socialEconomicDevelopment' => $socialEconomicDevelopment,
+      'meta' => $meta
+    ]);
+  }
 
   public function nationalProjects()
   {
 
     $nationalProjects = NationalProject::query()->orderBy('id', 'asc')->get();
 
+
+    $meta = [
+      'title' => 'Национальные проекты Ингушетии',
+      'description' => 'В Республике Ингушетия с 2019 года реализуются 14 национальных проектов.'
+    ];
+
     return Inertia::render('Region/NationalProjects', [
-      'nationalProjects' => $nationalProjects
+      'nationalProjects' => $nationalProjects,
+      'meta' => $meta
     ]);
   }
 }

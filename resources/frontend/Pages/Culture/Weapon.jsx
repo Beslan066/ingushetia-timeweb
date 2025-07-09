@@ -4,15 +4,19 @@ import React from "react";
 import PageTitle from "#/atoms/texts/PageTitle.jsx";
 import Accordion from "#/molecules/accordion/Accordion.jsx";
 import './culture.css'
-import {usePage} from "@inertiajs/react";
+import {Head, usePage} from "@inertiajs/react";
 import BackToTop from "#/atoms/topButton/BackToTop.jsx";
 import CultureNavigation from "#/molecules/navigation/culture-navigation.jsx";
 
 
-export default function Weapon() {
+export default function Weapon({meta = {}}) {
 
   return (
     <>
+      <Head>
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
+      </Head>
       <AppHeader anniversary={false}/>
       <PageTitle title="Оружие"/>
       <div className="page-content__wrapper">

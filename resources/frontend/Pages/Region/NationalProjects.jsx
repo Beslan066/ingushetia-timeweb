@@ -6,20 +6,20 @@ import AppFooter from "#/organisms/footer/footer.jsx";
 import React from "react";
 import './region.css'
 import Accordion from "#/molecules/accordion/Accordion.jsx";
-import { Head } from '@inertiajs/react' // Обратите внимание на импорт
+import {Head, usePage} from "@inertiajs/react";
 
-export default function NationalProjects({ nationalgiProjects, meta = {} }) {
-  // Установите значения по умолчанию
-  const {
-    title = 'Национальные проекты Ингушетии',
-    description = 'Официальный сайт Республики Ингушетия'
-  } = meta
+export default function NationalProjects() {
+
+
+  const { props } = usePage();
+  const { nationalProjects, meta = {} } = props;
 
   return (
+
     <>
       <Head>
-        <title>{title}</title>
-        <meta name="description" content={description} />
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
       </Head>
       <AppHeader anniversary={ false }/>
       <PageTitle title="Национальные проекты"/>

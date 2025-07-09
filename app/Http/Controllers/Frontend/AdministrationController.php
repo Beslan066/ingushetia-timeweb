@@ -23,9 +23,15 @@ class AdministrationController extends Controller {
       ->get()
       ->groupBy('administration_types_id');
 
+    $meta = [
+      'title' => 'Администрация Главы и Правительства Республики Ингушетия',
+      'description' => "Страница Администрации Главы и Правительства Республики Ингушетия, состав Администрации Главы"
+    ];
+
     return Inertia::render('Administration/AdministrationStructure', [
       'administratorsByType' => $administratorsByType,
       'headMember' => $headMember,
+      'meta' => $meta
     ]);
   }
 }

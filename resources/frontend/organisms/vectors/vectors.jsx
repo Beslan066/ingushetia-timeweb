@@ -7,7 +7,7 @@ export default function Vectors ({ vectors }) {
     <div className="vectors__wrapper">
       <h2 className="vectors__title">Векторы развития</h2>
       <div className="vectors">
-        {
+        { vectors &&
           vectors.map((vector) => {
             return <VectorItem id={vector.id} key={vector.name} image={vector.image_main} name={vector.name} sections={ vector.sections }/>
           })

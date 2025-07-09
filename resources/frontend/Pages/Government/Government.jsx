@@ -6,15 +6,19 @@ import AppFooter from "#/organisms/footer/footer.jsx";
 import Accordion from "#/molecules/accordion/Accordion.jsx";
 import RegionsNavigation from "#/molecules/navigation/regions-navigation.jsx";
 import GovernmentNavigation from "#/molecules/navigation/government-navigation.jsx";
-import {usePage} from "@inertiajs/react";
+import {Head, usePage} from "@inertiajs/react";
 
-export default function Government() {
+export default function Government({meta = {}}) {
 
   const { props } = usePage();
   const { government, sections } = props;
 
   return (
     <>
+      <Head>
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
+      </Head>
       <AppHeader anniversary={ false }/>
       <PageTitle title={government.name}/>
       <div className="page-content__wrapper">

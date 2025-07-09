@@ -8,6 +8,10 @@ import Modal from "#/atoms/modal/modal.jsx";
 import MountainContent from "#/atoms/modal/mountain-content.jsx";
 
 export default function Mountains({ mountains }) {
+  if (!mountains) {
+    return null;
+  }
+
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const handleNext = () => {
@@ -39,30 +43,28 @@ export default function Mountains({ mountains }) {
     <div className="mountains__wrapper">
       <h2 className="mountains__title">Родина башен</h2>
       <div className="mountains__slider" { ...swipeHandlers }>
-        {
-          mountains.map((mountain) => {
-            return (
-              <div key={ mountain.id } className="mountain__slide" style={ {
-                transform: `translateX(-${ currentSlide * 100 }%)`,
-                transition: 'transform 0.3s ease-in-out'
-              } }>
-                {mountain.image_main &&
-                  <div className="mountain__image">
-                    <img src={ `/storage/${ mountain.image_main }` } alt={ `Изображение ${ mountain.title }` }/>
-                  </div>
-                }
-
-                <div className="mountain__body">
-                  <div>
-                    <h3 className="mountain__title">{ mountain.title }</h3>
-                    <div className="mountain__text" dangerouslySetInnerHTML={ { __html: mountain.lead } }></div>
-                  </div>
-                  <AppLink className="mountain__link" handleClick={ () => setSlide(mountain) } title="Подробнее"/>
+        {mountains.map((mountain) => {
+          return (
+            <div key={ mountain.id } className="mountain__slide" style={ {
+              transform: `translateX(-${ currentSlide * 100 }%)`,
+              transition: 'transform 0.3s ease-in-out'
+            } }>
+              {mountain.image_main &&
+                <div className="mountain__image">
+                  <img src={ `/storage/${ mountain.image_main }` } alt={ `Изображение ${ mountain.title }` }/>
                 </div>
+              }
+
+              <div className="mountain__body">
+                <div>
+                  <h3 className="mountain__title">{ mountain.title }</h3>
+                  <div className="mountain__text" dangerouslySetInnerHTML={ { __html: mountain.lead } }></div>
+                </div>
+                <AppLink className="mountain__link" handleClick={ () => setSlide(mountain) } title="Подробнее"/>
               </div>
-            )
-          })
-        }
+            </div>
+          )
+        })}
       </div>
       <div className="mountain-slider__pagination">
         <button onClick={ handlePrevious }>

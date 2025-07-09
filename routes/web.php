@@ -21,6 +21,9 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/post/{url}', [HomeController::class, 'showPost'])->name('post.show.home');
 Route::get('/search', [App\Http\Controllers\Frontend\SearchController::class, 'searchResults'])->name('search.index');
 
+Route::get('yandex-news.xml', [HomeController::class, 'generateYandexNews'])->name('yandex_news');
+
+
 Route::get('/search/page', [App\Http\Controllers\Frontend\SearchController::class, 'searchPage'])->name('search.page');
 Route::get('/national-projects', [HomeController::class, 'nationalProjects'])->name('natProjects');
 Route::get('/military-support', [HomeController::class, 'svoSupport'])->name('svoSupport');
@@ -40,12 +43,8 @@ Route::get('/smi', [HomeController::class, 'smi'])->name('smi.index');
 Route::get('/award-politic', [HomeController::class, 'awardPolitic'])->name('awardPolitics.index');
 Route::get('/civil-service', [HomeController::class, 'civilService'])->name('civilServices.index');
 
-
-
-
 Route::get('/president', [HomeController::class, 'president'])->name('president');
 Route::get('/president-administration', [AdministrationController::class, 'index'])->name('presidentAdministration');
-
 
 Route::prefix('government')->group(function () {
   Route::get('/', [GovernmentController::class, 'government'])->name('government');
@@ -67,12 +66,7 @@ Route::get('/history', [RegionController::class, 'history'])->name('history');
 
 Route::get('/agencies', [AgencyController::class, 'index'])->name('agencies.index');
 Route::get('/agencies/{agency:slug}', [AgencyController::class, 'singleAgency'])->name('agencies.single');
-Route::get('/economic', function () {
-  return Inertia::render('Region/Economics');
-});
-Route::get('/history', function () {
-  return Inertia::render('Region/History');
-});
+
 
 // Страница культура
 Route::get('/culture', [CultureController::class, 'culture'])->name('culture');

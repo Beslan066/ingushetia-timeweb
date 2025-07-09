@@ -7,10 +7,19 @@ import React from "react";
 import './region.css'
 import Tab from "#/atoms/tab/Tab.jsx";
 import TabPane from "#/atoms/tab/TabPane.jsx";
+import {Head, usePage} from "@inertiajs/react";
 
 export default function History() {
+
+  const { props } = usePage();
+  const { meta = {} } = props;
+
   return (
     <>
+      <Head>
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
+      </Head>
       <AppHeader anniversary={ false }/>
       <PageTitle title="История Ингушетии"/>
       <div className="page-content__wrapper">

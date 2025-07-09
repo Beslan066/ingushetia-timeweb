@@ -9,8 +9,9 @@ import Modal from "#/atoms/modal/modal.jsx";
 import MilitaryContent from "#/atoms/modal/military-content.jsx";
 import MemberContent from "#/atoms/modal/member-content.jsx";
 import Accordion from "#/molecules/accordion/Accordion.jsx";
+import {Head} from "@inertiajs/react";
 
-export default function President({ministers}) {
+export default function President({ministers, meta = {}}) {
   const [selectedMember, setSelectedMember] = useState(null);
 
 
@@ -100,6 +101,10 @@ export default function President({ministers}) {
 
   return (
     <>
+      <Head>
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
+      </Head>
       <AppHeader anniversary={ false }/>
       <PageTitle title=""/>
       <div className="page-content__wrapper">

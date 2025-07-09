@@ -10,12 +10,19 @@ import Modal from "#/atoms/modal/modal.jsx";
 import MilitaryContent from "#/atoms/modal/military-content.jsx";
 import useModal from "#/hooks/useModal.js";
 import Accordion from "#/molecules/accordion/Accordion.jsx";
+import {Head, usePage} from "@inertiajs/react";
 
 export default function MilitarySupport({ documents }) {
   const [modal, isOpen, setModal] = useModal(undefined);
+  const { props } = usePage();
+  const { nationalProjects, meta = {} } = props;
 
   return (
     <>
+      <Head>
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
+      </Head>
       <AppHeader anniversary={ false }/>
       <PageTitle title="Поддержка семей военнослужащих"/>
       <div className="page-content__wrapper">

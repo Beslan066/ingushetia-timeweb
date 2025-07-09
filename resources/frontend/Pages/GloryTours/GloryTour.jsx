@@ -5,10 +5,15 @@ import AppFooter from "#/organisms/footer/footer.jsx";
 import React from "react";
 import './glorytour.css';
 import DocumentsNavigation from "#/molecules/navigation/documents-navigation.jsx";
+import {Head} from "@inertiajs/react";
 
-export default function GloryTour() {
+export default function GloryTour({meta = {}}) {
   return (
     <>
+      <Head>
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
+      </Head>
       <AppHeader anniversary={ false }/>
       <PageTitle title="Виртуальный тур по Залу Славы Республики Ингушетия"/>
       <div className="page-content__wrapper">

@@ -10,8 +10,7 @@ import AppFooter from "#/organisms/footer/footer.jsx";
 import AnniversaryBanner from "#/atoms/anniversary-banner/banner.jsx";
 import './index.css';
 import CookieConsent from "#/molecules/CookieConsent.jsx";
-
-
+import { Head } from "@inertiajs/react";
 
 export default function Index({
                                 mainPosts: slides,
@@ -25,10 +24,24 @@ export default function Index({
                                 showNews: openedNews,
                                 anniversary,
                                 vectors,
-                                spotlights
+                                spotlights,
+                                meta
                               }) {
+
   return (
     <>
+      <Head>
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
+        <meta name="keywords" content={meta.keywords} />
+        <meta property="og:title" content={meta.title} />
+        <meta property="og:description" content={meta.description} />
+        <meta property="og:image" content={meta.og_image} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={meta.canonical} />
+        <link rel="canonical" href={meta.canonical} />
+      </Head>
+
       <AppHeader anniversary={anniversary} />
       <Hero
         categories={categories}

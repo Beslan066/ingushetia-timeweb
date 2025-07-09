@@ -6,10 +6,15 @@ import AppFooter from "#/organisms/footer/footer.jsx";
 import React from "react";
 import Downloadable from "#/atoms/downloadable/downloadable.jsx";
 import './region.css'
+import {Head} from "@inertiajs/react";
 
-export default function SocialEconomics({ socialEconomicDevelopment: documents }) {
+export default function SocialEconomics({ socialEconomicDevelopment: documents, meta = {} }) {
   return (
     <>
+      <Head>
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
+      </Head>
       <AppHeader anniversary={ false }/>
       <PageTitle title="Социально-экономическое развитие"/>
       <div className="page-content__wrapper">

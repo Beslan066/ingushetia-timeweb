@@ -20,9 +20,16 @@ class GovernmentController extends Controller
     $government = Government::first();
     $sections = GovernmentSection::all();
 
+    $meta = [
+      'title' => 'Правительство Республики Ингушетия',
+      'description' => 'Структура и функции, Экономическое развитие, Социальная политика,
+      Культура и традиции, Внешние связи, Инновации и технологии, Безопасность и правопорядок',
+    ];
+
     return Inertia::render('Government/Government', [
       'government' => $government,
       'sections' => $sections,
+      'meta' => $meta,
     ]);
   }
 
@@ -40,57 +47,106 @@ class GovernmentController extends Controller
       ->orderBy('priority', 'asc')
       ->get();
 
+    $meta = [
+      'title' => 'Состав правительства',
+      'description' => '',
+    ];
+
+
     return Inertia::render('Government/GovernmentStructure',
       [
         'ministers' => $ministers,
         'headMember' => $headMember,
+        'meta' => $meta,
       ]);
   }
+
   public function abilities()
   {
 
     $governmentAuthority = GovernmentAuthority::first();
     $sections = GovernmentAuthoritySection::all();
 
+    $meta = [
+      'title' => 'Полномочия правительства',
+      'description' => 'Правительство Республики Ингушетия в соответствии с Конституцией Республики Ингушетия и
+      Конституционным законом Республики Ингушетия от 12.05.2003 г. № 12-РКЗ «О Правительстве Республики Ингушетия»
+      осуществляет руководство работой республиканских органов исполнительной власти и контролирует их деятельность.',
+    ];
+
+
     return Inertia::render('Government/GovernmentAbilities', [
       'governmentAuthority' => $governmentAuthority,
       'sections' => $sections,
+      'meta' => $meta,
     ]);
   }
+
   public function sessions()
   {
 
-    $sessions = GovernmentDocument::whereHas('governmentDocumentCategory', function($query) {
+    $sessions = GovernmentDocument::whereHas('governmentDocumentCategory', function ($query) {
       $query->where('title', 'Заседания правительства');
     })->get();
 
+    $meta = [
+      'title' => 'Заседания правительства',
+      'description' => '',
+    ];
+
+
     return Inertia::render('Government/GovernmentSessions', [
       'sessions' => $sessions,
+      'meta' => $meta,
     ]);
   }
+
   public function plan()
   {
 
-    $documents = GovernmentDocument::whereHas('governmentDocumentCategory', function($query) {
+    $documents = GovernmentDocument::whereHas('governmentDocumentCategory', function ($query) {
       $query->where('title', 'План работы правительства');
     })->get();
 
+    $meta = [
+      'title' => 'План работы правительства',
+      'description' => '',
+    ];
+
+
     return Inertia::render('Government/GovernmentPlan', [
-        'documents' => $documents,
+      'documents' => $documents,
+      'meta' => $meta,
     ]);
   }
+
   public function colleagues()
   {
-    $documents = GovernmentDocument::whereHas('governmentDocumentCategory', function($query) {
+    $documents = GovernmentDocument::whereHas('governmentDocumentCategory', function ($query) {
       $query->where('title', 'Коллегии правительства');
     })->get();
 
+    $meta = [
+      'title' => 'Коллегии правительства',
+      'description' => '',
+    ];
+
     return Inertia::render('Government/GovernmentColleagues', [
       'documents' => $documents,
-    ]);
+      'meta' => $meta,
+      ]);
   }
+
   public function directories()
   {
-    return Inertia::render('Government/Directories');
+
+    $meta = [
+      'title' => '',
+      'description' => '',
+    ];
+
+    return Inertia::render('Government/Directories', [
+      'meta' => $meta,
+    ]);
   }
 }

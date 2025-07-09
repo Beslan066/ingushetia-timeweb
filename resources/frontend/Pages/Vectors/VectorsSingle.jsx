@@ -12,8 +12,9 @@ import Checkmark from "#/atoms/icons/checkmark.jsx";
 import MilitaryContent from "#/atoms/modal/military-content.jsx";
 import Modal from "#/atoms/modal/modal.jsx";
 import useModal from "#/hooks/useModal.js";
+import {Head} from "@inertiajs/react";
 
-export default function VectorSingle({ vector, news, spotlights }) {
+export default function VectorSingle({ vector, news, spotlights, meta = {} }) {
   const formatDate = (dateString) => {
     return format(new Date(dateString), 'dd MMMM yyyy', { locale: ru });
   };
@@ -21,6 +22,10 @@ export default function VectorSingle({ vector, news, spotlights }) {
 
   return (
     <>
+      <Head>
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
+      </Head>
       <AppHeader anniversary={false} />
       <PageTitle title={vector.name} />
 

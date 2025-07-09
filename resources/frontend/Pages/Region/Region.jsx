@@ -5,17 +5,21 @@ import PageTitle from "#/atoms/texts/PageTitle.jsx";
 import Accordion from "#/molecules/accordion/Accordion.jsx";
 import './region.css'
 import RegionsNavigation from "#/molecules/navigation/regions-navigation.jsx";
-import { usePage } from "@inertiajs/react";
+import {Head, usePage} from "@inertiajs/react";
 import BackToTop from "#/atoms/topButton/BackToTop.jsx";
 
 
 export default function Region() {
 
   const { props } = usePage();
-  const { region, sections } = props;
+  const { region, sections, meta } = props;
 
   return (
     <>
+      <Head>
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
+      </Head>
       <AppHeader anniversary={ false }/>
       <PageTitle title="О Республике Ингушетия"/>
       <div className="page-content__wrapper">

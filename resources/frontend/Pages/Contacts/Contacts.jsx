@@ -8,12 +8,17 @@ import Button from "#/atoms/buttons/button.jsx";
 import Modal from "#/atoms/modal/modal.jsx";
 import ContactsContent from "#/atoms/modal/contacts-content.jsx";
 import useModal from "#/hooks/useModal.js";
+import {Head} from "@inertiajs/react";
 
-export default function Contacts({ contacts }) {
+export default function Contacts({ contacts, meta = {} }) {
   const [modal, isOpen, setModal] = useModal(null)
 
   return (
     <>
+      <Head>
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
+      </Head>
       <AppHeader anniversary={ false }/>
       <PageTitle title="Контакты"/>
       <div className="page-content__wrapper">

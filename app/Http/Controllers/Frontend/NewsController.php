@@ -8,6 +8,7 @@ use App\Models\News;
 use App\Models\PhotoReportage;
 use App\Models\Video;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class NewsController extends Controller
@@ -37,6 +38,21 @@ class NewsController extends Controller
       ->take(8)
       ->get();
 
+    $meta = [
+      'title' => 'Новости Ингушетии',
+      'description' => 'Последние новости Республики Ингушетия. Свежие события, репортажи и новостные материалы.',
+      'keywords' => 'новости Ингушетии, события Ингушетии, последние новости',
+      'og_image' => asset('path/to/default/og-image.jpg'),
+      'canonical' => route('news.index')
+    ];
+
+// Для страниц пагинации
+    if (request()->has('page')) {
+      $page = request()->input('page');
+      $meta['title'] = 'Новости Ингушетии - страница ' . $page;
+      $meta['canonical'] = route('news.index', ['page' => $page]);
+    }
+
 
     return Inertia::render('News/News', [
       'news' => $news->items(),
@@ -48,7 +64,8 @@ class NewsController extends Controller
         'category' => request()->input('category'),
         'dateFrom' => $dateFrom,
         'dateTo' => $dateTo,
-      ]
+      ],
+      'meta' => $meta
     ]);
   }
 
@@ -56,7 +73,7 @@ class NewsController extends Controller
   public function show($url)
   {
     $newsItem = News::where('url', $url)
-      ->with(['category', 'video', 'reportage'])
+      ->with(['category', 'video', 'reportage', 'tags'])
       ->firstOrFail();
 
     // Увеличиваем счетчик просмотров
@@ -71,6 +88,13 @@ class NewsController extends Controller
       ->take(8)
       ->get();
 
+    // Метаданные для новости
+    $meta = [
+      'title' => $newsItem->title . ' | Новости Ингушетии',
+      'description' => Str::limit(strip_tags($newsItem->lead), 160),
+      'canonical' => route('post.show.news', ['url' => $url])
+    ];
+
     return Inertia::render('News/News', [
       'showNews' => $newsItem,
       'news' => [],
@@ -84,6 +108,7 @@ class NewsController extends Controller
         'dateFrom' => null,
         'dateTo' => null,
       ],
+      'meta' => $meta
     ]);
   }
 

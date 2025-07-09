@@ -8,7 +8,7 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import Filters from "#/molecules/filters/filters.jsx";
 import FilterButton from "#/atoms/filters/filter-button.jsx";
 import AgencyNewsItem from "#/atoms/news/agency-news-item.jsx";
-import { Link, router, usePage } from "@inertiajs/react";
+import {Head, Link, router, usePage} from "@inertiajs/react";
 import Modal from "#/atoms/modal/modal.jsx";
 import PostContent from "#/atoms/modal/post-content.jsx";
 import PopularSpotlights from "#/molecules/spotlights/popular-spotlights.jsx";
@@ -35,7 +35,8 @@ export default function News({
                                spotlights,
                                page: pageNumber,
                                pages: totalPages,
-                               filters: initialFilters
+                               filters: initialFilters,
+                               meta
                              }) {
   const { props } = usePage();
   const [selectedCategory, setSelectedCategory] = useState(initialFilters?.category || null);
@@ -240,6 +241,10 @@ export default function News({
 
   return (
     <>
+      <Head>
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
+      </Head>
       <AppHeader />
       <div className={'news-hero__news-wrapper news-page-title'}>
         <PageTitle title="Новости" />

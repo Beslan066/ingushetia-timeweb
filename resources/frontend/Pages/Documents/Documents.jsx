@@ -6,10 +6,10 @@ import AppFooter from "#/organisms/footer/footer.jsx";
 import DocumentsNavigation from "#/molecules/navigation/documents-navigation.jsx";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
-import { router } from "@inertiajs/react";
+import {Head, router} from "@inertiajs/react";
 import './documents.css';
 
-export default function Documents({ documents: initialDocuments, documentTypes }) {
+export default function Documents({ documents: initialDocuments, documentTypes,meta ={} }) {
   const [documents, setDocuments] = useState(initialDocuments.data);
   const [nextPage, setNextPage] = useState(initialDocuments.next_page_url);
   const [loading, setLoading] = useState(false);
@@ -110,6 +110,10 @@ export default function Documents({ documents: initialDocuments, documentTypes }
 
   return (
     <>
+      <Head>
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
+      </Head>
       <AppHeader anniversary={false} />
       <PageTitle title="Документы" />
       <div className="page-content__wrapper">

@@ -27,22 +27,23 @@ use App\Models\AwardPolitic;
 use App\Models\CivilService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\View;
+
 
 class HomeController extends Controller
 {
   public function index(Request $request)
   {
-    // Время кэширования
-    $cacheTimeShort = 150;  // 2.5 минуты
-    $cacheTimeLong = 300;   // 5 минут
+    $cacheTimeShort = 150;
+    $cacheTimeLong = 300;
 
-    // Ключи кэша
     $cacheKeys = [
       'categories' => 'categories_data_v2',
       'resources' => 'resources_data_agency_5_v2',
@@ -51,15 +52,13 @@ class HomeController extends Controller
       'mountains' => 'mountains_with_reportage_v2',
       'mainPosts' => 'main_posts_agency_5_v2',
       'posts' => 'news_last_12_agency_5_v2',
-      'spotlights' => 'spotlights_news_agency_5_v3', // Отдельный ключ для spotlights
+      'spotlights' => 'spotlights_news_agency_5_v3',
     ];
 
-    // Получаем категории
     $categories = Cache::remember($cacheKeys['categories'], $cacheTimeLong, function () {
       return Category::select('id', 'title')->get()->toArray();
     });
 
-    // Ресурсы
     $resources = Cache::remember($cacheKeys['resources'], $cacheTimeLong, function () {
       return Resource::query()
         ->where('agency_id', 5)
@@ -67,19 +66,16 @@ class HomeController extends Controller
         ->get();
     });
 
-    // Фоторепортажи (без кэширования)
     $photoReportages = PhotoReportage::query()
       ->take(4)
       ->orderBy('published_at', 'desc')
       ->get();
 
-    // Видео (без кэширования)
     $videos = Video::query()
       ->take(4)
       ->orderBy('published_at', 'desc')
       ->get();
 
-    // Города
     $cities = Cache::remember($cacheKeys['cities'], $cacheTimeLong, function () {
       return Municipality::query()
         ->with('supervisor')
@@ -87,7 +83,6 @@ class HomeController extends Controller
         ->get();
     });
 
-    // Районы
     $districts = Cache::remember($cacheKeys['districts'], $cacheTimeLong, function () {
       return Municipality::query()
         ->with('supervisor')
@@ -95,7 +90,6 @@ class HomeController extends Controller
         ->get();
     });
 
-    // Горные территории
     $mountains = Cache::remember($cacheKeys['mountains'], $cacheTimeLong, function () {
       return Mountain::query()
         ->with('reportage')
@@ -103,7 +97,6 @@ class HomeController extends Controller
         ->get();
     });
 
-    // Главные материалы
     $mainPosts = Cache::remember($cacheKeys['mainPosts'], $cacheTimeShort, function () {
       return News::query()
         ->with(['category:id,title', 'video:id,url', 'reportage:id,title'])
@@ -114,13 +107,11 @@ class HomeController extends Controller
         ->get();
     });
 
-    // Основные новости (фильтруются по категории если нужно)
     $newsQuery = News::query()
       ->with('category', 'video', 'reportage', 'tags')
       ->where('agency_id', 5)
       ->orderBy('published_at', 'desc');
 
-    // Фильтрация по категории только для главной страницы
     if ($request->input('from') === 'main_page' && $request->has('category')) {
       $categoryId = $request->input('category');
       if ($categoryId) {
@@ -130,7 +121,6 @@ class HomeController extends Controller
 
     $news = $newsQuery->take(12)->get();
 
-    // Spotlights - полностью статичные данные (не зависят от фильтрации)
     $spotlights = Cache::remember($cacheKeys['spotlights'], $cacheTimeShort, function () {
       return News::query()
         ->with('category', 'video', 'reportage', 'tags')
@@ -141,7 +131,6 @@ class HomeController extends Controller
         ->get();
     });
 
-    // Векторы развития
     $vectors = Vector::query()
       ->orderBy('created_at', 'desc')
       ->with(['sections' => function ($query) {
@@ -150,12 +139,21 @@ class HomeController extends Controller
       ->take(4)
       ->get();
 
-    // Открытая новость (если есть в URL)
     $openedNews = null;
+    $meta = [
+      'title' => 'Республика Ингушетия официальный портал',
+      'description' => 'Официальный сайт Республики Ингушетия. Новости, документы, информация о регионе.',
+      'keywords' => 'Ингушетия, официальный сайт, новости Ингушетии',
+      'og_image' => asset('path/to/default/og-image.jpg'),
+      'canonical' => url('/')
+    ];
+
     if ($request->route('url')) {
       $openedNews = News::where('url', $request->route('url'))
         ->with(['category', 'video', 'reportage', 'tags'])
         ->firstOrFail();
+
+      $openedNews->incrementViews();
 
       $openedNews->relatedPosts = News::query()
         ->where('category_id', $openedNews->category_id)
@@ -164,26 +162,15 @@ class HomeController extends Controller
         ->orderBy('published_at', 'desc')
         ->limit(3)
         ->get();
-    }
 
-    $meta = [];
-    if ($openedNews) {
       $meta = [
-        'title' => $openedNews->title,
-        'description' => Str::limit(strip_tags($openedNews->content), 160),
+        'title' => $openedNews->title . ' | Республика Ингушетия',
+        'description' => Str::limit(strip_tags($openedNews->lead), 160),
         'keywords' => $openedNews->tags->pluck('name')->join(', '),
-        'og_image' => $openedNews->image_main ? asset($openedNews->image_main) : null,
+        'og_image' => $openedNews->image_main ? asset($openedNews->image_main) : asset('path/to/default/og-image.jpg'),
         'canonical' => route('post.show.home', ['url' => $request->route('url')])
       ];
-    } else {
-      $meta = [
-        'title' => 'Главная страница',
-        'description' => 'Официальный сайт Республики Ингушетия. Новости, документы, информация о регионе.',
-        'keywords' => 'Ингушетия, официальный сайт, новости Ингушетии'
-      ];
     }
-
-
 
     return Inertia::render('Index', [
       'news' => $news,
@@ -202,9 +189,7 @@ class HomeController extends Controller
       'showNews' => $openedNews,
       'anniversary' => config('app.anniversary'),
       'vectors' => $vectors,
-
-      'meta' => $meta,
-
+      'meta' => $meta
     ]);
   }
 
@@ -254,7 +239,7 @@ class HomeController extends Controller
 
     // Получаем открываемую новость (без кэширования, так как нужно актуальное состояние)
     $openedNews = News::where('url', $url)
-      ->with(['category', 'video', 'reportage'])
+      ->with(['category', 'video', 'reportage', 'tags'])
       ->firstOrFail();
 
     // Увеличиваем счетчик просмотров
@@ -268,12 +253,10 @@ class HomeController extends Controller
       ->limit(3)
       ->get();
 
-    // Формируем метаданные для новости
+    // Метаданные
     $meta = [
-      'title' => $openedNews->title,
-      'description' => Str::limit(strip_tags($openedNews->content), 160),
-      'keywords' => $openedNews->tags->pluck('name')->join(', '),
-      'og_image' => $openedNews->image_main ? asset($openedNews->image_main) : null,
+      'title' => $openedNews->title . ' | Республика Ингушетия',
+      'description' => Str::limit(strip_tags($openedNews->lead), 160),
       'canonical' => route('post.show.home', ['url' => $url])
     ];
 
@@ -294,35 +277,33 @@ class HomeController extends Controller
     ]);
   }
 
-  public function nationalProjects()
-  {
-    $natProjects = NationalProject::all();
-
-    $meta = [
-      'title' => 'Национальные проекты Ингушетии',
-      'description' => 'Официальный сайт Республики Ингушетия. Новости, документы, информация о регионе.',
-    ];
-
-    return Inertia::render('Region/NationalProjects', [
-      'natProjects' => $natProjects,
-      'meta' => $meta
-    ]);
-  }
-
   public function svoSupport()
   {
     $supports = MilitarySupport::all();
 
+    $meta = [
+      'title' => 'Поддержка семей военнослужащих',
+      'description' => 'В Республике Ингушетия разработан комплекс мер социальной поддержки семей военнослужащих.'
+    ];
+
     return Inertia::render('Region/MilitarySupport', [
-      'documents' => $supports
+      'documents' => $supports,
+      'meta' => $meta
     ]);
   }
 
   public function contacts()
   {
     $contacts = Contact::where('agency_id', request()->input('agency_id', 5))->get();
+
+    $meta = [
+      'title' => 'Контакты Администрации Главы и Правительства РИ',
+      'description' => ''
+    ];
+
     return Inertia::render('Contacts/Contacts', [
-      'contacts' => $contacts
+      'contacts' => $contacts,
+      'meta' => $meta
     ]);
   }
 
@@ -330,8 +311,14 @@ class HomeController extends Controller
   {
     $implementations = Implementation::query()->orderBy('id', 'desc')->get();
 
+    $meta = [
+      'title' => 'Реализация указов Президента РФ в Ингушетии',
+      'description' => 'Реализация указов Президента РФ в Ингушетии'
+    ];
+
     return Inertia::render('Region/PresidentImplementations', [
-      'implementations' => $implementations
+      'implementations' => $implementations,
+      'meta' => $meta
     ]);
   }
 
@@ -339,8 +326,14 @@ class HomeController extends Controller
   {
     $anticorruptions = Anticorruption::query()->orderBy('id', 'desc')->get();
 
+    $meta = [
+      'title' => 'Противодействие коррупции',
+      'description' => 'Отчёт о ходе реализации Плана работы Администрации Главы и Правительства Республики Ингушетия по противодействию коррупции'
+    ];
+
     return Inertia::render('Region/Anticorruption', [
-      'anticorruptions' => $anticorruptions
+      'anticorruptions' => $anticorruptions,
+      'meta' => $meta
     ]);
   }
 
@@ -349,9 +342,15 @@ class HomeController extends Controller
     $economicSupports = EconomicSupport::query()->where('type', 0)->orderBy('id', 'desc')->get();
     $economicSupportsBuisness = EconomicSupport::query()->where('type', 1)->orderBy('id', 'desc')->get();
 
+    $meta = [
+      'title' => 'Поддержка экономики и граждан в Ингушетии',
+      'description' => 'Меры поддержки граждан и экономики реализуемые в Ингушетии'
+    ];
+
     return Inertia::render('Region/CitizenSupport', [
       'citizenSupportPackages' => $economicSupports,
-      'businessSupportPackages' => $economicSupportsBuisness
+      'businessSupportPackages' => $economicSupportsBuisness,
+      'meta' => $meta
     ]);
   }
 
@@ -410,9 +409,15 @@ class HomeController extends Controller
       ['path' => $request->url(), 'query' => $request->except(['page', 'dateFrom', 'dateTo'])]
     );
 
+    $meta = [
+      'title' => 'Фото и видеорепортажи Ингушетия',
+      'description' => 'Страница медиа(фото и видео) Республика Ингушетия'
+    ];
+
     return Inertia::render('Media/Media', [
       'media' => $paginated,
       'selectedCategory' => $category,
+      'meta' => $meta
     ]);
   }
 
@@ -439,9 +444,15 @@ class HomeController extends Controller
       ];
     });
 
+    $meta = [
+      'title' => 'Документы Республика Ингушетия',
+      'description' => 'Акты, Законы, Отчеты, Указы, Распоряжения Республики Ингушетия'
+    ];
+
     return Inertia::render('Documents/Documents', [
       'documents' => $documents, // Отдаём всю пагинацию
       'documentTypes' => array_values($documentTypes),
+      'meta' => $meta
     ]);
   }
 
@@ -467,21 +478,41 @@ class HomeController extends Controller
       return $konkurs;
     });
 
+    $meta = [
+      'title' => 'Конкурсы в органах исполнительной власти Республики Ингушетия',
+      'description' => ''
+    ];
+
     return Inertia::render('Konkurs/Konkurs', [
-      'konkurses' => $konkurses
+      'konkurses' => $konkurses,
+      'meta' => $meta
     ]);
   }
 
   public function simvols()
   {
 
-    return Inertia::render('Simvols/Simvols');
+    $meta = [
+      'title' => 'Государственная символика Республики Ингушетия',
+      'description' => 'Флаг и герб Республики Ингушетия'
+    ];
+
+    return Inertia::render('Simvols/Simvols', [
+      'meta' => $meta
+    ]);
   }
 
   public function gloryTour()
   {
 
-    return Inertia::render('GloryTours/GloryTour');
+    $meta = [
+      'title' => 'Виртуальный тур по Залу Славы Республики Ингушетия',
+      'description' => ''
+    ];
+
+    return Inertia::render('GloryTours/GloryTour', [
+      'meta' => $meta
+    ]);
   }
 
   public function managmentReserves()
@@ -498,22 +529,44 @@ class HomeController extends Controller
       return $document;
     });
 
-    return Inertia::render('ManagmentReserves/ManagmentReserve', ['documents' => $documents]);
+    $meta = [
+      'title' => 'Резерв управленческих кадров Республики Ингушетия',
+      'description' => 'Страница Резерв управленческих кадров'
+    ];
+
+    return Inertia::render('ManagmentReserves/ManagmentReserve',
+      [
+        'documents' => $documents,
+        'meta' => $meta
+      ]);
   }
 
   public function judicialAuthorities()
   {
 
-    return Inertia::render('JudicialAuthorities/JudicialAuthority');
+    $meta = [
+      'title' => 'Органы судебной системы Республики Ингушетия',
+      'description' => 'Страница Органы судебной системы Республики Ингушетия'
+    ];
+
+    return Inertia::render('JudicialAuthorities/JudicialAuthority', [
+      'meta' => $meta
+    ]);
   }
 
   public function federalAuthorities()
   {
-
-
     $federalAuthorities = FederalAuthority::all();
 
-    return Inertia::render('FederalAuthorities/FederalAuthority', compact('federalAuthorities'));
+    $meta = [
+      'title' => 'Территориальные органы федеральных органов власти Республики Ингушетия',
+      'description' => 'Страница Территориальные органы федеральных органов власти Республики Ингушетия'
+    ];
+
+    return Inertia::render('FederalAuthorities/FederalAuthority', [
+      'meta' => $meta,
+      'federalAuthorities' => $federalAuthorities
+    ]);
   }
 
   public function antinar()
@@ -531,15 +584,30 @@ class HomeController extends Controller
       return $document;
     });
 
+    $meta = [
+      'title' => 'Антинаркотическая комиссия в Республике Ингушетия',
+      'description' => 'Страница Антинаркотическая комиссия в Республике Ингушетия'
+    ];
 
-    return Inertia::render('Antinars/Antinar', compact('documents'));
+
+    return Inertia::render('Antinars/Antinar', [
+      'documents' => $documents,
+      'meta' => $meta
+    ]);
 
   }
 
   public function smi()
   {
 
-    return Inertia::render('Smi/Smi');
+    $meta = [
+      'title' => 'Республиканские СМИ Республики Ингушетия',
+      'description' => 'Страница Республиканские СМИ Республики Ингушетия'
+    ];
+
+    return Inertia::render('Smi/Smi', [
+      'meta' => $meta
+    ]);
   }
 
 
@@ -563,9 +631,18 @@ class HomeController extends Controller
       ];
     });
 
+    $meta = [
+      'title' => 'Наградная политика Республики Ингушетия',
+      'description' => 'Государственные награды Российской Федерации, Государственные награды Республики Ингушетия,
+      Поощрения Главы Республики Ингушетия, Перечень государственных наград Республики Ингушетия и поощрений
+      Главы Республики Ингушетия, Реализация Наградной политики Республики Ингушетия'
+    ];
+
+
     return Inertia::render('AwardPolitics/AwardPolitic', [
       'documents' => $documents,
-      'awardTypes' => array_values($awardTypes), // Передаём типы наград
+      'awardTypes' => array_values($awardTypes),
+      'meta' => $meta
     ]);
   }
 
@@ -589,15 +666,31 @@ class HomeController extends Controller
       ];
     });
 
+    $meta = [
+      'title' => 'Прохождение государственной гражданской службы в Администрации Главы и Правительства Республики Ингушетия',
+      'description' => 'Объявления, Нормативная база, Формы мониторинга для Минтруда России,
+       Условия и порядок поступления на государственную гражданскую службу в Администрацию Главы и Правительства Республики Ингушетия'
+    ];
+
+
     return Inertia::render('CivilServices/CivilService', [
       'documents' => $documents,
-      'civilServiceTypes' => array_values($civilServiceTypes), // Передаём типы наград
+      'civilServiceTypes' => array_values($civilServiceTypes),
+      'meta' => $meta
     ]);
   }
 
   public function president()
   {
-    return Inertia::render('President/President');
+
+    $meta = [
+      'title' => 'Глава Республики Ингушетия - Махмуд-Али Калиматов',
+      'description' => 'Страница Главы Республики Ингушетия - Махмуд-Али Калиматова'
+    ];
+
+    return Inertia::render('President/President', [
+      'meta' => $meta
+    ]);
 
   }
 
@@ -613,9 +706,126 @@ class HomeController extends Controller
       ->take(8)
       ->get();
 
+    $meta = [
+      'title' => 'Векторы развития Республики Ингушетия' . ' ' . $vector->name ,
+      'description' => "Страница Векторы развития Республики Ингушетия"
+    ];
+
     return Inertia::render('Vectors/VectorsSingle', [
       'vector' => $vector,
       'news' => $vectorNews,
+      'meta' => $meta
     ]);
+  }
+
+  public function generateYandexNews()
+  {
+    // Получить данные новостей и материалов из базы данных
+    $posts = News::query()
+      ->select('id', 'title', 'lead', 'content', 'image_main', 'published_at', 'url', 'video_id', 'reportage_id')
+      ->with(['video', 'reportage'])
+      ->orderBy('published_at', 'desc')
+      ->take(50)
+      ->get();
+
+    // Создать объект SimpleXMLElement для формирования XML
+    $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?>
+        <rss xmlns:yandex="http://news.yandex.ru" xmlns:media="http://search.yahoo.com/mrss/" version="2.0"></rss>');
+
+    $channel = $xml->addChild('channel');
+
+    foreach ($posts as $post) {
+      // Создать элемент <item> для каждой новости
+      $item = $channel->addChild('item');
+      $item->addAttribute('turbo', 'true');
+
+      $publishedDate = strtotime($post->published_at);
+      $pubDate = date('D, d M Y H:i:s O', $publishedDate);
+
+      // Добавить основные поля
+      $item->addChild('title', htmlspecialchars($post->title));
+      $item->addChild('description', htmlspecialchars($post->lead));
+      $fullTextNode = $item->addChild('yandex:full-text', htmlspecialchars(strip_tags($post->content)), 'http://news.yandex.ru');
+      $item->addChild('pubDate', $pubDate);
+
+      // Обработка изображений и видео
+      $this->addMediaToItem($item, $post);
+
+      // Добавление ссылки
+      $link = 'https://ingushetia.ru/' . $post->url;
+      $item->addChild('link', $link);
+    }
+
+    // Преобразовать XML в строку
+    $xmlString = $xml->asXML();
+    $xmlString = str_replace('&nbsp;', '&#160;', $xmlString);
+
+    // Записать XML-строку в файл yandex-news.xml
+    Storage::disk('public')->put('yandex-news.xml', $xmlString);
+
+    // Вернуть ответ с XML-файлом
+    return response($xmlString, 200, [
+      'Content-Type' => 'application/xml',
+    ]);
+  }
+
+  protected function getMimeType(string $filename): string
+  {
+    $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+
+    return match($extension) {
+      'jpg', 'jpeg' => 'image/jpeg',
+      'png' => 'image/png',
+      'gif' => 'image/gif',
+      'webp' => 'image/webp',
+      default => 'image/jpeg' // по умолчанию
+    };
+  }
+  protected function addMediaToItem(\SimpleXMLElement $item, News $post)
+  {
+    // Обработка главного изображения
+    if (!empty($post->image_main)) {
+      // Формируем корректный URL для изображения
+      $imageUrl = 'https://ingushetia.ru/storage/' . ltrim($post->image_main, '/');
+
+      // Проверяем, что URL не содержит текста новости (простая проверка на длину)
+      if (strlen($imageUrl) < 255 && preg_match('/\.(jpg|jpeg|png|gif)$/i', $imageUrl)) {
+        $enclosure = $item->addChild('enclosure');
+        $enclosure->addAttribute('url', $imageUrl);
+        $enclosure->addAttribute('type', $this->getMimeType($imageUrl));
+      }
+    }
+
+
+
+    // Обработка видео
+    if ($post->video_id && $post->video) {
+      $mediaGroup = $item->addChild('media:group', '', 'http://search.yahoo.com/mrss/');
+
+      // Видео контент
+      $mediaContent = $mediaGroup->addChild('media:content');
+      $mediaContent->addAttribute('url', $post->video->path);
+      $mediaContent->addAttribute('type', 'video/mp4');
+
+      // Превью видео
+      if ($post->video->preview_path) {
+        $mediaThumbnail = $mediaGroup->addChild('media:thumbnail');
+        $mediaThumbnail->addAttribute('url', $post->video->preview_path);
+
+        $enclosure = $item->addChild('enclosure');
+        $enclosure->addAttribute('url', $post->video->preview_path);
+        $enclosure->addAttribute('type', 'image/jpeg');
+      }
+    }
+
+    // Обработка фоторепортажа
+    if ($post->reportage_id && $post->reportage) {
+      foreach ($post->reportage->photos as $photo) {
+        $imageUrl = 'https://ingushetia.ru/storage/' . $photo->path;
+        $enclosure = $item->addChild('enclosure');
+        $enclosure->addAttribute('url', $imageUrl);
+        $enclosure->addAttribute('type', 'image/jpeg');
+      }
+    }
   }
 }

@@ -3,16 +3,15 @@ import Tag from "#/atoms/tags/tag.jsx";
 import React from "react";
 import AgencyNewsItem from "#/atoms/news/agency-news-item.jsx";
 import Gallery from "#/atoms/gallery/gallery.jsx";
-import { format } from 'date-fns';
-import { ru } from 'date-fns/locale';
+import {format} from 'date-fns';
+import {ru} from 'date-fns/locale';
 import {Link} from "@inertiajs/react";
 
-
-export default function PostContent({ post, onPost }) {
+const PostContent = ({post, onPost}) => {
   if (!post) {
-    return null;
+    return <div className="post-content">Новость не найдена</div>;
   }
-// Форматирование даты
+
   const formatDate = (dateString) => {
     try {
       return format(new Date(dateString), 'd MMMM yyyy', { locale: ru });
@@ -23,70 +22,109 @@ export default function PostContent({ post, onPost }) {
 
   return (
     <div className="post-content printable-content">
-    <div className="post__meta">
-        <Link href={route('posts.by.tag', post.category.id)}>
-          <div className="post-meta__category">{post.category?.title}</div>
-        </Link>
-        <div className="post-meta__date">{formatDate(post.published_at)}</div>
+      {/* Мета-информация */}
+      <div className="post__meta">
+        {post.category && (
+          <Link
+            href={route('posts.by.tag', post.category.id)}
+            className="post-meta__link"
+          >
+            <div className="post-meta__category">
+              {post.category.title}
+            </div>
+          </Link>
+        )}
+        <div className="post-meta__date">
+          {formatDate(post.published_at)}
+        </div>
       </div>
 
-      {/* Заголовок и изображение */}
+      {/* Заголовок и главное изображение */}
       <div className="post__header">
-        <h2 className="post__title">{post.title}</h2>
+        <h1 className="post__title">{post.title}</h1>
+
         {post.image_main && (
-          <div className="post__image">
-            <img src={`/storage/${post.image_main}`} alt={post.title} />
+          <div className="post__image-wrapper">
+            <img
+              src={`/storage/${post.image_main}`}
+              alt={post.title}
+              className="post__image-main"
+              loading="lazy"
+            />
             {post.image_description && (
-              <div className="image__description">{post.image_description}</div>
+              <div className="post__image-description">
+                {post.image_description}
+              </div>
             )}
           </div>
         )}
       </div>
 
-      {/* Контент с учетом типа */}
-      <div className="content">
-
-        {post.lead &&
-          <p>
-            <b>
-              {post.lead}
-            </b>
-          </p>
-        }
-
-        {post.type === 'video' && (
-          <div className="video-embed" dangerouslySetInnerHTML={{__html: post.content}} />
+      {/* Основной контент */}
+      <div className="post__body">
+        {/* Лид новости */}
+        {post.lead && (
+          <div className="post__lead">
+            <p className="post__lead-text">
+              <strong>{post.lead}</strong>
+            </p>
+          </div>
         )}
 
-        {post.type === 'document' && (
-          <div className="document-content" dangerouslySetInnerHTML={{__html: post.content}} />
-        )}
+        {/* Контент в зависимости от типа */}
+        <div className="post__content">
+          {post.type === 'video' && (
+            <div
+              className="post__video-embed"
+              dangerouslySetInnerHTML={{__html: post.content}}
+            />
+          )}
 
-        {!['video', 'document'].includes(post.type) && (
-          <>
-            <div dangerouslySetInnerHTML={{ __html: post.content }}></div>
-            {post.reportage && <Gallery gallery={post.reportage.slides} />}
-          </>
-        )}
+          {post.type === 'document' && (
+            <div
+              className="post__document-content"
+              dangerouslySetInnerHTML={{__html: post.content}}
+            />
+          )}
+
+          {!['video', 'document'].includes(post.type) && (
+            <>
+              <div
+                className="post__text-content"
+                dangerouslySetInnerHTML={{__html: post.content}}
+              />
+
+              {post.reportage && (
+                <div className="post__gallery">
+                  <Gallery gallery={post.reportage.slides}/>
+                </div>
+              )}
+            </>
+          )}
+        </div>
       </div>
 
       {/* Теги */}
-      {post.tags.length > 0 &&
-        <div className="tags__wrapper">
-          <div className="tags__title">Теги:</div>
-          <div className="tags">
-            {post.tags?.map((tag) => (
-              <Tag key={tag.id} tag={tag.name} />
+      {post.tags?.length > 0 && (
+        <div className="post__tags">
+          <div className="post__tags-title">Теги:</div>
+          <div className="post__tags-list">
+            {post.tags.map((tag) => (
+              <Tag
+                key={tag.id}
+                tag={tag.name}
+                className="post__tag-item"
+              />
             ))}
           </div>
         </div>
-      }
+      )}
 
-      {/* Блок "Смотрите также" */}
+      {/* Похожие новости */}
       {post.relatedPosts?.length > 0 && (
-        <div className="related">
-          <h2 className="related__title">Смотрите также</h2>
-          <div className="related__posts">
+        <div className="post__related">
+          <h2 className="post__related-title">Смотрите также</h2>
+          <div className="post__related-list">
             {post.relatedPosts.map((related) => (
               <AgencyNewsItem
                 key={related.id}
@@ -95,6 +133,7 @@ export default function PostContent({ post, onPost }) {
                 category={related.category?.title}
                 date={related.published_at}
                 onPost={() => onPost(related)}
+                className="post__related-item"
               />
             ))}
           </div>
@@ -102,4 +141,6 @@ export default function PostContent({ post, onPost }) {
       )}
     </div>
   );
-}
+};
+
+export default PostContent;
