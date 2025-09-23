@@ -25,6 +25,7 @@ export default function Hero ({
     Array.isArray(news) ? news.slice(0, 3) : []
   );
   const [isLoading, setIsLoading] = useState(false);
+  const [isPostLoading, setIsPostLoading] = useState(false);
 
   // Обработчик смены категории
   const onCategorySwitch = (categoryId) => {
@@ -52,17 +53,21 @@ export default function Hero ({
     });
   };
 
-  // Обработчик открытия новости
-  const handlePost = (post) => {
-    if (!post?.url) return;
+  // Обработчик открытия новости (альтернатива)
+const handlePost = (post) => {
+  if (!post?.url) return;
 
-    router.get(`/post/${post.url}`, {}, {
-      preserveScroll: true,
-      onSuccess: () => {
-        window.history.pushState({}, "", `/post/${post.url}`);
-      }
-    });
-  };
+  router.get(`/post/${post.url}`, {}, {
+    preserveState: true, // Сохраняем состояние
+    preserveScroll: true, // Сохраняем прокрутку
+    only: ['showNews'], // Загружаем только данные для модального окна
+    onSuccess: () => {
+      setCurrentPost(props.showNews);
+      setIsModalOpen(true);
+      window.history.pushState({}, "", `/post/${post.url}`);
+    }
+  });
+};
 
   // Эффект для обработки открытой новости при загрузке
   useEffect(() => {
@@ -76,10 +81,15 @@ export default function Hero ({
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setCurrentPost(null);
-    router.get('/', {}, {
-      preserveScroll: true,
-      preserveState: true
-    });
+    setIsPostLoading(false);
+    
+    // Восстанавливаем URL без перезагрузки страницы
+    const searchParams = new URLSearchParams(window.location.search);
+    if (selectedCategory) {
+      searchParams.set('category', selectedCategory);
+    }
+    const newUrl = searchParams.toString() ? `/?${searchParams.toString()}` : '/';
+    window.history.pushState({}, "", newUrl);
   };
 
   // Если нет категорий, показываем заглушку
@@ -143,13 +153,14 @@ export default function Hero ({
         isOpen={isModalOpen}
         handleClose={handleCloseModal}
       >
-        {currentPost ? (
+        {isPostLoading ? (
+          <div className="post-loading">Загрузка новости...</div>
+        ) : currentPost ? (
           <PostContent post={currentPost} onPost={handlePost} />
         ) : (
-          <div className="post-loading">Загрузка новости...</div>
+          <div className="post-loading">Новость не найдена</div>
         )}
       </Modal>
     </>
   );
 };
-
