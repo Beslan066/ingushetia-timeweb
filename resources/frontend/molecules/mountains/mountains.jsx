@@ -58,7 +58,7 @@ export default function Mountains({ mountains }) {
               <div className="mountain__body">
                 <div>
                   <h3 className="mountain__title">{ mountain.title }</h3>
-                  <div className="mountain__text" dangerouslySetInnerHTML={ { __html: mountain.lead } }></div>
+                  <div className="mountain__text" dangerouslySetInnerHTML={{ __html: mountain.lead }} />
                 </div>
                 <AppLink className="mountain__link" handleClick={ () => setSlide(mountain) } title="Подробнее"/>
               </div>

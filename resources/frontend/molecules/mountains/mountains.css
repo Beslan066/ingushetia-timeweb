@@ -106,3 +106,19 @@
 .property__wrapper.property--supervisor {
   max-width: 200px;
 }
+
+/* Стили для мобильных устройств */
+@media (max-width: 768px) {
+  .mountain__text {
+    /* Обрезаем текст после 3 строк */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    /* Альтернативный способ для некоторых браузеров */
+    max-height: 4.5em; /* Примерная высота 3 строк */
+    line-height: 1.5em;
+  }
+}
