@@ -64,7 +64,7 @@ const PostContent = ({post, onPost}) => {
       <div className="post__body">
         {/* Лид новости */}
         {post.lead && (
-          <div className="post__lead">
+          <div className="post__lead" style={{marginTop: '10px'}}>
             <p className="post__lead-text">
               <strong>{post.lead}</strong>
             </p>

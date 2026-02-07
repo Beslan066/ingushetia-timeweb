@@ -402,3 +402,10 @@ button:has(svg) {
 .top-menu__navigation .menu-item {
   position: relative;
 }
+
+
+@media (max-width:480px) {
+  .top-menu__name h1 {
+      font-size: 14px;
+  }
+}
