@@ -46,6 +46,8 @@ export default function VectorSingle({ vector, news, spotlights, meta = {} }) {
 
   // Обработчик клика по новости в PopularSpotlights
   const handlePopularPost = (id) => {
+    if (!spotlights || spotlights.length === 0) return;
+
     const post = spotlights.find(item => item.id === id);
     if (post) {
       handlePost(post);
@@ -73,6 +75,9 @@ export default function VectorSingle({ vector, news, spotlights, meta = {} }) {
     }
   }, [props.showNews]);
 
+  // Безопасно проверяем наличие данных
+  const safeSpotlights = Array.isArray(spotlights) ? spotlights : [];
+
   return (
     <>
       <Head>
@@ -97,62 +102,74 @@ export default function VectorSingle({ vector, news, spotlights, meta = {} }) {
           }
 
           <div className="downloadable__documents">
-            {vector.sections && vector.sections.map((section) => (
-              <div
-                className="downloadable"
-                style={{justifyContent: 'start'}}
-                onClick={() => setModal({
-                  title: section.title,
-                  content: section.content,
-                })}
-                key={section.id}
-              >
-                <div className="vector__checkmark">
-                  <Checkmark color="primary-medium" />
+            {vector.sections && vector.sections.length > 0 ? (
+              vector.sections.map((section) => (
+                <div
+                  className="downloadable"
+                  style={{justifyContent: 'start'}}
+                  onClick={() => setModal({
+                    title: section.title,
+                    content: section.content,
+                  })}
+                  key={section.id}
+                >
+                  <div className="vector__checkmark">
+                    <Checkmark color="primary-medium" />
+                  </div>
+                  <div className="downloadable__info">
+                    <div className="downloadable__title">{section.title}</div>
+                    <div className="downloadable__description">{section.description}</div>
+                  </div>
                 </div>
-                <div className="downloadable__info">
-                  <div className="downloadable__title">{section.title}</div>
-                  <div className="downloadable__description">{section.description}</div>
-                </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <div>Нет доступных разделов</div>
+            )}
           </div>
         </div>
 
         <div className="hero-announce-wrapper">
-          <PopularSpotlights
-            news={spotlights}
-            className="spotlight-sidebar--desktop"
-            onPost={handlePopularPost}
-          />
+          {safeSpotlights.length > 0 ? (
+            <PopularSpotlights
+              news={safeSpotlights}
+              className="spotlight-sidebar--desktop"
+              onPost={handlePopularPost}
+            />
+          ) : (
+            <div className="spotlight-sidebar--desktop">
+              <p>Нет популярных новостей</p>
+            </div>
+          )}
         </div>
       </div>
 
       <AppFooter />
 
       {/* Модальное окно для секций вектора */}
-      <Modal
-        breadcrumbs={[{ title: 'Векторы развития РИ' }, { title: vector.name }]}
-        isOpen={isModalOpen}
-        handleClose={() => setModal(null)}
-      >
-        <MilitaryContent document={modal} />
-      </Modal>
+      {modal && (
+        <Modal
+          breadcrumbs={[{ title: 'Векторы развития РИ' }, { title: vector.name }]}
+          isOpen={isModalOpen}
+          handleClose={() => setModal(null)}
+        >
+          <MilitaryContent document={modal} />
+        </Modal>
+      )}
 
       {/* Модальное окно для новостей из PopularSpotlights */}
       <Modal
         breadcrumbs={[
           { title: "Главная" },
           { title: "Новости" },
-          { title: currentPost?.title }
+          { title: currentPost?.title || "Новость" }
         ]}
         isOpen={isPostModalOpen}
-        handleClose={handleClosePostModal}  
+        handleClose={handleClosePostModal}
       >
         {currentPost ? (
           <PostContent post={currentPost} />
         ) : (
-          <div>Загрузка...</div>
+          <div className="modal-loading">Загрузка...</div>
         )}
       </Modal>
     </>
