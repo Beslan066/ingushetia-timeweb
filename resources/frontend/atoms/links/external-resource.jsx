@@ -25,7 +25,7 @@ export function ExternalResourceInline ({ title, link, highlightedDescription })
         <div className="external-resource__title">{ title }</div>
         {!!highlightedDescription && <div className="external-resource__highligted-description">{highlightedDescription}</div>}
       </div>
-      <div className="external-resource__footer"><Link href={link}><ExternalLinkIcon color="neutral-darkest" /></Link></div>
+      <div className="external-resource__footer"><a href={link}><ExternalLinkIcon color="neutral-darkest" /></a></div>
     </div>
   )
 }

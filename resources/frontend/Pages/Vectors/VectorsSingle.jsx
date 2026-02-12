@@ -18,7 +18,7 @@ import { Head, router, usePage } from "@inertiajs/react";
 export default function VectorSingle({ vector, news, spotlights, meta = {} }) {
   const { props } = usePage();
   const formatDate = (dateString) => {
-    return format(new Date(dateString), 'dd MMMM yyyy', { locale: ru });
+    return format(new Date(dateString),   'dd MMMM yyyy', { locale: ru });
   };
 
   // Модальное окно для секций вектора
@@ -78,7 +78,7 @@ export default function VectorSingle({ vector, news, spotlights, meta = {} }) {
   }, [props.showNews]);
 
   // Важно: передаем spotlights в проп news, так как компонент ожидает именно news
-  const spotlightsData = Array.isArray(spotlights) ? spotlights : [];
+  const spotlightsData = Array.isArray(news) ? news : [];
 
   return (
     <>
@@ -107,7 +107,7 @@ export default function VectorSingle({ vector, news, spotlights, meta = {} }) {
             {vector.sections && vector.sections.map((section) => (
               <div
                 className="downloadable"
-                style={{justifyContent: 'start'}}
+                style={{justifyContent: 'start', cursor: 'pointer'}}
                 onClick={() => setModal({
                   title: section.title,
                   content: section.content,
@@ -137,7 +137,7 @@ export default function VectorSingle({ vector, news, spotlights, meta = {} }) {
 
       <AppFooter />
 
-
+      {/* Модальное окно для секций вектора */}
       <Modal
         breadcrumbs={[{ title: 'Векторы развития РИ' }, { title: vector.name }]}
         isOpen={isModalOpen}
@@ -146,6 +146,7 @@ export default function VectorSingle({ vector, news, spotlights, meta = {} }) {
         <MilitaryContent document={modal} />
       </Modal>
 
+      {/* Модальное окно для новостей из PopularSpotlights */}
       <Modal
         breadcrumbs={[
           { title: "Главная" },
