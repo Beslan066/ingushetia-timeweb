@@ -24,6 +24,8 @@ export default function VectorSingle({ vector, news, spotlights, meta = {} }) {
   };
 
   const handlePost = (post) => {
+    if (!post) return;
+
     scrollPositionRef.current = window.scrollY;
 
     router.get(`/vectors/${post.url}`, {}, {
@@ -37,6 +39,11 @@ export default function VectorSingle({ vector, news, spotlights, meta = {} }) {
   };
 
   const handlePopularPost = (id) => {
+    if (!spotlights || !Array.isArray(spotlights)) {
+      console.warn('spotlights is not available');
+      return;
+    }
+
     const post = spotlights.find(item => item.id === id);
     if (post) {
       handlePost(post);
@@ -102,7 +109,7 @@ export default function VectorSingle({ vector, news, spotlights, meta = {} }) {
 
         <div className="hero-announce-wrapper">
           <PopularSpotlights
-            news={spotlights || news}
+            news={spotlights || news || []}
             onPost={handlePopularPost}
             className="spotlight-sidebar--desktop"
           />
