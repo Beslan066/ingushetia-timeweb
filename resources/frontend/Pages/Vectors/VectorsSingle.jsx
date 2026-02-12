@@ -143,7 +143,7 @@ export default function VectorSingle({ vector, news, spotlights, meta = {} }) {
 
         <div className="hero-announce-wrapper">
           <PopularSpotlights
-            spotlights={spotlights}  {/* Изменяем с news на spotlights */}
+            spotlights={spotlights}
             className="spotlight-sidebar--desktop"
             onPost={handlePopularPost}
           />
