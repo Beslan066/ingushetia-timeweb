@@ -1,20 +1,19 @@
 import React, { useState, useRef } from "react";
 import AppHeader from "#/molecules/header/header.jsx";
 import PageTitle from "#/atoms/texts/PageTitle.jsx";
-import Downloadable from "#/atoms/downloadable/downloadable.jsx";
 import AppFooter from "#/organisms/footer/footer.jsx";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import './vectors.css';
 import PopularSpotlights from "#/molecules/spotlights/popular-spotlights.jsx";
-import DownloadIcon from "@/Components/DownloadIcon.jsx";
 import Checkmark from "#/atoms/icons/checkmark.jsx";
 import MilitaryContent from "#/atoms/modal/military-content.jsx";
+import PostContent from "#/atoms/modal/post-content.jsx";
 import Modal from "#/atoms/modal/modal.jsx";
 import useModal from "#/hooks/useModal.js";
 import { Head, router } from "@inertiajs/react";
 
-export default function VectorSingle({ vector, news, spotlights, meta = {} }) {
+export default function VectorSingle({ vector, news, meta = {} }) {
   const [currentPost, setCurrentPost] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const scrollPositionRef = useRef(0);
@@ -23,23 +22,17 @@ export default function VectorSingle({ vector, news, spotlights, meta = {} }) {
     return format(new Date(dateString), 'dd MMMM yyyy', { locale: ru });
   };
 
+  // Открытие модального окна с новостью
   const handlePost = (post) => {
     if (!post) return;
 
     scrollPositionRef.current = window.scrollY;
-
-    router.get(`/vectors/${post.url}`, {}, {
-      preserveScroll: true,
-      only: ['showVector', 'spotlights'],
-      onSuccess: (page) => {
-        setCurrentPost(page.props.showVector);
-        setIsModalOpen(true);
-      }
-    });
+    setCurrentPost(post);
+    setIsModalOpen(true);
   };
 
+  // Обработчик клика на популярную новость
   const handlePopularPost = (id) => {
-    // Используем news вместо spotlights
     const popularNews = news || [];
     const post = popularNews.find(item => item.id === id);
     if (post) {
@@ -47,6 +40,7 @@ export default function VectorSingle({ vector, news, spotlights, meta = {} }) {
     }
   };
 
+  // Закрытие модального окна
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setCurrentPost(null);
@@ -56,6 +50,7 @@ export default function VectorSingle({ vector, news, spotlights, meta = {} }) {
     }, 0);
   };
 
+  // Модальное окно для секций вектора
   const [modal, isOpen, setModal] = useModal(null);
 
   return (
@@ -113,6 +108,7 @@ export default function VectorSingle({ vector, news, spotlights, meta = {} }) {
         </div>
       </div>
 
+      {/* Модальное окно для секций вектора */}
       <Modal
         breadcrumbs={[{ title: 'Векторы развития РИ' }, { title: vector.name }]}
         isOpen={isOpen}
@@ -121,16 +117,22 @@ export default function VectorSingle({ vector, news, spotlights, meta = {} }) {
         <MilitaryContent document={modal} />
       </Modal>
 
+      {/* Модальное окно для популярных новостей */}
       <Modal
         breadcrumbs={[
           { title: "Главная" },
           { title: "Векторы развития РИ" },
-          { title: currentPost?.name || currentPost?.title || vector.name }
+          { title: vector.name },
+          { title: currentPost?.title || "Новость" }
         ]}
         isOpen={isModalOpen}
         handleClose={handleCloseModal}
       >
-        {currentPost ? <MilitaryContent document={currentPost} /> : <div>Загрузка...</div>}
+        {currentPost ? (
+          <PostContent post={currentPost} />
+        ) : (
+          <div className="loading-indicator">Загрузка...</div>
+        )}
       </Modal>
 
       <AppFooter />
