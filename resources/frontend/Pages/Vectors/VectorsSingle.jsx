@@ -32,23 +32,36 @@ export default function VectorSingle({ vector, news, spotlights, meta = {} }) {
 
   // Обработчик открытия модального окна новости
   const handlePost = (post) => {
+    console.log("Opening post:", post); // Для отладки
     scrollPositionRef.current = window.scrollY;
 
     router.get(`/news/${post.url}`, {}, {
       preserveScroll: true,
       only: ['showNews', 'spotlights'],
       onSuccess: (page) => {
+        console.log("Post loaded:", page.props.showNews); // Для отладки
         setCurrentPost(page.props.showNews);
         setIsPostModalOpen(true);
+      },
+      onError: (errors) => {
+        console.error("Error loading post:", errors); // Для отладки
       }
     });
   };
 
   // Обработчик клика по новости в PopularSpotlights
   const handlePopularPost = (id) => {
-    if (!spotlights || spotlights.length === 0) return;
+    console.log("Clicked spotlight id:", id); // Для отладки
+    console.log("Available spotlights:", spotlights); // Для отладки
+
+    if (!spotlights || spotlights.length === 0) {
+      console.log("No spotlights available");
+      return;
+    }
 
     const post = spotlights.find(item => item.id === id);
+    console.log("Found post:", post); // Для отладки
+
     if (post) {
       handlePost(post);
     }
@@ -56,6 +69,7 @@ export default function VectorSingle({ vector, news, spotlights, meta = {} }) {
 
   // Закрытие модального окна новости
   const handleClosePostModal = () => {
+    console.log("Closing post modal"); // Для отладки
     setIsPostModalOpen(false);
     setCurrentPost(null);
 
@@ -69,14 +83,17 @@ export default function VectorSingle({ vector, news, spotlights, meta = {} }) {
 
   // Эффект для обработки прямой ссылки на новость
   React.useEffect(() => {
+    console.log("Props.showNews changed:", props.showNews); // Для отладки
     if (props.showNews) {
       setCurrentPost(props.showNews);
       setIsPostModalOpen(true);
     }
   }, [props.showNews]);
 
-  // Безопасно проверяем наличие данных
-  const safeSpotlights = Array.isArray(spotlights) ? spotlights : [];
+  // Добавим проверку, что spotlights действительно передаются
+  React.useEffect(() => {
+    console.log("Spotlights received:", spotlights); // Для отладки
+  }, [spotlights]);
 
   return (
     <>
@@ -102,59 +119,47 @@ export default function VectorSingle({ vector, news, spotlights, meta = {} }) {
           }
 
           <div className="downloadable__documents">
-            {vector.sections && vector.sections.length > 0 ? (
-              vector.sections.map((section) => (
-                <div
-                  className="downloadable"
-                  style={{justifyContent: 'start'}}
-                  onClick={() => setModal({
-                    title: section.title,
-                    content: section.content,
-                  })}
-                  key={section.id}
-                >
-                  <div className="vector__checkmark">
-                    <Checkmark color="primary-medium" />
-                  </div>
-                  <div className="downloadable__info">
-                    <div className="downloadable__title">{section.title}</div>
-                    <div className="downloadable__description">{section.description}</div>
-                  </div>
+            {vector.sections && vector.sections.map((section) => (
+              <div
+                className="downloadable"
+                style={{justifyContent: 'start'}}
+                onClick={() => setModal({
+                  title: section.title,
+                  content: section.content,
+                })}
+                key={section.id}
+              >
+                <div className="vector__checkmark">
+                  <Checkmark color="primary-medium" />
                 </div>
-              ))
-            ) : (
-              <div>Нет доступных разделов</div>
-            )}
+                <div className="downloadable__info">
+                  <div className="downloadable__title">{section.title}</div>
+                  <div className="downloadable__description">{section.description}</div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 
         <div className="hero-announce-wrapper">
-          {safeSpotlights.length > 0 ? (
-            <PopularSpotlights
-              news={safeSpotlights}
-              className="spotlight-sidebar--desktop"
-              onPost={handlePopularPost}
-            />
-          ) : (
-            <div className="spotlight-sidebar--desktop">
-              <p>Нет популярных новостей</p>
-            </div>
-          )}
+          <PopularSpotlights
+            spotlights={spotlights}  {/* Изменяем с news на spotlights */}
+            className="spotlight-sidebar--desktop"
+            onPost={handlePopularPost}
+          />
         </div>
       </div>
 
       <AppFooter />
 
       {/* Модальное окно для секций вектора */}
-      {modal && (
-        <Modal
-          breadcrumbs={[{ title: 'Векторы развития РИ' }, { title: vector.name }]}
-          isOpen={isModalOpen}
-          handleClose={() => setModal(null)}
-        >
-          <MilitaryContent document={modal} />
-        </Modal>
-      )}
+      <Modal
+        breadcrumbs={[{ title: 'Векторы развития РИ' }, { title: vector.name }]}
+        isOpen={isModalOpen}
+        handleClose={() => setModal(null)}
+      >
+        <MilitaryContent document={modal} />
+      </Modal>
 
       {/* Модальное окно для новостей из PopularSpotlights */}
       <Modal
@@ -169,7 +174,7 @@ export default function VectorSingle({ vector, news, spotlights, meta = {} }) {
         {currentPost ? (
           <PostContent post={currentPost} />
         ) : (
-          <div className="modal-loading">Загрузка...</div>
+          <div>Загрузка...</div>
         )}
       </Modal>
     </>
