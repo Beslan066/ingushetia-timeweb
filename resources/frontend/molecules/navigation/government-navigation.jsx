@@ -15,9 +15,9 @@ export default function GovernmentNavigation() {
               <ul>
                 <li><Link className={ `regions-nav__link ${ component === 'Government/GovernmentStructure' ? 'active' : '' }` } href="/government/structure">Состав правительства</Link></li>
                 <li><Link className={ `regions-nav__link ${ component === 'Government/GovernmentAbilities' ? 'active' : '' }` } href="/government/abilities">Полномочия правительства</Link></li>
-                <li><Link className={ `regions-nav__link ${ component === 'Government/GovernmentSessions' ? 'active' : '' }` } href="/government/sessions">Заседания правительства</Link></li>
-                <li><Link className={ `regions-nav__link ${ component === 'Government/GovernmentPlan' ? 'active' : '' }` } href="/government/plans">План работы правительства</Link></li>
-                <li><Link className={ `regions-nav__link ${ component === 'Government/GovernmentColleagues' ? 'active' : '' }` } href="/government/colleagues">Коллегии правительства</Link></li>
+                {/*<li><Link className={ `regions-nav__link ${ component === 'Government/GovernmentSessions' ? 'active' : '' }` } href="/government/sessions">Заседания правительства</Link></li>*/}
+                {/*<li><Link className={ `regions-nav__link ${ component === 'Government/GovernmentPlan' ? 'active' : '' }` } href="/government/plans">План работы правительства</Link></li>*/}
+                {/*<li><Link className={ `regions-nav__link ${ component === 'Government/GovernmentColleagues' ? 'active' : '' }` } href="/government/colleagues">Коллегии правительства</Link></li>*/}
               </ul>
             )
           }
