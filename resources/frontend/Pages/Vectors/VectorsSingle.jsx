@@ -10,7 +10,6 @@ import PopularSpotlights from "#/molecules/spotlights/popular-spotlights.jsx";
 import DownloadIcon from "@/Components/DownloadIcon.jsx";
 import Checkmark from "#/atoms/icons/checkmark.jsx";
 import MilitaryContent from "#/atoms/modal/military-content.jsx";
-import VectorContent from "#/atoms/modal/vector-content.jsx";
 import Modal from "#/atoms/modal/modal.jsx";
 import useModal from "#/hooks/useModal.js";
 import { Head, router } from "@inertiajs/react";
@@ -122,12 +121,12 @@ export default function VectorSingle({ vector, news, spotlights, meta = {} }) {
         breadcrumbs={[
           { title: "Главная" },
           { title: "Векторы развития РИ" },
-          { title: currentPost?.name || currentPost?.title }
+          { title: currentPost?.name || currentPost?.title || vector.name }
         ]}
         isOpen={isModalOpen}
         handleClose={handleCloseModal}
       >
-        {currentPost ? <VectorContent vector={currentPost} /> : <div>Загрузка...</div>}
+        {currentPost ? <MilitaryContent document={currentPost} /> : <div>Загрузка...</div>}
       </Modal>
 
       <AppFooter />
