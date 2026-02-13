@@ -53,11 +53,35 @@ export default function MediaCollection({ media }) {
   const prepareItemForModal = (item) => {
     // Для совместимости с главной страницей и страницей медиа
     const type = item.video ? 'video' : 'photo';
+    let slides = [];
+
+    if (type === 'photo' && item.slides) {
+      try {
+        slides = JSON.parse(item.slides);
+        // Убедимся, что каждый слайд имеет правильный формат пути к изображению
+        slides = slides.map(slide => {
+          if (typeof slide === 'string') {
+            return slide;
+          }
+          return slide;
+        });
+      } catch (error) {
+        console.error('Error parsing slides:', error);
+        slides = [];
+      }
+    }
+
     return {
       ...item,
       type,
-      slides: type === 'photo' && item.slides ? JSON.parse(item.slides) : []
+      slides
     };
+  };
+
+  // Функция для обработки открытия полноэкранного режима
+  const handleFullscreenOpen = (slideIndex) => {
+    // Здесь можно добавить логику для открытия полноэкранного режима
+    console.log('Opening fullscreen for slide:', slideIndex);
   };
 
   return (
@@ -89,12 +113,17 @@ export default function MediaCollection({ media }) {
         breadcrumbs={[
           { title: 'Главная' },
           { title: 'Репортажи и видео' },
-          { title: slide?.title }
+          { title: slide?.title || '' }
         ]}
         isOpen={isOpen}
         handleClose={() => setSlide(null)}
       >
-        {slide && <ReportageContent reportage={slide} />}
+        {slide && (
+          <ReportageContent
+            reportage={slide}
+            onFullscreenOpen={handleFullscreenOpen}
+          />
+        )}
       </Modal>
     </div>
   );

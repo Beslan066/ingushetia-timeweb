@@ -36,6 +36,31 @@ export default function ReportageContent({ reportage }) {
     setCurrent(i + 1);
   }
 
+  // Формируем полные URL для fslightbox
+  const getFullImageUrl = (slidePath) => {
+    // Если путь уже полный URL
+    if (slidePath.startsWith('http://') || slidePath.startsWith('https://')) {
+      return slidePath;
+    }
+
+    // Если путь начинается с '/'
+    if (slidePath.startsWith('/')) {
+      return slidePath;
+    }
+
+    // Добавляем 'storage/' если его нет и путь не начинается с '/'
+    if (!slidePath.startsWith('storage/') && !slidePath.startsWith('/')) {
+      return `/storage/${slidePath}`;
+    }
+
+    return `/${slidePath}`;
+  };
+
+  // Создаем массив полных URL для fslightbox
+  const lightboxSources = slides.map(slide => getFullImageUrl(slide));
+
+  console.log('Lightbox sources:', lightboxSources); // Для отладки
+
   return (
     <div className="reportage-content">
       <div className="reportage__meta">
@@ -50,27 +75,30 @@ export default function ReportageContent({ reportage }) {
       <div className="reportage__gallery">
         {
           slides.map((slide, i) => (
-            <button key={slide} className="photo-item" onClick={() => setSlide(i)}>
-              <img src={'storage/' + slide} alt={'Слайд ' + i} />
+            <button key={i} className="photo-item" onClick={() => setSlide(i)}>
+              <img
+                src={getFullImageUrl(slide)}
+                alt={'Слайд ' + i}
+                onError={(e) => {
+                  console.error('Error loading image:', getFullImageUrl(slide));
+                  e.target.style.display = 'none'; // Скрываем битые изображения
+                }}
+              />
             </button>
           ))
         }
       </div>
 
-      <FsLightbox toggler={toggle} sources={slides} slide={current} />
+      {/* Используем lightboxSources с полными URL вместо slides */}
+      <FsLightbox
+        toggler={toggle}
+        sources={lightboxSources}
+        slide={current}
+        onOpen={() => console.log('Lightbox opened with sources:', lightboxSources)}
+        onClose={() => console.log('Lightbox closed')}
+      />
 
       {reportage.video && <Video video={reportage.video} image={reportage.image_main} />}
-
-      {/*<div className="tags__wrapper">*/}
-      {/*  <div className="tags__title">Теги:</div>*/}
-      {/*  <div className="tags">*/}
-      {/*    {*/}
-      {/*      (reportage?.tags ?? ['Спорт', 'Культура', 'Машины']).map((tag) => (*/}
-      {/*        <Tag key={tag} tag={tag} />*/}
-      {/*      ))*/}
-      {/*    }*/}
-      {/*  </div>*/}
-      {/*</div>*/}
 
       <div className="share__wrapper">
         <div className="share__title">Поделиться:</div>
