@@ -100,8 +100,10 @@ export default function News({
     });
   };
 
-  const handlePopularPost = (id) => {
-    const post = spotlights.find(item => item.id === id);
+  const handlePopularPost = (postData) => {
+    // postData может быть как id (число/строка), так и объектом с полем id
+    const postId = typeof postData === 'object' ? postData.id : postData;
+    const post = spotlights.find(item => item.id === postId);
     if (post) {
       handlePost(post);
     }

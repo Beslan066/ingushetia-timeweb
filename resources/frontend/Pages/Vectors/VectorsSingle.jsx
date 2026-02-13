@@ -15,70 +15,78 @@ import PostContent from "#/atoms/modal/post-content.jsx";
 import useModal from "#/hooks/useModal.js";
 import { Head, router, usePage } from "@inertiajs/react";
 
-export default function VectorSingle({ vector, news, spotlights, meta = {} }) {
+export default function VectorSingle({ vector, news, spotlights = [], meta = {} }) {
   const { props } = usePage();
   const formatDate = (dateString) => {
-    return format(new Date(dateString),   'dd MMMM yyyy', { locale: ru });
+    return format(new Date(dateString), 'dd MMMM yyyy', { locale: ru });
   };
 
   // Модальное окно для секций вектора
   const [modal, isModalOpen, setModal] = useModal(null);
 
   // Модальное окно для новостей из PopularSpotlights
-  const [currentPost, setCurrentPost] = React.useState(props.showNews || null);
-  const [isPostModalOpen, setIsPostModalOpen] = React.useState(!!props.showNews);
+  const [currentPost, setCurrentPost] = React.useState(null);
+  const [isPostModalOpen, setIsPostModalOpen] = React.useState(false);
 
   const scrollPositionRef = React.useRef(0);
 
-  // Обработчик открытия модального окна новости
+  // ИСПРАВЛЕНО: открытие модального окна новости без перехода на страницу news
   const handlePost = (post) => {
     scrollPositionRef.current = window.scrollY;
+    setCurrentPost(post);
+    setIsPostModalOpen(true);
 
-    router.get(`/news/${post.url}`, {}, {
-      preserveScroll: true,
-      only: ['showNews', 'spotlights'],
-      onSuccess: (page) => {
-        setCurrentPost(page.props.showNews);
-        setIsPostModalOpen(true);
-      }
-    });
+    // Обновляем URL, добавляя id новости (опционально)
+    const url = new URL(window.location);
+    url.searchParams.set('post', post.id);
+    window.history.pushState({}, "", url);
   };
 
-  // Обработчик клика по новости в PopularSpotlights
-  const handlePopularPost = (id) => {
-    if (!spotlights) {
-      console.error('spotlights is undefined');
+  // ИСПРАВЛЕНО: обработчик клика по новости в PopularSpotlights
+  const handlePopularPost = ({ id }) => {
+    const sourceData = spotlights.length > 0 ? spotlights : news;
+
+    if (!sourceData || sourceData.length === 0) {
+      console.error('No data available for spotlights');
       return;
     }
 
-    const post = spotlights.find(item => item.id === id);
+    const post = sourceData.find(item => item.id === id);
     if (post) {
       handlePost(post);
     }
   };
 
-  // Закрытие модального окна новости
+  // ИСПРАВЛЕНО: закрытие модального окна новости без перехода
   const handleClosePostModal = () => {
     setIsPostModalOpen(false);
     setCurrentPost(null);
 
-    window.history.pushState({}, "", window.location.pathname);
+    // Убираем параметр post из URL
+    const url = new URL(window.location);
+    url.searchParams.delete('post');
+    window.history.pushState({}, "", url);
 
+    // Возвращаемся на сохраненную позицию скролла
     setTimeout(() => {
       window.scrollTo(0, scrollPositionRef.current);
     }, 0);
   };
 
-  // Эффект для обработки прямой ссылки на новость
+  // Эффект для обработки прямой ссылки на новость (если есть параметр post в URL)
   React.useEffect(() => {
-    if (props.showNews) {
-      setCurrentPost(props.showNews);
-      setIsPostModalOpen(true);
-    }
-  }, [props.showNews]);
+    const urlParams = new URLSearchParams(window.location.search);
+    const postId = urlParams.get('post');
 
-  // Важно: передаем spotlights в проп news, так как компонент ожидает именно news
-  const spotlightsData = Array.isArray(news) ? news : [];
+    if (postId) {
+      const sourceData = spotlights.length > 0 ? spotlights : news;
+      const post = sourceData.find(item => item.id === parseInt(postId));
+      if (post) {
+        setCurrentPost(post);
+        setIsPostModalOpen(true);
+      }
+    }
+  }, [spotlights, news]);
 
   return (
     <>
@@ -128,7 +136,7 @@ export default function VectorSingle({ vector, news, spotlights, meta = {} }) {
 
         <div className="hero-announce-wrapper">
           <PopularSpotlights
-            news={spotlightsData}
+            news={spotlights.length > 0 ? spotlights : news}
             className="spotlight-sidebar--desktop"
             onPost={handlePopularPost}
           />
@@ -146,11 +154,12 @@ export default function VectorSingle({ vector, news, spotlights, meta = {} }) {
         <MilitaryContent document={modal} />
       </Modal>
 
-      {/* Модальное окно для новостей из PopularSpotlights */}
+      {/* ИСПРАВЛЕНО: модальное окно для новостей без router.get() */}
       <Modal
         breadcrumbs={[
           { title: "Главная" },
-          { title: "Новости" },
+          { title: "Векторы развития РИ" },
+          { title: vector.name },
           { title: currentPost?.title || "Новость" }
         ]}
         isOpen={isPostModalOpen}

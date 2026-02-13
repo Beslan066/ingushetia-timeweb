@@ -706,14 +706,21 @@ class HomeController extends Controller
       ->take(8)
       ->get();
 
+    // Получаем популярные новости (spotlights) - например, последние 5 новостей
+    $spotlights = News::whereNotNull('published_at')
+      ->orderBy('published_at', 'desc')
+      ->take(5)
+      ->get();
+
     $meta = [
-      'title' => 'Векторы развития Республики Ингушетия' . ' ' . $vector->name ,
+      'title' => 'Векторы развития Республики Ингушетия' . ' ' . $vector->name,
       'description' => "Страница Векторы развития Республики Ингушетия"
     ];
 
     return Inertia::render('Vectors/VectorsSingle', [
       'vector' => $vector,
       'news' => $vectorNews,
+      'spotlights' => $spotlights,
       'meta' => $meta
     ]);
   }
