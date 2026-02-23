@@ -1,0 +1,171 @@
+.pagination-container {
+  margin: 48px 0 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.pagination-info {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-size: 15px;
+  color: #5f6368;
+  background: #ffffff;
+  padding: 8px 16px;
+  border-radius: 30px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  border: 1px solid #f0f0f0;
+}
+
+.pagination-info__highlight {
+  color: #051945;
+  font-weight: 600;
+  margin: 0 2px;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #ffffff;
+  padding: 8px 12px;
+  border-radius: 50px;
+  box-shadow: 0 4px 16px rgba(5, 25, 69, 0.08);
+  border: 1px solid #f0f0f0;
+}
+
+.pagination__pages {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pagination__arrow {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: #5f6368;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 50%;
+  padding: 0;
+}
+
+.pagination__arrow:hover:not(:disabled):not(.pagination__arrow--disabled) {
+  background: #f5f7fa;
+  color: #051945;
+}
+
+.pagination__arrow:disabled,
+.pagination__arrow--disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pagination__arrow svg {
+  display: block;
+}
+
+.pagination__page {
+  min-width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: #5f6368;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 50%;
+  padding: 0 4px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+.pagination__page:hover:not(:disabled):not(.pagination__page--dots) {
+  background: #f5f7fa;
+  color: #051945;
+}
+
+.pagination__page--active {
+  background: #051945 !important;
+  color: white !important;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(5, 25, 69, 0.25);
+}
+
+.pagination__page--active:hover {
+  background: #0a2a5a !important;
+  color: white !important;
+}
+
+.pagination__page--dots {
+  color: #9aa0a8;
+  cursor: default;
+  min-width: 30px;
+}
+
+.pagination__page--dots:hover {
+  background: transparent;
+  color: #9aa0a8;
+}
+
+.pagination__page:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 640px) {
+  .pagination-container {
+    margin: 32px 0 24px;
+    gap: 16px;
+  }
+
+  .pagination-info {
+    font-size: 13px;
+    padding: 6px 12px;
+  }
+
+  .pagination {
+    gap: 8px;
+    padding: 6px 8px;
+  }
+
+  .pagination__arrow {
+    width: 36px;
+    height: 36px;
+  }
+
+  .pagination__page {
+    min-width: 36px;
+    height: 36px;
+    font-size: 14px;
+  }
+
+  .pagination__page--dots {
+    min-width: 26px;
+  }
+}
+
+/* Анимация появления */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.pagination-container {
+  animation: fadeIn 0.3s ease-out;
+}

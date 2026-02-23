@@ -46,13 +46,12 @@ class NewsController extends Controller
       'canonical' => route('news.index')
     ];
 
-// Для страниц пагинации
+    // Для страниц пагинации
     if (request()->has('page')) {
       $page = request()->input('page');
       $meta['title'] = 'Новости Ингушетии - страница ' . $page;
       $meta['canonical'] = route('news.index', ['page' => $page]);
     }
-
 
     return Inertia::render('News/News', [
       'news' => $news->items(),
@@ -60,6 +59,7 @@ class NewsController extends Controller
       'spotlights' => $popularNews,
       'page' => $page + 1,
       'pages' => ceil($news->total() / $news->perPage()),
+      'total' => $news->total(), // Общее количество записей
       'filters' => [
         'category' => request()->input('category'),
         'dateFrom' => $dateFrom,

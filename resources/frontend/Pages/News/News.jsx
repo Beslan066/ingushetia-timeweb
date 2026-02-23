@@ -17,6 +17,7 @@ import AppLink from "#/atoms/buttons/link.jsx";
 import ReportageContent from "#/atoms/modal/reportage-content.jsx";
 import useModal from "#/hooks/useModal.js";
 import BackToTop from "#/atoms/topButton/BackToTop.jsx";
+import Pagination from "#/atoms/pagination/pagination.jsx";
 
 const handleSpotlight = (id, spotlights, setSlide) => {
   const cur = spotlights.find(s => s.id === id);
@@ -36,43 +37,57 @@ export default function News({
                                page: pageNumber,
                                pages: totalPages,
                                filters: initialFilters,
-                               meta
+                               meta,
+                               total: totalItems = 0 // Добавляем общее количество записей
                              }) {
   const { props } = usePage();
   const [selectedCategory, setSelectedCategory] = useState(initialFilters?.category || null);
   const [filters, setFilters] = useState(null);
   const [isFiltersOpened, setFiltersOpened] = useState(false);
   const [slide, isSlideOpen, setSlide] = useModal(undefined);
-  const [pages, setPages] = useState([{ page: pageNumber, news: news }]);
-  const [paginator, setPaginator] = useState({ page: pageNumber, total: totalPages });
+  const [currentPage, setCurrentPage] = useState(pageNumber);
+  const [currentNews, setCurrentNews] = useState(news);
   const [reportage, isReportageOpen, setReportage] = useModal(undefined);
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(!!props.showNews);
   const [currentPost, setCurrentPost] = useState(props.showNews || null);
 
-  const visitedPages = pages.map((p) => p.page).sort((a, b) => a - b);
-  const prevNotVisitedPage = Math.min(...visitedPages) > 1 ? Math.min(...visitedPages) - 1 : null;
-  const nextNotVisitedPage = Math.max(...visitedPages) < paginator.total ? Math.max(...visitedPages) + 1 : null;
-
   const scrollPositionRef = useRef(0);
   const currentPageRef = useRef(pageNumber);
+
+  // Количество записей на странице (должно совпадать с пагинацией в контроллере)
+  const itemsPerPage = 6;
+
+  // Обновление мета-тегов при изменении страницы
+  useEffect(() => {
+    // Обновляем title в Head через Inertia
+    const title = currentPage > 1
+      ? `Новости Ингушетии - страница ${currentPage}`
+      : 'Новости Ингушетии';
+
+    document.title = title;
+  }, [currentPage]);
 
   // Обработчик изменения категории
   const onCategorySwitch = useCallback((categoryId) => {
     const newCategory = categoryId !== null ? String(categoryId) : null;
     setSelectedCategory(newCategory);
 
-    // Сбрасываем страницы и загружаем первую страницу с новой категорией
+    // Загружаем первую страницу с новой категорией
     setIsLoading(true);
-    setPages([]);
 
-    router.reload({
+    router.visit('/news', {
       method: 'get',
-      data: { page: 1, category: newCategory, ...filters },
+      data: {
+        page: 1,
+        category: newCategory,
+        ...filters
+      },
       preserveScroll: true,
+      preserveState: false,
       onSuccess: ({ props: data }) => {
-        setPages([{ page: data.page, news: data.news }]);
-        setPaginator({ page: data.page, total: data.pages });
+        setCurrentNews(data.news);
+        setCurrentPage(data.page);
         currentPageRef.current = data.page;
 
         // Обновляем URL
@@ -88,7 +103,7 @@ export default function News({
 
   const handlePost = (post) => {
     scrollPositionRef.current = window.scrollY;
-    currentPageRef.current = paginator.page;
+    currentPageRef.current = currentPage;
 
     router.get(`/news/${post.url}`, {}, {
       preserveScroll: true,
@@ -134,14 +149,14 @@ export default function News({
     }
   }, [props.showNews]);
 
-  const loadPage = useCallback((page, direction) => {
-    if (isLoading) return;
+  // Обработчик смены страницы через пагинацию
+  const handlePageChange = useCallback((page) => {
+    if (isLoading || page === currentPage) return;
 
-    const currentScroll = window.scrollY;
     setIsLoading(true);
     currentPageRef.current = page;
 
-    router.reload({
+    router.visit('/news', {
       method: 'get',
       data: {
         page,
@@ -150,65 +165,25 @@ export default function News({
         dateTo: filters?.dateTo
       },
       preserveScroll: true,
+      preserveState: false,
       onSuccess: ({ props: data }) => {
-        const currentPage = { page: data.page, news: data.news };
-        setPaginator({ page: data.page, total: data.pages });
+        setCurrentNews(data.news);
+        setCurrentPage(data.page);
 
-        if (direction === 'prev') {
-          setPages((prev) => [currentPage, ...prev]);
-          const offset = document.getElementById('news-feed-container')?.offsetHeight || 0;
-          setTimeout(() => window.scrollTo(0, offset + currentScroll), 0);
-        } else {
-          setPages((prev) => [...prev, currentPage]);
-          setTimeout(() => window.scrollTo(0, currentScroll), 0);
-        }
-
-        // Обновляем URL с текущими параметрами
+        // Обновляем URL
         const searchParams = new URLSearchParams();
         if (selectedCategory) searchParams.set('category', selectedCategory);
         if (filters?.dateFrom) searchParams.set('dateFrom', filters.dateFrom);
         if (filters?.dateTo) searchParams.set('dateTo', filters.dateTo);
         searchParams.set('page', data.page);
         window.history.replaceState({}, "", `/news?${searchParams.toString()}`);
+
+        // Прокрутка к началу новостей при смене страницы
+        document.getElementById('news-feed-start')?.scrollIntoView({ behavior: 'smooth' });
       },
       onFinish: () => setIsLoading(false),
     });
-  }, [isLoading, selectedCategory, filters]);
-
-  const BackToTopFixed = React.useMemo(() => {
-    return () => <BackToTop key={currentPageRef.current} />;
-  }, [currentPageRef.current]);
-
-  useEffect(() => {
-    const onScroll = () => {
-      const scrollTop = window.scrollY;
-      const scrollHeight = document.documentElement.scrollHeight;
-      const clientHeight = window.innerHeight;
-
-      if (scrollTop + clientHeight >= scrollHeight - 500 && nextNotVisitedPage && !isLoading) {
-        loadPage(nextNotVisitedPage, 'next');
-      }
-
-      if (scrollTop <= 500 && prevNotVisitedPage && !isLoading) {
-        loadPage(prevNotVisitedPage, 'prev');
-      }
-
-      if (scrollTop <= 100 && paginator.page !== 1) {
-        const searchParams = new URLSearchParams();
-        if (selectedCategory) searchParams.set('category', selectedCategory);
-        if (filters?.dateFrom) searchParams.set('dateFrom', filters.dateFrom);
-        if (filters?.dateTo) searchParams.set('dateTo', filters.dateTo);
-        window.history.replaceState({}, "", `/news?${searchParams.toString()}`);
-
-        setPages((prev) => prev.slice(0, 1));
-        setPaginator((prev) => ({ ...prev, page: 1 }));
-        currentPageRef.current = 1;
-      }
-    };
-
-    window.addEventListener('scroll', onScroll);
-    return () => window.removeEventListener('scroll', onScroll);
-  }, [loadPage, nextNotVisitedPage, prevNotVisitedPage, isLoading, paginator.page, selectedCategory, filters]);
+  }, [isLoading, currentPage, selectedCategory, filters]);
 
   const onFilters = (dateFrom, dateTo, selected) => {
     const newCategory = selected !== null ? String(selected) : null;
@@ -217,14 +192,19 @@ export default function News({
     setIsLoading(true);
     setSelectedCategory(newCategory);
     setFilters(newFilters);
-    setPages([]);
 
-    router.reload({
+    router.visit('/news', {
       method: 'get',
-      data: { page: 1, category: newCategory, ...newFilters },
+      data: {
+        page: 1,
+        category: newCategory,
+        ...newFilters
+      },
+      preserveScroll: true,
+      preserveState: false,
       onSuccess: ({ props: data }) => {
-        setPages([{ page: data.page, news: data.news }]);
-        setPaginator({ page: data.page, total: data.pages });
+        setCurrentNews(data.news);
+        setCurrentPage(data.page);
         currentPageRef.current = data.page;
 
         // Обновляем URL
@@ -244,8 +224,11 @@ export default function News({
   return (
     <>
       <Head>
-        <title>{meta.title}</title>
+        <title>{currentPage > 1 ? `Новости Ингушетии - страница ${currentPage}` : meta.title}</title>
         <meta name="description" content={meta.description} />
+        {currentPage > 1 && (
+          <link rel="canonical" href={`${window.location.origin}/news?page=${currentPage}`} />
+        )}
       </Head>
       <AppHeader />
       <div className={'news-hero__news-wrapper news-page-title'}>
@@ -272,28 +255,46 @@ export default function News({
               onClose={() => setFiltersOpened(false)}
               initialCategory={selectedCategory}
             />
+
+            {/* Якорь для прокрутки к началу новостей */}
+            <div id="news-feed-start"></div>
+
             <div id="news-feed-container">
-              {pages.map((page, index) => (
-                <React.Fragment key={page.page}>
-                  <div className="news-feed__wrapper">
-                    <div className="news-feed">
-                      {page.news.map((item) => (
-                        <AgencyNewsItem
-                          key={item.id}
-                          id={item.id}
-                          category={item.category?.title}
-                          date={item?.published_at}
-                          title={item.title}
-                          image={item.image_main}
-                          onPost={() => handlePost(item)}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                </React.Fragment>
-              ))}
+              <div className="news-feed__wrapper">
+                <div className="news-feed">
+                  {currentNews.map((item) => (
+                    <AgencyNewsItem
+                      key={item.id}
+                      id={item.id}
+                      category={item.category?.title}
+                      date={item?.published_at}
+                      title={item.title}
+                      image={item.image_main}
+                      onPost={() => handlePost(item)}
+                    />
+                  ))}
+                </div>
+              </div>
             </div>
-            {isLoading && <div className="loading-indicator">Загрузка...</div>}
+
+            {/* Компонент пагинации с информацией о количестве записей */}
+            {totalPages > 1 && (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+                isLoading={isLoading}
+                totalItems={totalItems}
+                itemsPerPage={itemsPerPage}
+              />
+            )}
+
+            {isLoading && (
+              <div className="loading-indicator">
+                <div className="loading-spinner"></div>
+                <span>Загрузка...</span>
+              </div>
+            )}
           </div>
         </div>
         <div className="hero-announce-wrapper">
