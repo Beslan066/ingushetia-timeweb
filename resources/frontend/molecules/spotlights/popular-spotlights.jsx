@@ -4,6 +4,8 @@ import Spotlight from "#/atoms/news/spotlight.jsx";
 export default function PopularSpotlights({news, className, style, onPost}) {
   return (
     <div className={"spotlight-sidebar spotlight-sidebar--gray " + className} style={style}>
+      <h4>Популярное</h4>
+      <hr/>
       <div className="spotlights">
         {
           news.map((item) => {
