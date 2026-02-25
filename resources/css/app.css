@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+@media(min-width: 820px) {
+  .post__related-list {
+    display:flex;
+  }
+
+  a.news-card {
+    width: 33%;
+    margin-right: 15px;
+  }
+}
