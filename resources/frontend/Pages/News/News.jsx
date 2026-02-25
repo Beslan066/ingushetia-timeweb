@@ -150,40 +150,76 @@ export default function News({
   }, [props.showNews]);
 
   // Обработчик смены страницы через пагинацию
-  const handlePageChange = useCallback((page) => {
-    if (isLoading || page === currentPage) return;
+const handlePageChange = useCallback((page) => {
+  if (isLoading || page === currentPage) {
+    console.log('Page change prevented:', { isLoading, page, currentPage });
+    return;
+  }
 
-    setIsLoading(true);
-    currentPageRef.current = page;
+  console.log('Changing to page:', page);
+  setIsLoading(true);
+  currentPageRef.current = page;
 
-    router.visit('/news', {
-      method: 'get',
-      data: {
-        page,
-        category: selectedCategory,
-        dateFrom: filters?.dateFrom,
-        dateTo: filters?.dateTo
-      },
-      preserveScroll: true,
-      preserveState: false,
-      onSuccess: ({ props: data }) => {
-        setCurrentNews(data.news);
-        setCurrentPage(data.page);
+  // Формируем данные для запроса
+  const requestData = {
+    page: page, // Отправляем именно номер страницы, который получили
+  };
 
-        // Обновляем URL
-        const searchParams = new URLSearchParams();
-        if (selectedCategory) searchParams.set('category', selectedCategory);
-        if (filters?.dateFrom) searchParams.set('dateFrom', filters.dateFrom);
-        if (filters?.dateTo) searchParams.set('dateTo', filters.dateTo);
-        searchParams.set('page', data.page);
-        window.history.replaceState({}, "", `/news?${searchParams.toString()}`);
+  if (selectedCategory) {
+    requestData.category = selectedCategory;
+  }
+  
+  if (filters?.dateFrom) {
+    requestData.dateFrom = filters.dateFrom;
+  }
+  
+  if (filters?.dateTo) {
+    requestData.dateTo = filters.dateTo;
+  }
 
-        // Прокрутка к началу новостей при смене страницы
+  router.visit('/news', {
+    method: 'get',
+    data: requestData,
+    preserveScroll: true,
+    preserveState: false,
+    onSuccess: ({ props: data }) => {
+      console.log('Page change success. New page from server:', data.page);
+      console.log('Requested page was:', page);
+      
+      setCurrentNews(data.news);
+      setCurrentPage(data.page); // Устанавливаем страницу из ответа сервера
+
+      // Обновляем URL
+      const searchParams = new URLSearchParams();
+      if (selectedCategory) searchParams.set('category', selectedCategory);
+      if (filters?.dateFrom) searchParams.set('dateFrom', filters.dateFrom);
+      if (filters?.dateTo) searchParams.set('dateTo', filters.dateTo);
+      searchParams.set('page', data.page); // Используем страницу из ответа
+      window.history.replaceState({}, "", `/news?${searchParams.toString()}`);
+
+      // Прокрутка к началу новостей при смене страницы
+      setTimeout(() => {
         document.getElementById('news-feed-start')?.scrollIntoView({ behavior: 'smooth' });
-      },
-      onFinish: () => setIsLoading(false),
-    });
-  }, [isLoading, currentPage, selectedCategory, filters]);
+      }, 100);
+    },
+    onError: (errors) => {
+      console.error('Page change error:', errors);
+      setIsLoading(false);
+    },
+    onFinish: () => {
+      setIsLoading(false);
+    },
+  });
+}, [isLoading, currentPage, selectedCategory, filters]);
+
+// Синхронизация с пропсами при начальной загрузке
+useEffect(() => {
+  console.log('Props page:', pageNumber, 'Current page:', currentPage);
+  if (pageNumber !== currentPage) {
+    setCurrentPage(pageNumber);
+    setCurrentNews(news);
+  }
+}, [pageNumber, news]);
 
   const onFilters = (dateFrom, dateTo, selected) => {
     const newCategory = selected !== null ? String(selected) : null;

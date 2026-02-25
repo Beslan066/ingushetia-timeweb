@@ -124,7 +124,7 @@ const PostContent = ({post, onPost}) => {
       {post.relatedPosts?.length > 0 && (
         <div className="post__related">
           <h2 className="post__related-title">Смотрите также</h2>
-          <div className="post__related-list">
+          <div className="post__related-list post__related-list_news">
             {post.relatedPosts.map((related) => (
               <AgencyNewsItem
                 key={related.id}

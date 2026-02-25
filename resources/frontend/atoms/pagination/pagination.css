@@ -78,7 +78,7 @@
   justify-content: center;
   border: none;
   background: transparent;
-  color: #5f6368;
+  color: #051945;
   font-size: 15px;
   font-weight: 500;
   cursor: pointer;
@@ -101,7 +101,7 @@
 }
 
 .pagination__page--active:hover {
-  background: #0a2a5a !important;
+  background: #051945 !important;
   color: white !important;
 }
 

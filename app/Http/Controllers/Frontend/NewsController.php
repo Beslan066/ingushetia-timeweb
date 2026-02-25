@@ -15,59 +15,64 @@ class NewsController extends Controller
 {
 
   public function index()
-  {
-    $page = max(1, (int)request()->input('page', 1)) - 1;
+{
+    // Получаем номер страницы из запроса, по умолчанию 1
+    $currentPage = (int)request()->input('page', 1);
+    
+    // Убеждаемся, что страница не меньше 1
+    $currentPage = max(1, $currentPage);
+    
     $dateFrom = request()->input('dateFrom') ? Carbon::parse(request()->input('dateFrom')) : null;
     $dateTo = request()->input('dateTo') ? Carbon::parse(request()->input('dateTo')) : null;
 
     $categories = Category::all();
 
     $news = News::query()
-      ->with('category')
-      ->where('agency_id', 5)
-      ->filterCategory(request()->input('category'))
-      ->publishedBetween($dateFrom, $dateTo)
-      ->orderBy('published_at', 'desc')
-      ->paginate(6);
+        ->with('category')
+        ->where('agency_id', 5)
+        ->filterCategory(request()->input('category'))
+        ->publishedBetween($dateFrom, $dateTo)
+        ->orderBy('published_at', 'desc')
+        ->paginate(6, ['*'], 'page', $currentPage); // Явно указываем параметр page
 
-    // Получаем популярные новости (например, 8 самых просматриваемых за последний месяц)
+    // Получаем популярные новости
     $popularNews = News::query()
-      ->where('agency_id', 5)
-      ->whereNotNull('published_at')
-      ->orderBy('views', 'desc')
-      ->take(8)
-      ->get();
+        ->where('agency_id', 5)
+        ->whereNotNull('published_at')
+        ->orderBy('views', 'desc')
+        ->take(8)
+        ->get();
 
     $meta = [
-      'title' => 'Новости Ингушетии',
-      'description' => 'Последние новости Республики Ингушетия. Свежие события, репортажи и новостные материалы.',
-      'keywords' => 'новости Ингушетии, события Ингушетии, последние новости',
-      'og_image' => asset('path/to/default/og-image.jpg'),
-      'canonical' => route('news.index')
+        'title' => 'Новости Ингушетии',
+        'description' => 'Последние новости Республики Ингушетия. Свежие события, репортажи и новостные материалы.',
+        'keywords' => 'новости Ингушетии, события Ингушетии, последние новости',
+        'og_image' => asset('path/to/default/og-image.jpg'),
+        'canonical' => route('news.index')
     ];
 
     // Для страниц пагинации
     if (request()->has('page')) {
-      $page = request()->input('page');
-      $meta['title'] = 'Новости Ингушетии - страница ' . $page;
-      $meta['canonical'] = route('news.index', ['page' => $page]);
+        $page = request()->input('page');
+        $meta['title'] = 'Новости Ингушетии - страница ' . $page;
+        $meta['canonical'] = route('news.index', ['page' => $page]);
     }
 
     return Inertia::render('News/News', [
-      'news' => $news->items(),
-      'categories' => $categories,
-      'spotlights' => $popularNews,
-      'page' => $page + 1,
-      'pages' => ceil($news->total() / $news->perPage()),
-      'total' => $news->total(), // Общее количество записей
-      'filters' => [
-        'category' => request()->input('category'),
-        'dateFrom' => $dateFrom,
-        'dateTo' => $dateTo,
-      ],
-      'meta' => $meta
+        'news' => $news->items(),
+        'categories' => $categories,
+        'spotlights' => $popularNews,
+        'page' => $news->currentPage(), // Используем currentPage() из пагинатора
+        'pages' => $news->lastPage(),
+        'total' => $news->total(),
+        'filters' => [
+            'category' => request()->input('category'),
+            'dateFrom' => $dateFrom,
+            'dateTo' => $dateTo,
+        ],
+        'meta' => $meta
     ]);
-  }
+}
 
 
   public function show($url)

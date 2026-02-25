@@ -4,11 +4,11 @@
 
 
 @media(min-width: 820px) {
-  .post__related-list {
+  .post__related-list_news {
     display:flex;
   }
 
-  a.news-card {
+  .post__related-list_newsa.news-card {
     width: 33%;
     margin-right: 15px;
   }
