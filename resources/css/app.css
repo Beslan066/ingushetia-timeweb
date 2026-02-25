@@ -8,7 +8,7 @@
     display:flex;
   }
 
-  .post__related-list_newsa.news-card {
+  .post__related-list_news a.news-card {
     width: 33%;
     margin-right: 15px;
   }
