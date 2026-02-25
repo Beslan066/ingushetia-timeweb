@@ -56,7 +56,7 @@ export default function News({
   const currentPageRef = useRef(pageNumber);
 
   // Количество записей на странице (должно совпадать с пагинацией в контроллере)
-  const itemsPerPage = 6;
+  const itemsPerPage = 12;
 
   // Обновление мета-тегов при изменении страницы
   useEffect(() => {
@@ -168,11 +168,11 @@ const handlePageChange = useCallback((page) => {
   if (selectedCategory) {
     requestData.category = selectedCategory;
   }
-  
+
   if (filters?.dateFrom) {
     requestData.dateFrom = filters.dateFrom;
   }
-  
+
   if (filters?.dateTo) {
     requestData.dateTo = filters.dateTo;
   }
@@ -185,7 +185,7 @@ const handlePageChange = useCallback((page) => {
     onSuccess: ({ props: data }) => {
       console.log('Page change success. New page from server:', data.page);
       console.log('Requested page was:', page);
-      
+
       setCurrentNews(data.news);
       setCurrentPage(data.page); // Устанавливаем страницу из ответа сервера
 

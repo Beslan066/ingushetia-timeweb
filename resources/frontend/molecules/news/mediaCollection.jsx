@@ -86,6 +86,7 @@ export default function MediaCollection({ media }) {
 
   return (
     <div className="media">
+      <h2 className="municipalities__title">Медиа</h2>
       <div className="media__wrapper">
         {media.map((item) => {
           const isVideo = !!item.video;
