@@ -18,10 +18,10 @@ class NewsController extends Controller
 {
     // Получаем номер страницы из запроса, по умолчанию 1
     $currentPage = (int)request()->input('page', 1);
-    
+
     // Убеждаемся, что страница не меньше 1
     $currentPage = max(1, $currentPage);
-    
+
     $dateFrom = request()->input('dateFrom') ? Carbon::parse(request()->input('dateFrom')) : null;
     $dateTo = request()->input('dateTo') ? Carbon::parse(request()->input('dateTo')) : null;
 
@@ -33,7 +33,7 @@ class NewsController extends Controller
         ->filterCategory(request()->input('category'))
         ->publishedBetween($dateFrom, $dateTo)
         ->orderBy('published_at', 'desc')
-        ->paginate(6, ['*'], 'page', $currentPage); // Явно указываем параметр page
+        ->paginate(12, ['*'], 'page', $currentPage); // Явно указываем параметр page
 
     // Получаем популярные новости
     $popularNews = News::query()
