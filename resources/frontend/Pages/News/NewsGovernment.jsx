@@ -1,7 +1,6 @@
 import AppHeader from "#/molecules/header/header.jsx";
 import AppFooter from "#/organisms/footer/footer.jsx";
 import PageTitle from "#/atoms/texts/PageTitle.jsx";
-import MainSlider from "#/molecules/slider/slider.jsx";
 import './news.css';
 import Tabs from "#/atoms/tabs/tabs.jsx";
 import React, { useState, useEffect, useCallback, useRef } from "react";
@@ -12,8 +11,6 @@ import {Head, Link, router, usePage} from "@inertiajs/react";
 import Modal from "#/atoms/modal/modal.jsx";
 import PostContent from "#/atoms/modal/post-content.jsx";
 import PopularSpotlights from "#/molecules/spotlights/popular-spotlights.jsx";
-import MediaNews from "#/atoms/news/media.jsx";
-import AppLink from "#/atoms/buttons/link.jsx";
 import ReportageContent from "#/atoms/modal/reportage-content.jsx";
 import useModal from "#/hooks/useModal.js";
 import BackToTop from "#/atoms/topButton/BackToTop.jsx";
@@ -31,16 +28,17 @@ const getSlidesCount = (slides) => {
   return arr.length ? arr.length + ' фото' : null;
 }
 
-export default function News({
-                               news,
-                               categories,
-                               spotlights,
-                               page: pageNumber,
-                               pages: totalPages,
-                               filters: initialFilters,
-                               meta,
-                               total: totalItems = 0 // Добавляем общее количество записей
-                             }) {
+export default function NewsGovernment({
+                                         news,
+                                         categories,
+                                         spotlights,
+                                         page: pageNumber,
+                                         pages: totalPages,
+                                         filters: initialFilters,
+                                         meta,
+                                         total: totalItems = 0,
+                                         currentAgency // Добавляем параметр для определения текущего агентства
+                                       }) {
   const { props } = usePage();
   const [selectedCategory, setSelectedCategory] = useState(initialFilters?.category || null);
   const [filters, setFilters] = useState(null);
@@ -56,28 +54,39 @@ export default function News({
   const scrollPositionRef = useRef(0);
   const currentPageRef = useRef(pageNumber);
 
-  // Количество записей на странице (должно совпадать с пагинацией в контроллере)
+  // Определяем базовый путь в зависимости от агентства
+  const basePath = currentAgency === 5 ? '/news/administration' : '/news/government';
+
+  // Количество записей на странице
   const itemsPerPage = 12;
 
-  // Обновление мета-тегов при изменении страницы
+  // Обновление мета-тегов
   useEffect(() => {
-    // Обновляем title в Head через Inertia
+    const agencyName = currentAgency === 5 ? 'Администрации Главы' : 'Правительства';
     const title = currentPage > 1
-      ? `Новости Ингушетии - страница ${currentPage}`
-      : 'Новости Ингушетии';
+      ? `Новости ${agencyName} - страница ${currentPage}`
+      : `Новости ${agencyName}`;
 
     document.title = title;
-  }, [currentPage]);
+  }, [currentPage, currentAgency]);
+
+  // Переключение между агентствами
+  const switchAgency = (agencyId) => {
+    const path = agencyId === 5 ? '/news/administration' : '/news/government';
+    router.visit(path, {
+      preserveScroll: false,
+      preserveState: false,
+    });
+  };
 
   // Обработчик изменения категории
   const onCategorySwitch = useCallback((categoryId) => {
     const newCategory = categoryId !== null ? String(categoryId) : null;
     setSelectedCategory(newCategory);
 
-    // Загружаем первую страницу с новой категорией
     setIsLoading(true);
 
-    router.visit('/news', {
+    router.visit(basePath, {
       method: 'get',
       data: {
         page: 1,
@@ -91,16 +100,15 @@ export default function News({
         setCurrentPage(data.page);
         currentPageRef.current = data.page;
 
-        // Обновляем URL
         const searchParams = new URLSearchParams();
         if (newCategory) searchParams.set('category', newCategory);
         if (filters?.dateFrom) searchParams.set('dateFrom', filters.dateFrom);
         if (filters?.dateTo) searchParams.set('dateTo', filters.dateTo);
-        window.history.pushState({}, "", `/news?${searchParams.toString()}`);
+        window.history.pushState({}, "", `${basePath}?${searchParams.toString()}`);
       },
       onFinish: () => setIsLoading(false),
     });
-  }, [filters]);
+  }, [filters, basePath]);
 
   const handlePost = (post) => {
     scrollPositionRef.current = window.scrollY;
@@ -117,7 +125,6 @@ export default function News({
   };
 
   const handlePopularPost = (postData) => {
-    // postData может быть как id (число/строка), так и объектом с полем id
     const postId = typeof postData === 'object' ? postData.id : postData;
     const post = spotlights.find(item => item.id === postId);
     if (post) {
@@ -135,7 +142,7 @@ export default function News({
     if (filters?.dateTo) searchParams.set('dateTo', filters.dateTo);
     searchParams.set('page', currentPageRef.current);
 
-    const newUrl = `/news?${searchParams.toString()}`;
+    const newUrl = `${basePath}?${searchParams.toString()}`;
     window.history.pushState({}, "", newUrl);
 
     setTimeout(() => {
@@ -150,77 +157,52 @@ export default function News({
     }
   }, [props.showNews]);
 
-  // Обработчик смены страницы через пагинацию
-const handlePageChange = useCallback((page) => {
-  if (isLoading || page === currentPage) {
-    console.log('Page change prevented:', { isLoading, page, currentPage });
-    return;
-  }
+  const handlePageChange = useCallback((page) => {
+    if (isLoading || page === currentPage) return;
 
-  console.log('Changing to page:', page);
-  setIsLoading(true);
-  currentPageRef.current = page;
+    setIsLoading(true);
+    currentPageRef.current = page;
 
-  // Формируем данные для запроса
-  const requestData = {
-    page: page, // Отправляем именно номер страницы, который получили
-  };
+    const requestData = { page };
 
-  if (selectedCategory) {
-    requestData.category = selectedCategory;
-  }
+    if (selectedCategory) requestData.category = selectedCategory;
+    if (filters?.dateFrom) requestData.dateFrom = filters.dateFrom;
+    if (filters?.dateTo) requestData.dateTo = filters.dateTo;
 
-  if (filters?.dateFrom) {
-    requestData.dateFrom = filters.dateFrom;
-  }
+    router.visit(basePath, {
+      method: 'get',
+      data: requestData,
+      preserveScroll: true,
+      preserveState: false,
+      onSuccess: ({ props: data }) => {
+        setCurrentNews(data.news);
+        setCurrentPage(data.page);
 
-  if (filters?.dateTo) {
-    requestData.dateTo = filters.dateTo;
-  }
+        const searchParams = new URLSearchParams();
+        if (selectedCategory) searchParams.set('category', selectedCategory);
+        if (filters?.dateFrom) searchParams.set('dateFrom', filters.dateFrom);
+        if (filters?.dateTo) searchParams.set('dateTo', filters.dateTo);
+        searchParams.set('page', data.page);
+        window.history.replaceState({}, "", `${basePath}?${searchParams.toString()}`);
 
-  router.visit('/news', {
-    method: 'get',
-    data: requestData,
-    preserveScroll: true,
-    preserveState: false,
-    onSuccess: ({ props: data }) => {
-      console.log('Page change success. New page from server:', data.page);
-      console.log('Requested page was:', page);
+        setTimeout(() => {
+          document.getElementById('news-feed-start')?.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      },
+      onError: (errors) => {
+        console.error('Page change error:', errors);
+        setIsLoading(false);
+      },
+      onFinish: () => setIsLoading(false),
+    });
+  }, [isLoading, currentPage, selectedCategory, filters, basePath]);
 
-      setCurrentNews(data.news);
-      setCurrentPage(data.page); // Устанавливаем страницу из ответа сервера
-
-      // Обновляем URL
-      const searchParams = new URLSearchParams();
-      if (selectedCategory) searchParams.set('category', selectedCategory);
-      if (filters?.dateFrom) searchParams.set('dateFrom', filters.dateFrom);
-      if (filters?.dateTo) searchParams.set('dateTo', filters.dateTo);
-      searchParams.set('page', data.page); // Используем страницу из ответа
-      window.history.replaceState({}, "", `/news?${searchParams.toString()}`);
-
-      // Прокрутка к началу новостей при смене страницы
-      setTimeout(() => {
-        document.getElementById('news-feed-start')?.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
-    },
-    onError: (errors) => {
-      console.error('Page change error:', errors);
-      setIsLoading(false);
-    },
-    onFinish: () => {
-      setIsLoading(false);
-    },
-  });
-}, [isLoading, currentPage, selectedCategory, filters]);
-
-// Синхронизация с пропсами при начальной загрузке
-useEffect(() => {
-  console.log('Props page:', pageNumber, 'Current page:', currentPage);
-  if (pageNumber !== currentPage) {
-    setCurrentPage(pageNumber);
-    setCurrentNews(news);
-  }
-}, [pageNumber, news]);
+  useEffect(() => {
+    if (pageNumber !== currentPage) {
+      setCurrentPage(pageNumber);
+      setCurrentNews(news);
+    }
+  }, [pageNumber, news]);
 
   const onFilters = (dateFrom, dateTo, selected) => {
     const newCategory = selected !== null ? String(selected) : null;
@@ -230,7 +212,7 @@ useEffect(() => {
     setSelectedCategory(newCategory);
     setFilters(newFilters);
 
-    router.visit('/news', {
+    router.visit(basePath, {
       method: 'get',
       data: {
         page: 1,
@@ -244,12 +226,11 @@ useEffect(() => {
         setCurrentPage(data.page);
         currentPageRef.current = data.page;
 
-        // Обновляем URL
         const searchParams = new URLSearchParams();
         if (newCategory) searchParams.set('category', newCategory);
         if (dateFrom) searchParams.set('dateFrom', dateFrom);
         if (dateTo) searchParams.set('dateTo', dateTo);
-        window.history.pushState({}, "", `/news?${searchParams.toString()}`);
+        window.history.pushState({}, "", `${basePath}?${searchParams.toString()}`);
       },
       onFinish: () => {
         setIsLoading(false);
@@ -258,40 +239,44 @@ useEffect(() => {
     });
   };
 
+  const agencyName = currentAgency === 5 ? 'Администрация Главы' : 'Правительство';
+
   return (
     <>
       <Head>
-        <title>{currentPage > 1 ? `Новости Ингушетии - страница ${currentPage}` : meta.title}</title>
+        <title>{currentPage > 1 ? `Новости ${agencyName} - страница ${currentPage}` : meta.title}</title>
         <meta name="description" content={meta.description} />
         {currentPage > 1 && (
-          <link rel="canonical" href={`${window.location.origin}/news?page=${currentPage}`} />
+          <link rel="canonical" href={`${window.location.origin}${basePath}?page=${currentPage}`} />
         )}
       </Head>
       <AppHeader />
       <div className={'news-hero__news-wrapper news-page-title'}>
-        <PageTitle title="Новости" />
+        <PageTitle title={`Новости`} />
         <div>
           <FilterButton isActive={isFiltersOpened} onChange={setFiltersOpened} />
         </div>
       </div>
+
+
+
       <div className="news-hero">
         <div className="news-hero__slider-wrapper">
           <div className="news-hero__news-wrapper">
             <div className="news-wrapper">
               {/* Переключатель между агентствами */}
               <div className="agency-switcher">
-                <Link href={'/news'}
-                      className={`agency-switcher__btn active`}
+                <Link href={route('news.index')}
+                  className={`agency-switcher__btn`}
 
                 >
                   Администрация Главы
                 </Link>
                 <Link href={route('government.news.index')}
-                      className={`agency-switcher__btn`}
+                  className={`agency-switcher__btn active`}
                 >
                   Правительство
                 </Link>
-
               </div>
               <div className={'tab-row'}>
                 <Tabs
@@ -308,7 +293,6 @@ useEffect(() => {
               initialCategory={selectedCategory}
             />
 
-            {/* Якорь для прокрутки к началу новостей */}
             <div id="news-feed-start"></div>
 
             <div id="news-feed-container">
@@ -329,7 +313,6 @@ useEffect(() => {
               </div>
             </div>
 
-            {/* Компонент пагинации с информацией о количестве записей */}
             {totalPages > 1 && (
               <Pagination
                 currentPage={currentPage}

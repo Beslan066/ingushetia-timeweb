@@ -93,6 +93,8 @@ Route::get('/sostav-pravitelstva', function () {
 
 
 Route::get('/news', [NewsController::class, 'index'])->name('news.index');
+Route::get('/government-news', [NewsController::class, 'governmentNews'])->name('government.news.index');
+
 Route::get('/news/{url}', [NewsController::class, 'show'])->name('post.show.news');
 Route::get('/news-by-category/{categoryId}', [NewsController::class, 'getPostsByCategory'])->name('posts.by.tag');
 
