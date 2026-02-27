@@ -15,7 +15,9 @@ import ReportageContent from "#/atoms/modal/reportage-content.jsx";
 import useModal from "#/hooks/useModal.js";
 import BackToTop from "#/atoms/topButton/BackToTop.jsx";
 import Pagination from "#/atoms/pagination/pagination.jsx";
-import NewsNavigation from "#/molecules/navigation/news-navigation.jsx";
+import MainSlider from "#/molecules/slider/slider.jsx";
+import MediaNews from "#/atoms/news/media.jsx";
+import AppLink from "#/atoms/buttons/link.jsx";
 
 const handleSpotlight = (id, spotlights, setSlide) => {
   const cur = spotlights.find(s => s.id === id);
@@ -24,8 +26,12 @@ const handleSpotlight = (id, spotlights, setSlide) => {
 
 const getSlidesCount = (slides) => {
   if (!slides) return null;
-  const arr = JSON.parse(slides);
-  return arr.length ? arr.length + ' фото' : null;
+  try {
+    const arr = JSON.parse(slides);
+    return arr.length ? arr.length + ' фото' : null;
+  } catch (e) {
+    return null;
+  }
 }
 
 export default function NewsGovernment({
@@ -37,7 +43,7 @@ export default function NewsGovernment({
                                          filters: initialFilters,
                                          meta,
                                          total: totalItems = 0,
-                                         currentAgency // Добавляем параметр для определения текущего агентства
+                                         currentAgency = 6
                                        }) {
   const { props } = usePage();
   const [selectedCategory, setSelectedCategory] = useState(initialFilters?.category || null);
@@ -48,78 +54,80 @@ export default function NewsGovernment({
   const [currentNews, setCurrentNews] = useState(news);
   const [reportage, isReportageOpen, setReportage] = useModal(undefined);
   const [isLoading, setIsLoading] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(!!props.showNews);
-  const [currentPost, setCurrentPost] = useState(props.showNews || null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentPost, setCurrentPost] = useState(null);
 
   const scrollPositionRef = useRef(0);
   const currentPageRef = useRef(pageNumber);
+  const newsRef = useRef(news);
+  const filtersRef = useRef(filters);
+  const categoryRef = useRef(selectedCategory);
 
-  // Определяем базовый путь в зависимости от агентства
-  const basePath = currentAgency === 5 ? '/news/administration' : '/news/government';
-
-  // Количество записей на странице
-  const itemsPerPage = 12;
+  // Базовый URL для правительства
+  const baseUrl = '/government-news';
 
   // Обновление мета-тегов
   useEffect(() => {
-    const agencyName = currentAgency === 5 ? 'Администрации Главы' : 'Правительства';
     const title = currentPage > 1
-      ? `Новости ${agencyName} - страница ${currentPage}`
-      : `Новости ${agencyName}`;
-
+      ? `Новости Правительства - страница ${currentPage}`
+      : 'Новости Правительства';
     document.title = title;
-  }, [currentPage, currentAgency]);
+  }, [currentPage]);
 
-  // Переключение между агентствами
-  const switchAgency = (agencyId) => {
-    const path = agencyId === 5 ? '/news/administration' : '/news/government';
-    router.visit(path, {
-      preserveScroll: false,
-      preserveState: false,
-    });
-  };
+  // Синхронизация рефов с состоянием
+  useEffect(() => {
+    newsRef.current = currentNews;
+    filtersRef.current = filters;
+    categoryRef.current = selectedCategory;
+    currentPageRef.current = currentPage;
+  }, [currentNews, filters, selectedCategory, currentPage]);
 
-  // Обработчик изменения категории
-  const onCategorySwitch = useCallback((categoryId) => {
-    const newCategory = categoryId !== null ? String(categoryId) : null;
-    setSelectedCategory(newCategory);
+  // Обработка showNews из пропсов
+  useEffect(() => {
+    if (props.showNews) {
+      console.log('showNews received:', props.showNews);
+      if (props.showNews && typeof props.showNews === 'object') {
+        setCurrentPost(props.showNews);
+        setIsModalOpen(true);
+      }
+    } else {
+      // Если нет showNews, закрываем модалку
+      setIsModalOpen(false);
+      setCurrentPost(null);
+    }
+  }, [props.showNews]);
 
-    setIsLoading(true);
-
-    router.visit(basePath, {
-      method: 'get',
-      data: {
-        page: 1,
-        category: newCategory,
-        ...filters
-      },
-      preserveScroll: true,
-      preserveState: false,
-      onSuccess: ({ props: data }) => {
-        setCurrentNews(data.news);
-        setCurrentPage(data.page);
-        currentPageRef.current = data.page;
-
-        const searchParams = new URLSearchParams();
-        if (newCategory) searchParams.set('category', newCategory);
-        if (filters?.dateFrom) searchParams.set('dateFrom', filters.dateFrom);
-        if (filters?.dateTo) searchParams.set('dateTo', filters.dateTo);
-        window.history.pushState({}, "", `${basePath}?${searchParams.toString()}`);
-      },
-      onFinish: () => setIsLoading(false),
-    });
-  }, [filters, basePath]);
+  // Синхронизация с пропсами
+  useEffect(() => {
+    setCurrentNews(news);
+    setCurrentPage(pageNumber);
+    // Обновляем рефы при получении новых пропсов
+    newsRef.current = news;
+    currentPageRef.current = pageNumber;
+  }, [news, pageNumber]);
 
   const handlePost = (post) => {
     scrollPositionRef.current = window.scrollY;
+
+    // Сохраняем текущее состояние
+    newsRef.current = currentNews;
+    filtersRef.current = filters;
+    categoryRef.current = selectedCategory;
     currentPageRef.current = currentPage;
 
-    router.get(`/news/${post.url}`, {}, {
+    // Извлекаем только slug из URL если пришел полный URL
+    let postSlug = post.url;
+    if (postSlug && postSlug.includes('/')) {
+      postSlug = postSlug.split('/').pop();
+    }
+
+    // Используем правильный URL для новости правительства
+    router.visit(`/government-news/${postSlug}`, {
       preserveScroll: true,
-      only: ['showNews', 'spotlights'],
-      onSuccess: (page) => {
-        setCurrentPost(page.props.showNews);
-        setIsModalOpen(true);
+      preserveState: true,
+      only: ['showNews'],
+      onError: (errors) => {
+        console.error('Error loading post:', errors);
       }
     });
   };
@@ -133,29 +141,49 @@ export default function NewsGovernment({
   };
 
   const handleCloseModal = () => {
+    // Просто закрываем модалку, данные уже есть в newsRef
     setIsModalOpen(false);
     setCurrentPost(null);
 
-    const searchParams = new URLSearchParams();
-    if (selectedCategory) searchParams.set('category', selectedCategory);
-    if (filters?.dateFrom) searchParams.set('dateFrom', filters.dateFrom);
-    if (filters?.dateTo) searchParams.set('dateTo', filters.dateTo);
-    searchParams.set('page', currentPageRef.current);
-
-    const newUrl = `${basePath}?${searchParams.toString()}`;
-    window.history.pushState({}, "", newUrl);
-
+    // Восстанавливаем позицию скролла
     setTimeout(() => {
       window.scrollTo(0, scrollPositionRef.current);
     }, 0);
+
+    // Возвращаемся к списку новостей без перезагрузки
+    const searchParams = new URLSearchParams();
+    if (categoryRef.current) searchParams.set('category', categoryRef.current);
+    if (filtersRef.current?.dateFrom) searchParams.set('dateFrom', filtersRef.current.dateFrom);
+    if (filtersRef.current?.dateTo) searchParams.set('dateTo', filtersRef.current.dateTo);
+    if (currentPageRef.current > 1) searchParams.set('page', currentPageRef.current);
+
+    const newUrl = searchParams.toString() ? `${baseUrl}?${searchParams.toString()}` : baseUrl;
+    window.history.replaceState({}, "", newUrl);
   };
 
-  useEffect(() => {
-    if (props.showNews) {
-      setCurrentPost(props.showNews);
-      setIsModalOpen(true);
-    }
-  }, [props.showNews]);
+  const onCategorySwitch = useCallback((categoryId) => {
+    const newCategory = categoryId !== null ? String(categoryId) : null;
+    setSelectedCategory(newCategory);
+    setIsLoading(true);
+
+    const searchParams = new URLSearchParams();
+    if (newCategory) searchParams.set('category', newCategory);
+    if (filters?.dateFrom) searchParams.set('dateFrom', filters.dateFrom);
+    if (filters?.dateTo) searchParams.set('dateTo', filters.dateTo);
+
+    router.visit(`${baseUrl}?${searchParams.toString()}`, {
+      method: 'get',
+      preserveScroll: true,
+      preserveState: false,
+      onSuccess: ({ props: data }) => {
+        setCurrentNews(data.news);
+        setCurrentPage(data.page);
+        currentPageRef.current = data.page;
+        newsRef.current = data.news;
+      },
+      onFinish: () => setIsLoading(false),
+    });
+  }, [filters]);
 
   const handlePageChange = useCallback((page) => {
     if (isLoading || page === currentPage) return;
@@ -163,46 +191,28 @@ export default function NewsGovernment({
     setIsLoading(true);
     currentPageRef.current = page;
 
-    const requestData = { page };
+    const searchParams = new URLSearchParams();
+    if (selectedCategory) searchParams.set('category', selectedCategory);
+    if (filters?.dateFrom) searchParams.set('dateFrom', filters.dateFrom);
+    if (filters?.dateTo) searchParams.set('dateTo', filters.dateTo);
+    searchParams.set('page', page);
 
-    if (selectedCategory) requestData.category = selectedCategory;
-    if (filters?.dateFrom) requestData.dateFrom = filters.dateFrom;
-    if (filters?.dateTo) requestData.dateTo = filters.dateTo;
-
-    router.visit(basePath, {
+    router.visit(`${baseUrl}?${searchParams.toString()}`, {
       method: 'get',
-      data: requestData,
       preserveScroll: true,
       preserveState: false,
       onSuccess: ({ props: data }) => {
         setCurrentNews(data.news);
         setCurrentPage(data.page);
-
-        const searchParams = new URLSearchParams();
-        if (selectedCategory) searchParams.set('category', selectedCategory);
-        if (filters?.dateFrom) searchParams.set('dateFrom', filters.dateFrom);
-        if (filters?.dateTo) searchParams.set('dateTo', filters.dateTo);
-        searchParams.set('page', data.page);
-        window.history.replaceState({}, "", `${basePath}?${searchParams.toString()}`);
+        newsRef.current = data.news;
 
         setTimeout(() => {
           document.getElementById('news-feed-start')?.scrollIntoView({ behavior: 'smooth' });
         }, 100);
       },
-      onError: (errors) => {
-        console.error('Page change error:', errors);
-        setIsLoading(false);
-      },
       onFinish: () => setIsLoading(false),
     });
-  }, [isLoading, currentPage, selectedCategory, filters, basePath]);
-
-  useEffect(() => {
-    if (pageNumber !== currentPage) {
-      setCurrentPage(pageNumber);
-      setCurrentNews(news);
-    }
-  }, [pageNumber, news]);
+  }, [isLoading, currentPage, selectedCategory, filters]);
 
   const onFilters = (dateFrom, dateTo, selected) => {
     const newCategory = selected !== null ? String(selected) : null;
@@ -212,25 +222,20 @@ export default function NewsGovernment({
     setSelectedCategory(newCategory);
     setFilters(newFilters);
 
-    router.visit(basePath, {
+    const searchParams = new URLSearchParams();
+    if (newCategory) searchParams.set('category', newCategory);
+    if (dateFrom) searchParams.set('dateFrom', dateFrom);
+    if (dateTo) searchParams.set('dateTo', dateTo);
+
+    router.visit(`${baseUrl}?${searchParams.toString()}`, {
       method: 'get',
-      data: {
-        page: 1,
-        category: newCategory,
-        ...newFilters
-      },
       preserveScroll: true,
       preserveState: false,
       onSuccess: ({ props: data }) => {
         setCurrentNews(data.news);
         setCurrentPage(data.page);
         currentPageRef.current = data.page;
-
-        const searchParams = new URLSearchParams();
-        if (newCategory) searchParams.set('category', newCategory);
-        if (dateFrom) searchParams.set('dateFrom', dateFrom);
-        if (dateTo) searchParams.set('dateTo', dateTo);
-        window.history.pushState({}, "", `${basePath}?${searchParams.toString()}`);
+        newsRef.current = data.news;
       },
       onFinish: () => {
         setIsLoading(false);
@@ -239,46 +244,45 @@ export default function NewsGovernment({
     });
   };
 
-  const agencyName = currentAgency === 5 ? 'Администрация Главы' : 'Правительство';
-
   return (
     <>
       <Head>
-        <title>{currentPage > 1 ? `Новости ${agencyName} - страница ${currentPage}` : meta.title}</title>
+        <title>{currentPage > 1 ? `Новости Правительства - страница ${currentPage}` : meta.title}</title>
         <meta name="description" content={meta.description} />
         {currentPage > 1 && (
-          <link rel="canonical" href={`${window.location.origin}${basePath}?page=${currentPage}`} />
+          <link rel="canonical" href={`${window.location.origin}${baseUrl}?page=${currentPage}`} />
         )}
       </Head>
+
       <AppHeader />
-      <div className={'news-hero__news-wrapper news-page-title'}>
-        <PageTitle title={`Новости`} />
+
+      <div className="news-hero__news-wrapper news-page-title">
+        <PageTitle title="Новости Правительства" />
         <div>
           <FilterButton isActive={isFiltersOpened} onChange={setFiltersOpened} />
         </div>
       </div>
 
-
-
       <div className="news-hero">
         <div className="news-hero__slider-wrapper">
           <div className="news-hero__news-wrapper">
             <div className="news-wrapper">
-              {/* Переключатель между агентствами */}
               <div className="agency-switcher">
-                <Link href={route('news.index')}
-                  className={`agency-switcher__btn`}
-
+                <Link
+                  href="/news"
+                  className="agency-switcher__btn"
                 >
                   Администрация Главы
                 </Link>
-                <Link href={route('government.news.index')}
-                  className={`agency-switcher__btn active`}
+                <Link
+                  href="/government-news"
+                  className="agency-switcher__btn active"
                 >
                   Правительство
                 </Link>
               </div>
-              <div className={'tab-row'}>
+
+              <div className="tab-row">
                 <Tabs
                   tabs={categories}
                   onTab={onCategorySwitch}
@@ -286,6 +290,7 @@ export default function NewsGovernment({
                 />
               </div>
             </div>
+
             <Filters
               isActive={isFiltersOpened}
               onChange={(dateFrom, dateTo) => onFilters(dateFrom, dateTo, selectedCategory)}
@@ -295,10 +300,10 @@ export default function NewsGovernment({
 
             <div id="news-feed-start"></div>
 
-            <div id="news-feed-container">
-              <div className="news-feed__wrapper">
-                <div className="news-feed">
-                  {currentNews.map((item) => (
+            <div className="news-feed__wrapper">
+              <div className="news-feed">
+                {currentNews && currentNews.length > 0 ? (
+                  currentNews.map((item) => (
                     <AgencyNewsItem
                       key={item.id}
                       id={item.id}
@@ -308,8 +313,10 @@ export default function NewsGovernment({
                       image={item.image_main}
                       onPost={() => handlePost(item)}
                     />
-                  ))}
-                </div>
+                  ))
+                ) : (
+                  <div className="no-news">Новости не найдены</div>
+                )}
               </div>
             </div>
 
@@ -320,7 +327,7 @@ export default function NewsGovernment({
                 onPageChange={handlePageChange}
                 isLoading={isLoading}
                 totalItems={totalItems}
-                itemsPerPage={itemsPerPage}
+                itemsPerPage={12}
               />
             )}
 
@@ -332,8 +339,9 @@ export default function NewsGovernment({
             )}
           </div>
         </div>
+
         <div className="hero-announce-wrapper">
-          <div className={'filter-button-row'}>
+          <div className="filter-button-row">
             <FilterButton isActive={isFiltersOpened} onChange={setFiltersOpened} />
           </div>
           <PopularSpotlights
@@ -361,7 +369,7 @@ export default function NewsGovernment({
       </Modal>
 
       <Modal
-        breadcrumbs={[{ title: "Главная" }, { title: "Новости" }, { title: currentPost?.title }]}
+        breadcrumbs={[{ title: "Новости Правительства" }, { title: currentPost?.title }]}
         isOpen={isModalOpen}
         handleClose={handleCloseModal}
       >
