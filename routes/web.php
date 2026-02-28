@@ -97,8 +97,17 @@ Route::get('/government-news', [NewsController::class, 'governmentNews'])->name(
 Route::get('/government-news/{url}', [NewsController::class, 'show'])->name('government.post.show.news');
 
 
+// Список новостей по категории
+Route::get('/news-by-category/{categoryId}', [NewsController::class, 'getPostsByCategory'])
+  ->where('categoryId', '[0-9]+')
+  ->name('posts.by.tag');
+
+// Конкретная новость (с /post/ в URL, как у вас в правительстве)
+Route::get('/news-by-category/post/{url}', [NewsController::class, 'showNewsByTag'])
+  ->name('posts.by.tag.show');
+
+// Оставить существующие маршруты
 Route::get('/news/{url}', [NewsController::class, 'show'])->name('post.show.news');
-Route::get('/news-by-category/{categoryId}', [NewsController::class, 'getPostsByCategory'])->name('posts.by.tag');
 
 Route::group(['namespace' => 'Admin', 'middleware' => ['auth', Admin::class]], function () {
     Route::get('/raduga', [\App\Http\Controllers\Admin\IndexController::class, 'index'])->middleware(['auth', 'verified'])->name('admin');

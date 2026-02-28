@@ -183,28 +183,109 @@ class NewsController extends Controller
 
   public function getPostsByCategory($categoryId)
   {
+    // Проверяем, что categoryId - число
+    if (!is_numeric($categoryId)) {
+      abort(404);
+    }
+
+    $currentPage = (int)request()->input('page', 1);
+    $currentPage = max(1, $currentPage);
+
     $categories = Category::query()->take(10)->get();
 
-
-    $spotlights = News::query()->with('category')->where('agency_id',
-      5)->whereNotNull('published_at')->orderBy('published_at')->take(8)->get();
+    $spotlights = News::query()
+      ->with('category')
+      ->where('agency_id', 5)
+      ->whereNotNull('published_at')
+      ->orderBy('published_at', 'desc')
+      ->take(8)
+      ->get();
 
     $news = News::query()
       ->with('category')
       ->where('agency_id', 5)
       ->where('category_id', $categoryId)
-      ->orderBy('id', 'desc')
-      ->limit(50)
-      ->get();
+      ->orderBy('published_at', 'desc')
+      ->paginate(12, ['*'], 'page', $currentPage);
 
     // Получаем заголовок категории
     $categoryTitle = Category::where('id', $categoryId)->value('title');
 
+    if (!$categoryTitle) {
+      abort(404);
+    }
+
+    $meta = [
+      'title' => $categoryTitle . ' | Новости Ингушетии',
+      'description' => 'Новости по категории: ' . $categoryTitle,
+    ];
+
     return Inertia::render('News/NewsByCategory', [
-      'news' => $news,
+      'news' => $news->items(),
       'categories' => $categories,
       'categoryTitle' => $categoryTitle,
       'spotlights' => $spotlights,
+      'page' => $news->currentPage(),
+      'pages' => $news->lastPage(),
+      'total' => $news->total(),
+      'meta' => $meta,
+    ]);
+  }
+
+// Добавьте метод для показа отдельной новости по категории
+  public function showNewsByTag($url)
+  {
+    // Проверяем, что url не является числом (чтобы избежать конфликта с categoryId)
+    if (is_numeric($url)) {
+      abort(404);
+    }
+
+    $newsItem = News::where('url', $url)
+      ->with(['category', 'video', 'reportage', 'tags'])
+      ->firstOrFail();
+
+    // Увеличиваем счетчик просмотров
+    $newsItem->incrementViews();
+
+    $categoryId = $newsItem->category_id;
+    $categoryTitle = $newsItem->category->title ?? 'Новости';
+
+    // Получаем популярные новости этого же агентства
+    $popularNews = News::query()
+      ->where('id', '!=', $newsItem->id)
+      ->where('agency_id', $newsItem->agency_id)
+      ->whereNotNull('published_at')
+      ->orderBy('views', 'desc')
+      ->take(8)
+      ->get();
+
+    // Получаем ВСЕ новости категории, включая текущую
+    // Используем пагинацию как в основном списке
+    $currentPage = (int)request()->input('page', 1);
+
+    $news = News::query()
+      ->with('category')
+      ->where('agency_id', $newsItem->agency_id)
+      ->where('category_id', $categoryId)
+      ->orderBy('published_at', 'desc')
+      ->paginate(12, ['*'], 'page', $currentPage);
+
+    $meta = [
+      'title' => $newsItem->title . ' | ' . $categoryTitle,
+      'description' => Str::limit(strip_tags($newsItem->lead), 160),
+      'canonical' => route('posts.by.tag.show', ['url' => $url]),
+    ];
+
+    return Inertia::render('News/NewsByCategory', [
+      'showNews' => $newsItem,
+      'news' => $news->items(), // Возвращаем все новости с пагинацией
+      'categories' => Category::query()->take(10)->get(),
+      'categoryTitle' => $categoryTitle,
+      'spotlights' => $popularNews,
+      'page' => $news->currentPage(),
+      'pages' => $news->lastPage(),
+      'total' => $news->total(),
+      'meta' => $meta,
     ]);
   }
 
