@@ -158,6 +158,7 @@ class HomeController extends Controller
       $openedNews->relatedPosts = News::query()
         ->where('category_id', $openedNews->category_id)
         ->where('id', '!=', $openedNews->id)
+        ->where('agency_id', $openedNews->agency_id)
         ->select(['id', 'title', 'lead', 'url', 'category_id', 'image_main', 'published_at'])
         ->orderBy('published_at', 'desc')
         ->limit(3)
@@ -248,6 +249,7 @@ class HomeController extends Controller
     // Получаем связанные новости
     $openedNews->relatedPosts = News::where('category_id', $openedNews->category_id)
       ->where('id', '!=', $openedNews->id)
+      ->where('agency_id', $openedNews->agency_id)
       ->select(['id', 'title', 'url', 'category_id', 'image_main', 'published_at'])
       ->orderBy('published_at', 'desc')
       ->limit(3)
