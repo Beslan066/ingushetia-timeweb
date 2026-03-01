@@ -85,7 +85,7 @@ class NewsController extends Controller
       ->where('agency_id', 2) // ID для правительства
       ->filterCategory(request()->input('category'))
       ->publishedBetween($dateFrom, $dateTo)
-      ->orderBy('published_at', 'desc')
+      ->orderBy('created_at', 'desc')
       ->paginate(12, ['*'], 'page', $currentPage);
 
     $popularNews = News::query()
