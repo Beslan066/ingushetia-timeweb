@@ -8,7 +8,7 @@ import useModal from "#/hooks/useModal.js";
 import { parseISO, format, isWithinInterval, startOfYear, endOfYear } from 'date-fns';
 import { ru } from 'date-fns/locale';
 
-export default function MediaCollection({ media }) {
+export default function MediaCollection({ media, headTitle }) {
   if (!media?.length) {
     return null;
   }
@@ -86,7 +86,9 @@ export default function MediaCollection({ media }) {
 
   return (
     <div className="media">
+      {headTitle &&
       <h2 className="municipalities__title">Медиа</h2>
+      }
       <div className="media__wrapper">
         {media.map((item) => {
           const isVideo = !!item.video;

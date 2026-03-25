@@ -310,7 +310,7 @@ export default function NewsGovernment({
                       category={item.category?.title}
                       date={item?.published_at}
                       title={item.title}
-                      image={item.image_main}
+                      image={'news/' + item.image_main}
                       onPost={() => handlePost(item)}
                     />
                   ))

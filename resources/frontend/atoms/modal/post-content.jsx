@@ -46,11 +46,13 @@ const PostContent = ({post, onPost}) => {
         {post.image_main && (
           <div className="post__image-wrapper">
             <img
-              src={`/storage/${post.image_main}`}
-              alt={post.title}
-              className="post__image-main"
-              loading="lazy"
-            />
+  src={post.agency_id === 5 
+    ? '/storage/' + post.image_main 
+    : '/storage/news/' + post.image_main}
+  alt={post.title}
+  className="post__image-main"
+  loading="lazy"
+/>
             {post.image_description && (
               <div className="post__image-description">
                 {post.image_description}
