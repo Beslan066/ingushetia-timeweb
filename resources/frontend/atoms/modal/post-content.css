@@ -118,3 +118,16 @@
 .content span {
   font-size: 16px !important;
 }
+
+.post__links {
+  margin-bottom: 20px;
+}
+
+.post__links .share-buttons{
+  display: flex;
+  margin-top: 10px;
+}
+
+.post__links .share-buttons a{
+  margin-right: 10px;
+}
