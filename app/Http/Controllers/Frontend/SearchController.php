@@ -29,7 +29,7 @@ class SearchController extends Controller
             'title' => $item->title,
             'url' => $item->url ?? $item->slug,
             'slug' => $item->slug,
-            'published_at' => $item->published_at,
+            'published_at' => $item->published_at ? $item->published_at->toISOString() : null,
             'created_at' => $item->created_at,
             'content' => $item->content,
             'lead' => $item->lead,

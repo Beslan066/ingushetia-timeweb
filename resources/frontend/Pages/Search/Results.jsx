@@ -245,6 +245,7 @@ export default function Results() {
                         let dateString;
                         if (result.type === 'news' || result.category_type === 'Новость') {
                           dateString = result.published_at;
+                          console.log('News date:', dateString); // Временный лог для проверки
                         } else {
                           dateString = result.published_at || result.created_at;
                         }
