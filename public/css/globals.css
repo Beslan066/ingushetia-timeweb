@@ -1661,5 +1661,7 @@ quote::after {
 }
 
 
-
+.post__text-content p span {
+  font-size: 16px!important;
+}
 

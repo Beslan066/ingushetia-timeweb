@@ -88,8 +88,10 @@ body:has(.modal--opened) {
     left: 50%;
   }
 
-  .modal__content-wrapper {
-    margin: 0 60px 60px;
+
+
+  .modal__content-wrapper p span {
+    font-size: 16px!important;
   }
 
   .modal__header {
@@ -105,5 +107,8 @@ body:has(.modal--opened) {
   display: none;
 }
 
+.modal__content-wrapper p span{
+    font-size: 16px!important;
+}
 
 
