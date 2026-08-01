@@ -17,9 +17,12 @@ class SearchController extends Controller
   private function performSearch($query)
   {
     try {
-      // Поиск новостей (уже с agency_id = 5)
+      // Поиск новостей (только agency_id = 5)
       $news = News::where('agency_id', 5)
-        ->whereRaw('LOWER(title) LIKE ?', ["%{$query}%"])
+        ->where(function($q) use ($query) {
+          $q->whereRaw('LOWER(title) LIKE ?', ["%{$query}%"])
+            ->orWhereRaw('LOWER(lead) LIKE ?', ["%{$query}%"]);
+        })
         ->with(['category', 'tags'])
         ->orderBy('published_at', 'desc')
         ->get()
@@ -30,7 +33,7 @@ class SearchController extends Controller
             'url' => $item->url ?? $item->slug,
             'slug' => $item->slug,
             'published_at' => $item->published_at ? $item->published_at->toISOString() : null,
-            'created_at' => $item->created_at,
+            'created_at' => $item->created_at ? $item->created_at->toISOString() : null,
             'content' => $item->content,
             'lead' => $item->lead,
             'image_main' => $item->image_main,
@@ -65,8 +68,8 @@ class SearchController extends Controller
             'id' => $item->id,
             'title' => $item->title,
             'url' => $item->url ?? $item->slug ?? $item->id,
-            'published_at' => $item->published_at,
-            'created_at' => $item->created_at,
+            'published_at' => $item->published_at ? $item->published_at->toISOString() : null,
+            'created_at' => $item->created_at ? $item->created_at->toISOString() : null,
             'content' => $item->content ?? null,
             'lead' => $item->lead ?? null,
             'image_main' => $item->image ?? null,
@@ -91,8 +94,8 @@ class SearchController extends Controller
             'id' => $item->id,
             'title' => $item->title,
             'url' => $item->url ?? $item->slug ?? $item->id,
-            'published_at' => $item->published_at,
-            'created_at' => $item->created_at,
+            'published_at' => $item->published_at ? $item->published_at->toISOString() : null,
+            'created_at' => $item->created_at ? $item->created_at->toISOString() : null,
             'content' => $item->content ?? null,
             'lead' => $item->lead ?? null,
             'image_main' => $item->image ?? null,
@@ -106,7 +109,10 @@ class SearchController extends Controller
 
       // Поиск документов
       $documents = Document::where('agency_id', 5)
-        ->whereRaw('LOWER(title) LIKE ?', ["%{$query}%"])
+        ->where(function($q) use ($query) {
+          $q->whereRaw('LOWER(title) LIKE ?', ["%{$query}%"])
+            ->orWhereRaw('LOWER(lead) LIKE ?', ["%{$query}%"]);
+        })
         ->orderBy('published_at', 'desc')
         ->get()
         ->map(function ($item) {
@@ -114,8 +120,8 @@ class SearchController extends Controller
             'id' => $item->id,
             'title' => $item->title,
             'url' => $item->url ?? $item->slug ?? $item->id,
-            'published_at' => $item->published_at,
-            'created_at' => $item->created_at,
+            'published_at' => $item->published_at ? $item->published_at->toISOString() : null,
+            'created_at' => $item->created_at ? $item->created_at->toISOString() : null,
             'content' => $item->content ?? null,
             'lead' => $item->lead ?? null,
             'image_main' => $item->image ?? null,
@@ -136,16 +142,16 @@ class SearchController extends Controller
 
       // Сортируем по published_at (самые новые сверху)
       $sortedResults = $allResults->sortByDesc(function ($item) {
-        return $item['published_at'] ?? $item['created_at'] ?? now();
+        return $item['published_at'] ?? $item['created_at'] ?? now()->toISOString();
       })->values();
 
       // Возвращаем отсортированные результаты по категориям
       return [
-        'news' => $news,
-        'photoReportages' => $photoReportages,
-        'videos' => $videos,
-        'documents' => $documents,
-        'all' => $sortedResults, // Добавляем общий список
+        'news' => $news->values(),
+        'photoReportages' => $photoReportages->values(),
+        'videos' => $videos->values(),
+        'documents' => $documents->values(),
+        'all' => $sortedResults,
       ];
 
     } catch (\Exception $e) {
@@ -180,7 +186,17 @@ class SearchController extends Controller
       }
 
       $results = $this->performSearch($query);
-      return response()->json($results);
+
+      // Преобразуем коллекции в массивы для JSON
+      $response = [
+        'news' => $results['news']->toArray(),
+        'photoReportages' => $results['photoReportages']->toArray(),
+        'videos' => $results['videos']->toArray(),
+        'documents' => $results['documents']->toArray(),
+        'all' => $results['all']->toArray(),
+      ];
+
+      return response()->json($response);
 
     } catch (\Exception $e) {
       Log::error('SearchResults error: ' . $e->getMessage(), [
@@ -217,7 +233,13 @@ class SearchController extends Controller
 
       return Inertia::render('Search/Results', [
         'query' => $query,
-        'initialResults' => $results,
+        'initialResults' => [
+          'news' => $results['news']->toArray(),
+          'photoReportages' => $results['photoReportages']->toArray(),
+          'videos' => $results['videos']->toArray(),
+          'documents' => $results['documents']->toArray(),
+          'all' => $results['all']->toArray(),
+        ],
         'categories' => $categories,
         'currentAgency' => 5,
         'meta' => $meta,
