@@ -5,9 +5,9 @@ import LogoImage from "#/atoms/logos/default.jsx";
 import Modal from "#/atoms/modal/modal.jsx";
 import PostContent from "#/atoms/modal/post-content.jsx";
 import './header.css';
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useState} from "react";
 import Button from "#/atoms/buttons/button.jsx";
-import {Link} from "@inertiajs/react";
+import {Link, router} from "@inertiajs/react";
 import AppLink from "#/atoms/buttons/link.jsx";
 import axios from "axios";
 import TimesIcon from "#/atoms/icons/times.jsx";
@@ -20,6 +20,7 @@ export default function AppHeader({anniversary, logo, title}) {
   const [query, setQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPost, setCurrentPost] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
@@ -44,27 +45,56 @@ export default function AppHeader({anniversary, logo, title}) {
   }, [query]);
 
   const toggleMenu = () => {
-    setMenuOpened(!menuOpened)
-    document.querySelector('body')
-  }
+    setMenuOpened(!menuOpened);
+  };
 
-
-  //   Открытие модального окна
+  // Открытие модального окна с постом
   const handlePost = (post) => {
+    setIsLoading(true);
+
+    // Если у поста есть все данные - открываем сразу
+    if (post.content && post.category) {
+      setCurrentPost(post);
+      setIsModalOpen(true);
+      setIsLoading(false);
+      window.history.pushState({}, "", `/post/${post.url}`);
+      return;
+    }
+
+    // Ищем полную версию поста в результатах поиска
+    const fullPost = results.find(r => r.id === post.id && r.content);
+    if (fullPost) {
+      setCurrentPost(fullPost);
+      setIsModalOpen(true);
+      setIsLoading(false);
+      window.history.pushState({}, "", `/post/${post.url}`);
+      return;
+    }
+
+    // Если не нашли, используем то что есть
     setCurrentPost(post);
     setIsModalOpen(true);
-    window.history.pushState({}, "", `/news/${post.url}`);
+    setIsLoading(false);
   };
 
   // Закрытие модального окна
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setCurrentPost(null);
+    // Возвращаемся на предыдущую страницу
     window.history.back();
   };
 
   const [isAccessibilityPanelOpen, setIsAccessibilityPanelOpen] = useState(false);
 
+  // Функция для получения названия категории
+  const getCategoryTitle = (category) => {
+    if (!category) return 'Новость';
+    if (typeof category === 'object') {
+      return category.title || category.name || 'Новость';
+    }
+    return category;
+  };
 
   return (
     <>
@@ -95,8 +125,6 @@ export default function AppHeader({anniversary, logo, title}) {
                     <li className="menu-item"><a href="/president">Глава Республики</a></li>
                     <li className="menu-item"><a href="/president-administration">Администрация Главы</a></li>
                     <li className="menu-item"><a href="/government">Правительство</a></li>
-
-                    {/*<li className="menu-item"><a href={ route('agencies.index') }></a></li>*/}
                   </ul>
                 </li>
                 <li className="menu-item"><a href={route('media')}>Медиа</a></li>
@@ -123,6 +151,7 @@ export default function AppHeader({anniversary, logo, title}) {
           </div>
         </div>
       </header>
+
       <div className={`search search--${searchOpened ? 'opened' : 'closed'}`}>
         <div className="search-input">
           <input type="text" placeholder="Найти на сайте" value={query} onChange={(e) => setQuery(e.target.value)}/>
@@ -135,34 +164,37 @@ export default function AppHeader({anniversary, logo, title}) {
           <SearchIcon color="neutral-white" size={24} className="search__icon"/>
         </Button>
       </div>
-      {
-        !!results?.length ? (
-          <div className="search-results">
-            <div className="results">
-              {results.slice(0, 5).map((result) => (
-                <div className="result" key={result.url}>
-                  <Link
-                    className="result__title"
-                    to={"/news/" + result.url}
-                    onClick={(e) => {
-                      e.preventDefault(); // Предотвращаем переход по ссылке
-                      handlePost(result);
-                    }}
-                  >
-                    {result.title}
-                  </Link>
-                  <div className="result__footer">
-                    <div className="result__date">{new Date(result.created_at).toLocaleDateString()}</div>
-                    <div className="result__category">{result.category}</div>
+
+      {!!results?.length && (
+        <div className="search-results">
+          <div className="results">
+            {results.slice(0, 5).map((result) => (
+              <div className="result" key={result.url || result.id}>
+                <Link
+                  className="result__title"
+                  href={`/post/${result.url}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handlePost(result);
+                  }}
+                >
+                  {result.title}
+                </Link>
+                <div className="result__footer">
+                  <div className="result__date">
+                    {new Date(result.created_at || result.published_at).toLocaleDateString()}
+                  </div>
+                  <div className="result__category">
+                    {getCategoryTitle(result.category)}
                   </div>
                 </div>
-              ))
-              }
-            </div>
-            <AppLink to={`/search/page?query=${query}`} title="Все результаты поиска"/>
+              </div>
+            ))}
           </div>
-        ) : ''
-      }
+          <AppLink to={`/search/page?query=${query}`} title="Все результаты поиска"/>
+        </div>
+      )}
+
       <div className={`sidebar-menu sidebar-menu--${menuOpened ? 'opened' : 'closed'}`}>
         <div className="sidebar-menu__container">
           <ul className="menu main-menu">
@@ -174,7 +206,6 @@ export default function AppHeader({anniversary, logo, title}) {
                 <li className="menu-item"><a href="/president">Глава Республики</a></li>
                 <li className="menu-item"><a href="/president-administration">Администрация Главы</a></li>
                 <li className="menu-item"><a href="/government">Правительство</a></li>
-                {/*<li className="menu-item"><a href={ route('agencies.index') }>Министерства</a></li>*/}
               </ul>
             </li>
             <li className="menu-item"><a href={route('media')}>Медиа</a></li>
@@ -187,12 +218,10 @@ export default function AppHeader({anniversary, logo, title}) {
             <li className="menu-item"><a href={route('civilServices.index')}>Государственная служба</a></li>
             <li className="menu-item"><a href={route('culture')}>Культура</a></li>
             <li className="menu-item"><a href={route('gloryTour')}>Виртуальный тур по Залу славы</a></li>
-            <li className="menu-item"><a href={route('federalAuthorities.index')}>Территориальные органы фед.органов
-              власти</a></li>
+            <li className="menu-item"><a href={route('federalAuthorities.index')}>Территориальные органы фед.органов власти</a></li>
             <li className="menu-item"><a href={route('antinars.index')}>Антинаркотическая комиссия</a></li>
             <li className="menu-item"><a href={route('smi.index')}>Республиканские СМИ</a></li>
-            <li className="menu-item"><a href={route('homeManagmentReserves.index')}>Резерв управленческих кадров</a>
-            </li>
+            <li className="menu-item"><a href={route('homeManagmentReserves.index')}>Резерв управленческих кадров</a></li>
             <li className="menu-item"><a href={route('konkurs')}>Конкурсы в органах исполнительной власти</a></li>
             <li className="menu-item"><a href={route('anticorruptions')}>Противодействие коррупции</a></li>
             <li className="menu-item"><a href="/military-support">Поддержка семей военнослужащих</a></li>
@@ -213,8 +242,12 @@ export default function AppHeader({anniversary, logo, title}) {
           {title: currentPost?.title}
         ]}
       >
-        {currentPost && <PostContent post={currentPost}/>}
+        {isLoading ? (
+          <div className="loading">Загрузка...</div>
+        ) : (
+          currentPost && <PostContent post={currentPost} />
+        )}
       </Modal>
     </>
-  )
+  );
 }

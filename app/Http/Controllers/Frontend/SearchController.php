@@ -17,24 +17,38 @@ class SearchController extends Controller
   private function performSearch($query)
   {
     try {
-      // Поиск новостей (только agency_id = 5)
+      // Поиск новостей (уже с agency_id = 5)
       $news = News::where('agency_id', 5)
         ->whereRaw('LOWER(title) LIKE ?', ["%{$query}%"])
-        ->with('category')
+        ->with(['category', 'tags'])
         ->orderBy('published_at', 'desc')
         ->get()
         ->map(function ($item) {
           return [
             'id' => $item->id,
             'title' => $item->title,
-            'url' => $item->url ?? $item->slug ?? $item->id,
-            'created_at' => $item->published_at ?? $item->created_at,
-            'category' => 'Новость',
-            'category_id' => $item->category_id ?? $item->category?->id ?? null,
-            'category_name' => $item->category?->name ?? null,
+            'url' => $item->url ?? $item->slug,
+            'slug' => $item->slug,
+            'published_at' => $item->published_at,
+            'created_at' => $item->created_at,
+            'content' => $item->content,
+            'lead' => $item->lead,
+            'image_main' => $item->image_main,
+            'image_description' => $item->image_description,
+            'agency_id' => $item->agency_id,
+            'category' => $item->category ? [
+              'id' => $item->category->id,
+              'title' => $item->category->title,
+              'slug' => $item->category->slug,
+            ] : null,
+            'tags' => $item->tags->map(function($tag) {
+              return [
+                'id' => $tag->id,
+                'name' => $tag->name,
+              ];
+            }),
             'type' => 'news',
-            'lead' => $item->lead ?? null,
-            'image' => $item->image ?? null,
+            'category_type' => 'Новость',
           ];
         });
 
@@ -51,13 +65,16 @@ class SearchController extends Controller
             'id' => $item->id,
             'title' => $item->title,
             'url' => $item->url ?? $item->slug ?? $item->id,
-            'created_at' => $item->published_at ?? $item->created_at,
-            'category' => 'Фоторепортаж',
-            'category_id' => null, // Если нет категории
-            'category_name' => null,
-            'type' => 'photo',
+            'published_at' => $item->published_at,
+            'created_at' => $item->created_at,
+            'content' => $item->content ?? null,
             'lead' => $item->lead ?? null,
-            'image' => $item->image ?? null,
+            'image_main' => $item->image ?? null,
+            'agency_id' => $item->agency_id,
+            'category' => null,
+            'tags' => [],
+            'type' => 'photo',
+            'category_type' => 'Фоторепортаж',
           ];
         });
 
@@ -74,13 +91,16 @@ class SearchController extends Controller
             'id' => $item->id,
             'title' => $item->title,
             'url' => $item->url ?? $item->slug ?? $item->id,
-            'created_at' => $item->published_at ?? $item->created_at,
-            'category' => 'Видео',
-            'category_id' => null,
-            'category_name' => null,
-            'type' => 'video',
+            'published_at' => $item->published_at,
+            'created_at' => $item->created_at,
+            'content' => $item->content ?? null,
             'lead' => $item->lead ?? null,
-            'image' => $item->image ?? null,
+            'image_main' => $item->image ?? null,
+            'agency_id' => $item->agency_id,
+            'category' => null,
+            'tags' => [],
+            'type' => 'video',
+            'category_type' => 'Видео',
           ];
         });
 
@@ -94,21 +114,38 @@ class SearchController extends Controller
             'id' => $item->id,
             'title' => $item->title,
             'url' => $item->url ?? $item->slug ?? $item->id,
-            'created_at' => $item->published_at ?? $item->created_at,
-            'category' => 'Документ',
-            'category_id' => null,
-            'category_name' => null,
-            'type' => 'document',
+            'published_at' => $item->published_at,
+            'created_at' => $item->created_at,
+            'content' => $item->content ?? null,
             'lead' => $item->lead ?? null,
-            'image' => $item->image ?? null,
+            'image_main' => $item->image ?? null,
+            'agency_id' => $item->agency_id,
+            'category' => null,
+            'tags' => [],
+            'type' => 'document',
+            'category_type' => 'Документ',
           ];
         });
 
+      // Объединяем все результаты
+      $allResults = collect()
+        ->concat($news)
+        ->concat($photoReportages)
+        ->concat($videos)
+        ->concat($documents);
+
+      // Сортируем по published_at (самые новые сверху)
+      $sortedResults = $allResults->sortByDesc(function ($item) {
+        return $item['published_at'] ?? $item['created_at'] ?? now();
+      })->values();
+
+      // Возвращаем отсортированные результаты по категориям
       return [
         'news' => $news,
         'photoReportages' => $photoReportages,
         'videos' => $videos,
         'documents' => $documents,
+        'all' => $sortedResults, // Добавляем общий список
       ];
 
     } catch (\Exception $e) {
@@ -122,6 +159,7 @@ class SearchController extends Controller
         'photoReportages' => collect(),
         'videos' => collect(),
         'documents' => collect(),
+        'all' => collect(),
       ];
     }
   }
@@ -137,6 +175,7 @@ class SearchController extends Controller
           'photoReportages' => [],
           'videos' => [],
           'documents' => [],
+          'all' => [],
         ]);
       }
 
@@ -190,7 +229,6 @@ class SearchController extends Controller
         'trace' => $e->getTraceAsString()
       ]);
 
-      // Возвращаем страницу с пустыми результатами
       return Inertia::render('Search/Results', [
         'query' => $request->get('query', ''),
         'initialResults' => [
@@ -198,6 +236,7 @@ class SearchController extends Controller
           'photoReportages' => [],
           'videos' => [],
           'documents' => [],
+          'all' => [],
         ],
         'categories' => Category::all(),
         'currentAgency' => 5,
