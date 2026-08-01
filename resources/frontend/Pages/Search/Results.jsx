@@ -14,7 +14,7 @@ import axios from "axios";
 
 export default function Results() {
   const { query, initialResults } = usePage().props;
-  const [results, setResults] = useState(initialResults || {});
+  const [results, setResults] = useState([]);
   const [activeFilter, setActiveFilter] = useState(null);
   const [visibleCount, setVisibleCount] = useState(11);
   const [isFiltersOpened, setFiltersOpened] = useState(false);
@@ -22,28 +22,75 @@ export default function Results() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPost, setCurrentPost] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
 
+  // Загрузка результатов при монтировании и изменении query
   useEffect(() => {
-    if (!query) return;
+    if (!query) {
+      setResults([]);
+      return;
+    }
 
+    setIsSearching(true);
+
+    // Если есть initialResults и они не пустые, используем их
+    if (initialResults && Object.values(initialResults).some(arr => arr?.length > 0)) {
+      const allResults = [
+        ...(initialResults.news || []),
+        ...(initialResults.photoReportages || []),
+        ...(initialResults.videos || []),
+        ...(initialResults.documents || []),
+      ];
+      // Сортируем по дате
+      const sorted = allResults.sort((a, b) => {
+        const dateA = new Date(a.published_at || a.created_at);
+        const dateB = new Date(b.published_at || b.created_at);
+        return dateB - dateA;
+      });
+      setResults(sorted);
+      setIsSearching(false);
+      return;
+    }
+
+    // Если initialResults пустые, делаем запрос
     axios.get(route('search.index', { query: query.trim().toLowerCase() }))
       .then(response => {
-        setResults({
-          news: response.data.news || [],
-          documents: response.data.documents || [],
-          videos: response.data.videos || [],
-          photoReportages: response.data.photoReportages || []
+        const allResults = [
+          ...(response.data.news || []),
+          ...(response.data.photoReportages || []),
+          ...(response.data.videos || []),
+          ...(response.data.documents || []),
+        ];
+        // Сортируем по дате
+        const sorted = allResults.sort((a, b) => {
+          const dateA = new Date(a.published_at || a.created_at);
+          const dateB = new Date(b.published_at || b.created_at);
+          return dateB - dateA;
         });
+        setResults(sorted);
       })
-      .catch(console.error);
-  }, [query]);
+      .catch(console.error)
+      .finally(() => setIsSearching(false));
+  }, [query, initialResults]);
 
+  // Фильтрация результатов
   const filteredResults = useMemo(() => {
+    if (!results.length) return [];
+
     if (!activeFilter || activeFilter === 'all') {
-      // Используем общий отсортированный список
-      return results.all || [];
+      return results;
     }
-    return results[activeFilter] || [];
+
+    // Фильтруем по типу
+    return results.filter(item => {
+      switch(activeFilter) {
+        case 'news': return item.type === 'news' || item.category_type === 'Новость';
+        case 'documents': return item.type === 'document' || item.category_type === 'Документ';
+        case 'videos': return item.type === 'video' || item.category_type === 'Видео';
+        case 'photoReportages': return item.type === 'photo' || item.category_type === 'Фоторепортаж';
+        default: return true;
+      }
+    });
   }, [results, activeFilter]);
 
   const filterResults = (category) => {
@@ -56,12 +103,15 @@ export default function Results() {
   };
 
   // Функция для получения названия категории
-  const getCategoryTitle = (category) => {
-    if (!category) return 'Новость';
-    if (typeof category === 'object') {
-      return category.title || category.name || 'Новость';
+  const getCategoryTitle = (item) => {
+    if (item.category_type) return item.category_type;
+    if (item.category) {
+      if (typeof item.category === 'object') {
+        return item.category.title || item.category.name;
+      }
+      return item.category;
     }
-    return category;
+    return 'Новость';
   };
 
   // Обработчик открытия поста
@@ -78,8 +128,7 @@ export default function Results() {
     }
 
     // Ищем полную версию поста в результатах
-    const allResults = Object.values(results).flat();
-    const fullPost = allResults.find(r => r.id === post.id && r.content);
+    const fullPost = results.find(r => r.id === post.id && r.content);
 
     if (fullPost) {
       setCurrentPost(fullPost);
@@ -111,14 +160,26 @@ export default function Results() {
   ];
 
   const getResultLink = (result) => {
-    switch(result.category) {
-      case 'Новость': return `/news/${result.slug || result.url}`;
-      case 'Документ': return `/documents/${result.id}`;
-      case 'Видео': return `/videos/${result.id}`;
-      case 'Фоторепортаж': return `/photo-reportages/${result.id}`;
-      default: return '#';
+    switch(result.type || result.category_type) {
+      case 'news':
+      case 'Новость':
+        return `/news/${result.slug || result.url}`;
+      case 'document':
+      case 'Документ':
+        return `/documents/${result.id}`;
+      case 'video':
+      case 'Видео':
+        return `/videos/${result.id}`;
+      case 'photo':
+      case 'Фоторепортаж':
+        return `/photo-reportages/${result.id}`;
+      default:
+        return `/post/${result.url}`;
     }
   };
+
+  // Проверяем, есть ли результаты
+  const hasResults = results.length > 0;
 
   return (
     <>
@@ -132,7 +193,13 @@ export default function Results() {
             value={inputQuery}
             onChange={(e) => {
               setInputQuery(e.target.value);
+              // Обновляем URL при вводе
               router.replace(route('search.page', { query: e.target.value }));
+            }}
+            onKeyPress={(e) => {
+              if (e.key === 'Enter') {
+                router.get(route('search.page', { query: inputQuery }));
+              }
             }}
           />
           <SearchIcon color="neutral-dark" size={24} className="input-icon" />
@@ -149,14 +216,16 @@ export default function Results() {
         <Tabs selected={activeFilter} tabs={tabs} onTab={filterResults} />
         <div className="results__count-wrapper">
           <div className="results__count">
-            Найдено {filteredResults.length} результатов
+            {isSearching ? 'Поиск...' : `Найдено ${filteredResults.length} результатов`}
           </div>
           <FilterButton isActive={isFiltersOpened} onChange={setFiltersOpened} />
         </div>
 
         <div className="results__wrapper">
           <div className="results">
-            {filteredResults.length > 0 ? (
+            {isSearching ? (
+              <div className="loading-results">Загрузка результатов...</div>
+            ) : filteredResults.length > 0 ? (
               filteredResults.slice(0, visibleCount).map((result, index) => (
                 <div className="result" key={result.id || index}>
                   <Link
@@ -171,10 +240,10 @@ export default function Results() {
                   </Link>
                   <div className="result__footer">
                     <div className="result__date">
-                      {new Date(result.created_at || result.published_at).toLocaleDateString()}
+                      {new Date(result.published_at || result.created_at).toLocaleDateString()}
                     </div>
                     <div className="result__category">
-                      {getCategoryTitle(result.category)}
+                      {getCategoryTitle(result)}
                     </div>
                   </div>
                 </div>
@@ -185,7 +254,7 @@ export default function Results() {
           </div>
         </div>
 
-        {visibleCount < filteredResults.length && (
+        {!isSearching && visibleCount < filteredResults.length && (
           <button onClick={loadMore} className="infinite-scroll-button">
             Показать еще
           </button>
