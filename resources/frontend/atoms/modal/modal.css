@@ -109,6 +109,7 @@ body:has(.modal--opened) {
 
 .modal__content-wrapper p span{
     font-size: 16px!important;
+
 }
 
 
