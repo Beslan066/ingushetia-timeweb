@@ -240,7 +240,29 @@ export default function Results() {
                   </Link>
                   <div className="result__footer">
                     <div className="result__date">
-                      {new Date(result.published_at || result.published_at).toLocaleDateString()}
+                      {(() => {
+                        // Для новостей всегда используем published_at
+                        let dateString;
+                        if (result.type === 'news' || result.category_type === 'Новость') {
+                          dateString = result.published_at;
+                        } else {
+                          dateString = result.published_at || result.created_at;
+                        }
+
+                        if (!dateString) return 'Дата не указана';
+
+                        try {
+                          const date = new Date(dateString);
+                          if (isNaN(date.getTime())) return 'Дата не указана';
+                          return date.toLocaleDateString('ru-RU', {
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric'
+                          });
+                        } catch {
+                          return 'Дата не указана';
+                        }
+                      })()}
                     </div>
                     <div className="result__category">
                       {getCategoryTitle(result)}
