@@ -240,7 +240,7 @@ export default function Results() {
                   </Link>
                   <div className="result__footer">
                     <div className="result__date">
-                      {new Date(result.published_at || result.created_at).toLocaleDateString()}
+                      {new Date(result.published_at || result.published_at).toLocaleDateString()}
                     </div>
                     <div className="result__category">
                       {getCategoryTitle(result)}
