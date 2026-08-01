@@ -182,10 +182,18 @@ export default function AppHeader({anniversary, logo, title}) {
                 </Link>
                 <div className="result__footer">
                   <div className="result__date">
-                    {new Date(result.created_at || result.published_at).toLocaleDateString()}
-                  </div>
-                  <div className="result__category">
-                    {getCategoryTitle(result.category)}
+                    {(() => {
+                      // Для новостей всегда используем published_at
+                      let dateString;
+                      if (result.type === 'news' || result.category_type === 'Новость') {
+                        dateString = result.published_at;
+                      } else {
+                        dateString = result.created_at || result.published_at;
+                      }
+                      return dateString
+                        ? new Date(dateString).toLocaleDateString()
+                        : 'Дата не указана';
+                    })()}
                   </div>
                 </div>
               </div>
