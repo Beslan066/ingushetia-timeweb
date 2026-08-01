@@ -53,7 +53,7 @@ export default function AppHeader({anniversary, logo, title}) {
   const handlePost = (post) => {
     setCurrentPost(post);
     setIsModalOpen(true);
-    window.history.pushState({}, "", `/news/${post.id}`);
+    window.history.pushState({}, "", `/news/${post.url}`);
   };
 
   // Закрытие модального окна
@@ -140,10 +140,10 @@ export default function AppHeader({anniversary, logo, title}) {
           <div className="search-results">
             <div className="results">
               {results.slice(0, 5).map((result) => (
-                <div className="result" key={result.id}>
+                <div className="result" key={result.url}>
                   <Link
                     className="result__title"
-                    to={"/news/" + result.id}
+                    to={"/news/" + result.url}
                     onClick={(e) => {
                       e.preventDefault(); // Предотвращаем переход по ссылке
                       handlePost(result);

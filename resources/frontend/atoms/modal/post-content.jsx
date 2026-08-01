@@ -95,14 +95,14 @@ const PostContent = ({post, onPost}) => {
       {/* Мета-информация */}
       <div className="post__meta">
         {post.category && (
-          <Link
-            href={route('posts.by.tag', post.category.id)}
+          <a
+            href={`/category/${post.category.id}`}
             className="post-meta__link"
           >
             <div className="post-meta__category">
               {post.category.title}
             </div>
-          </Link>
+          </a>
         )}
         <div className="post-meta__date">
           {formatDate(post.published_at)}

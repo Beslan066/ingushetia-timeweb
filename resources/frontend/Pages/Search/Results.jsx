@@ -64,10 +64,9 @@ export default function Results({post}) {
 
 
   const handlePost = (post) => {
-    Inertia.get(route('post.show', {
+    Inertia.get(route('post.show.home', {
       url: post.url
     }), {
-      // Передаем параметры поиска обратно
       data: {
         search_query: query
       },
@@ -85,7 +84,7 @@ export default function Results({post}) {
   // Функция для формирования ссылки
   const getResultLink = (result) => {
     switch(result.category) {
-      case 'Новость': return `/news/${result.id}`;
+      case 'Новость': return `/news/${result.slug}`;
       case 'Документ': return `/documents/${result.id}`;
       case 'Видео': return `/videos/${result.id}`;
       case 'Фоторепортаж': return `/photo-reportages/${result.id}`;
@@ -96,7 +95,7 @@ export default function Results({post}) {
 
   const tabs = [
     {title: 'Новости', id: 'news'},
-    {title: 'Документы', id: 'documents'},
+    {title: 'Документы', slug: 'documents'},
     {title: 'Видео', id: 'videos'},
     {title: 'Фоторепортажи', id: 'photoReportages'},
   ]
