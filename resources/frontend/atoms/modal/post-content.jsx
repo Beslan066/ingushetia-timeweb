@@ -96,7 +96,7 @@ const PostContent = ({post, onPost}) => {
       <div className="post__meta">
         {post.category && (
           <a
-            href={`/category/${post.category.id}`}
+            href={`/news-by-category/${post.category.id}`}
             className="post-meta__link"
           >
             <div className="post-meta__category">

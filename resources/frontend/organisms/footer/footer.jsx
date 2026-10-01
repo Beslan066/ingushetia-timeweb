@@ -82,8 +82,12 @@ export default function AppFooter({ anniversary = false, logo }) {
           </div>
           <Button text="Задать вопрос" handleClick={ () => setModal(true) } />
         </div>
+        <div className="footer__judical">
+          <Link>Политика конфиденциальности</Link>
+          <Link>Согласие на обработку персональных данных</Link>
+        </div>
       </footer>
-      <footer className="copyright">&copy; 2024, Все права защищены</footer>
+      <footer className="copyright">&copy; 2026, Все права защищены</footer>
 
       <Modal isOpen={ isOpen } handleClose={ () => setModal(false) } stickyOnBottom={ false }>
         <ContactsContent onClose={() => setModal(false)} />

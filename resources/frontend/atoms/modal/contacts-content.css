@@ -20,7 +20,6 @@
 
 .contacts__content label {
   display: block;
-  font-size: var(--font-size-h4);
   font-weight: var(--font-weight-semibold);
   line-height: var(--line-height-h4);
   color: var(--color-neutral-black);
@@ -41,4 +40,40 @@
 .contacts__content .actions {
   display: flex;
   gap: 16px;
+}
+
+
+.consent-checkboxes {
+  display: flex;
+  gap: 12px;
+  margin: 16px 0 20px;
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #333;
+  user-select: none;
+}
+
+.checkbox-group input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  flex-shrink: 0;
+  cursor: pointer;
+  accent-color: #0a8f5b; /* зелёный цвет под стиль кнопки */
+}
+
+.checkbox-group span {
+  flex: 1;
+}
+
+.actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }

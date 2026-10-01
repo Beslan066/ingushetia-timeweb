@@ -17,6 +17,9 @@
   <link rel="icon" href="{{ asset('img/favicon.ico') }}" type="image/x-icon">
   <link rel="canonical" href={window.location.href} />
 
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+
+
   <style>
     .cookie-consent {
       position: fixed;

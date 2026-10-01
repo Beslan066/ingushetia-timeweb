@@ -77,8 +77,18 @@
   gap: 24px;
 }
 
+.footer__judical {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
 @media (min-width: 768px) {
   .footer__about {
+    flex-direction: row;
+  }
+
+  .footer__judical {
     flex-direction: row;
   }
 
@@ -108,4 +118,13 @@
     max-width: 1212px;
     margin: 0 auto;
   }
+
+  .footer__judical {
+    max-width: 1212px;
+    margin: 0 auto;
+  }
+}
+
+.footer__judical a {
+  color: #fff
 }

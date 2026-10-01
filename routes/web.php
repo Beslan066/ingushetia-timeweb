@@ -521,9 +521,9 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['auth', Admin::class]], f
 
     });
 
-
-    Route::post('/support', [SupportController::class, 'store'])->name('support.store');
 });
+
+Route::post('/support', [SupportController::class, 'store'])->name('support.store');
 
 Route::get('/dashboard', function () {
     return view('dashboard');

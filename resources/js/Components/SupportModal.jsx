@@ -136,7 +136,7 @@ export default function SupportModal({ active, onClose }) {
                         />
                         {errors.user_message && <span className="error-message">{errors.user_message[0]}</span>}
                     </div>
-                    <button type="submit">Отправить</button>
+                    <button style={{ padding: '10px'}} type="submit">Отправить</button>
                 </form>
             </div>
         </div>
