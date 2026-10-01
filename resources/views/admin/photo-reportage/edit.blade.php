@@ -74,7 +74,6 @@
                        data-max-files="50">
                 <small class="text-muted">Выберите дополнительные изображения</small>
 
-                <!-- Контейнер для предпросмотра существующих и новых слайдов -->
                 <div id="slides-preview" class="d-flex flex-wrap mt-2 gap-2">
                   @foreach($reportage->slides_array as $index => $slide)
                     <div class="position-relative slide-preview-item" data-slide-path="{{ $slide }}">
@@ -92,9 +91,7 @@
                 @enderror
 
                 @error('slides.*')
-                <div class="invalid-feedback d-block">
-                  Ошибка в слайде #{{ $message->customAttributes['slides_index'] ?? 'N/A' }}: {{ $message }}
-                </div>
+                <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror
               </div>
 
@@ -171,38 +168,35 @@
         messages: {
           'default': 'Перетащите файл или кликните для выбора',
           'replace': 'Перетащите или кликните для замены',
-          'remove': 'Удалить',
-          'error': 'Ошибка'
+          'remove':  'Удалить',
+          'error':   'Ошибка'
         },
         error: {
-          'fileSize': 'Файл слишком большой (макс. {{ config('app.upload_max_size') ?? '130K' }}).',
+          'fileSize':      'Файл слишком большой (макс. 130K).',
           'fileExtension': 'Разрешены только файлы .webp'
         }
       });
 
-      // Хранилище для новых файлов
       let newSlidesFiles = [];
-      // Массив для удаляемых существующих слайдов
       let removedExistingSlides = [];
 
-      // Обработчик изменения input файлов
-      $('#slides').on('change', function(e) {
+      // === ВЫБОР НОВЫХ ФАЙЛОВ ===
+      $('#slides').on('change', function (e) {
         const files = Array.from(e.target.files);
         if (files.length > 0) {
           handleFileSelection(files);
         }
-        // Очищаем значение input
         $(this).val('');
       });
 
-      // Обработчик drag and drop
-      $('#slides-preview').on('dragover', function(e) {
+      // Drag & drop
+      $('#slides-preview').on('dragover', function (e) {
         e.preventDefault();
         $(this).addClass('border-primary');
-      }).on('dragleave', function(e) {
+      }).on('dragleave', function (e) {
         e.preventDefault();
         $(this).removeClass('border-primary');
-      }).on('drop', function(e) {
+      }).on('drop', function (e) {
         e.preventDefault();
         $(this).removeClass('border-primary');
         const files = Array.from(e.originalEvent.dataTransfer.files);
@@ -211,7 +205,6 @@
         }
       });
 
-      // Функция обработки выбранных файлов
       function handleFileSelection(files) {
         const maxTotalSlides = 50;
         const existingSlidesCount = $('.slide-preview-item[data-slide-path]').length - removedExistingSlides.length;
@@ -228,7 +221,6 @@
               existingFile.size === file.size &&
               existingFile.type === file.type
           );
-
           if (!isDuplicate) {
             newSlidesFiles.push(file);
           }
@@ -237,39 +229,34 @@
         updatePreview();
       }
 
-      // Функция обновления предпросмотра
       function updatePreview() {
         const preview = $('#slides-preview');
 
-        // Очищаем только предпросмотр новых слайдов
+        // Убираем старые превью новых файлов
         preview.find('.new-slide-preview').remove();
 
-        // Добавляем новые слайды с правильной нумерацией
+        // Добавляем новые
         newSlidesFiles.forEach((file, index) => {
           const reader = new FileReader();
-
-          reader.onload = function(e) {
+          reader.onload = function (e) {
             const previewItem = $(
               `<div class="position-relative slide-preview-item new-slide-preview" data-file-index="${index}">
-              <img src="${e.target.result}" class="img-thumbnail">
-              <span class="badge bg-success position-absolute top-0 start-0">Новый ${index + 1}</span>
-              <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 remove-new-slide">
-                <i class="fas fa-times"></i>
-              </button>
-            </div>`
+                <img src="${e.target.result}" class="img-thumbnail">
+                <span class="badge bg-success position-absolute top-0 start-0">Новый ${index + 1}</span>
+                <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 remove-new-slide">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>`
             );
-
             preview.append(previewItem);
           };
-
           reader.readAsDataURL(file);
         });
 
-        // Обновляем индикатор удаленных слайдов
-        $('.slide-preview-item[data-slide-path]').each(function() {
+        // Подсвечиваем удалённые существующие
+        $('.slide-preview-item[data-slide-path]').each(function () {
           const slidePath = $(this).data('slide-path');
           const $this = $(this);
-
           if (removedExistingSlides.includes(slidePath)) {
             $this.addClass('border-danger opacity-50');
             $this.find('.remove-existing-slide').html('<i class="fas fa-undo"></i>');
@@ -282,58 +269,52 @@
         $('#removedSlidesInput').val(JSON.stringify(removedExistingSlides));
       }
 
-      // Обработчик удаления нового слайда
-      $(document).on('click', '.remove-new-slide', function() {
+      // Удаление нового слайда
+      $(document).on('click', '.remove-new-slide', function () {
         const $item = $(this).closest('.new-slide-preview');
         const fileIndex = parseInt($item.data('file-index'));
-
         if (!isNaN(fileIndex) && fileIndex >= 0 && fileIndex < newSlidesFiles.length) {
           newSlidesFiles.splice(fileIndex, 1);
           updatePreview();
         }
       });
 
-      // Обработчик удаления/восстановления существующего слайда
-      $(document).on('click', '.remove-existing-slide', function() {
+      // Удаление / восстановление существующего
+      $(document).on('click', '.remove-existing-slide', function () {
         const $item = $(this).closest('.slide-preview-item');
         const slidePath = $item.data('slide-path');
-
         const index = removedExistingSlides.indexOf(slidePath);
         if (index === -1) {
           removedExistingSlides.push(slidePath);
         } else {
           removedExistingSlides.splice(index, 1);
         }
-
         updatePreview();
       });
 
-      // Обработчик отправки формы
-      $('#photoReportageForm').on('submit', function(e) {
+      // === ОТПРАВКА ФОРМЫ ===
+      $('#photoReportageForm').on('submit', function (e) {
         e.preventDefault();
 
         const form = this;
         const formData = new FormData(form);
 
-        // Добавляем новые файлы в FormData
-        newSlidesFiles.forEach((file, index) => {
+        // Добавляем новые слайды
+        newSlidesFiles.forEach((file) => {
           formData.append('slides[]', file);
         });
 
-        // Проверка количества слайдов
+        // Проверка кол-ва
         const existingSlidesCount = $('.slide-preview-item[data-slide-path]').length;
         const remainingSlides = existingSlidesCount - removedExistingSlides.length + newSlidesFiles.length;
-
         if (remainingSlides === 0) {
           alert('Пожалуйста, оставьте хотя бы один слайд');
           return false;
         }
 
-        // Показываем индикатор загрузки
         const submitBtn = $(form).find('button[type="submit"]');
         submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Сохранение...');
 
-        // Отправка формы через AJAX
         $.ajax({
           url: $(form).attr('action'),
           type: 'POST',
@@ -341,24 +322,25 @@
           processData: false,
           contentType: false,
           headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+            'X-Requested-With': 'XMLHttpRequest' // важно для $request->ajax()
           },
-          success: function(response) {
-            if (response.redirect) {
+          success: function (response) {
+            // Контроллер вернёт JSON с полем redirect
+            if (response && response.redirect) {
               window.location.href = response.redirect;
             } else {
               window.location.reload();
             }
           },
-          error: function(xhr) {
+          error: function (xhr) {
             submitBtn.prop('disabled', false).html('Обновить');
 
             if (xhr.status === 419) {
-              alert('Сессия истекла. Пожалуйста, перезагрузите страницу и попробуйте снова.');
+              alert('Сессия истекла. Перезагрузите страницу.');
             } else if (xhr.responseJSON && xhr.responseJSON.errors) {
-              // Обработка ошибок валидации
               let errorMessages = [];
-              $.each(xhr.responseJSON.errors, function(key, messages) {
+              $.each(xhr.responseJSON.errors, function (key, messages) {
                 errorMessages = errorMessages.concat(messages);
               });
               alert('Ошибки:\n' + errorMessages.join('\n'));

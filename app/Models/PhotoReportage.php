@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Storage;
 
 class PhotoReportage extends Model
 {
@@ -48,8 +49,30 @@ class PhotoReportage extends Model
     }
   }
 
-  public function getSlidesArrayAttribute()
+
+  /**
+   * URL главного изображения (для dropify в edit)
+   */
+  public function getImageMainUrlAttribute(): string
   {
-    return $this->slides ? json_decode($this->slides, true) : [];
+    return $this->image_main
+      ? Storage::url($this->image_main)
+      : '';
+  }
+
+  /**
+   * Массив слайдов (декодированный JSON)
+   */
+  public function getSlidesArrayAttribute(): array
+  {
+    if (empty($this->slides)) {
+      return [];
+    }
+
+    $decoded = is_string($this->slides)
+      ? json_decode($this->slides, true)
+      : $this->slides;
+
+    return is_array($decoded) ? $decoded : [];
   }
 }
