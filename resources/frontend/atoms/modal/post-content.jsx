@@ -7,6 +7,23 @@ import {format} from 'date-fns';
 import {ru} from 'date-fns/locale';
 import {Link} from "@inertiajs/react";
 
+// Словарь типов документов (соответствует Document::getTypes())
+const DOCUMENT_TYPE_TITLES = {
+  0: 'Акты',
+  1: 'Законы',
+  2: 'Отчеты',
+  3: 'Указы',
+  4: 'Распоряжения',
+};
+
+// Преобразует относительный путь файла в публичный URL
+const getDocumentFileUrl = (file) => {
+  if (!file) return null;
+  if (file.startsWith('http://') || file.startsWith('https://')) return file;
+  if (file.startsWith('/')) return file;
+  return `/storage/${file}`;
+};
+
 const PostContent = ({post, onPost}) => {
   const [copySuccess, setCopySuccess] = useState(false);
 
@@ -90,6 +107,13 @@ const PostContent = ({post, onPost}) => {
     }
   };
 
+  // Вычисления для документов
+  const isDocument = post.type === 'document';
+  const documentFileUrl = isDocument ? getDocumentFileUrl(post.file) : null;
+  const documentFileExt = post.file
+    ? post.file.split('.').pop().toLowerCase()
+    : null;
+
   return (
     <div className="post-content printable-content">
       {/* Мета-информация */}
@@ -104,6 +128,13 @@ const PostContent = ({post, onPost}) => {
             </div>
           </a>
         )}
+
+        {post.type === 'document' && post.document_type != null && (
+          <div className="post-meta__category">
+            {DOCUMENT_TYPE_TITLES[post.document_type] || 'Документ'}
+          </div>
+        )}
+
         <div className="post-meta__date">
           {formatDate(post.published_at)}
         </div>
@@ -153,10 +184,49 @@ const PostContent = ({post, onPost}) => {
           )}
 
           {post.type === 'document' && (
-            <div
-              className="post__document-content"
-              dangerouslySetInnerHTML={{__html: post.content}}
-            />
+            <>
+              {post.content && (
+                <div
+                  className="post__document-content"
+                  dangerouslySetInnerHTML={{__html: post.content}}
+                />
+              )}
+
+              {documentFileUrl ? (
+                <div className="post__document-file">
+                  {documentFileExt === 'pdf' ? (
+                    <>
+                      <iframe
+                        src={documentFileUrl}
+                        title={post.title}
+                        className="post__document-pdf"
+                      />
+                      <a
+                        href={documentFileUrl}
+                        download
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="post__document-download"
+                      >
+                        Скачать документ (PDF)
+                      </a>
+                    </>
+                  ) : (
+                    <a
+                      href={documentFileUrl}
+                      download
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="post__document-download"
+                    >
+                      Скачать документ ({documentFileExt?.toUpperCase()})
+                    </a>
+                  )}
+                </div>
+              ) : (
+                <p className="post__document-empty">Файл документа недоступен</p>
+              )}
+            </>
           )}
 
           {!['video', 'document'].includes(post.type) && (

@@ -7,18 +7,25 @@ import { Link, usePage, router } from "@inertiajs/react";
 import Button from "#/atoms/buttons/button.jsx";
 import Tabs from "#/atoms/tabs/tabs.jsx";
 import './results.css';
-import FilterButton from "#/atoms/filters/filter-button.jsx";
 import Modal from "#/atoms/modal/modal.jsx";
 import PostContent from "#/atoms/modal/post-content.jsx";
 import axios from "axios";
 
+// Маппинг id таба -> type, который приходит с бэкенда
+const FILTER_TYPE_MAP = {
+  news: 'news',
+  documents: 'document',
+  videos: 'video',
+  photoReportages: 'photo',
+};
+
 export default function Results() {
   const { query, initialResults } = usePage().props;
+
   const [results, setResults] = useState([]);
-  const [activeFilter, setActiveFilter] = useState(null);
+  const [activeFilter, setActiveFilter] = useState('all');
   const [visibleCount, setVisibleCount] = useState(11);
-  const [isFiltersOpened, setFiltersOpened] = useState(false);
-  const [inputQuery, setInputQuery] = useState(query);
+  const [inputQuery, setInputQuery] = useState(query || '');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPost, setCurrentPost] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -32,65 +39,58 @@ export default function Results() {
     }
 
     setIsSearching(true);
+    setActiveFilter('all');
+    setVisibleCount(11);
 
-    // Если есть initialResults и они не пустые, используем их
-    if (initialResults && Object.values(initialResults).some(arr => arr?.length > 0)) {
-      const allResults = [
-        ...(initialResults.news || []),
-        ...(initialResults.photoReportages || []),
-        ...(initialResults.videos || []),
-        ...(initialResults.documents || []),
-      ];
-      // Сортируем по дате
-      const sorted = allResults.sort((a, b) => {
+    const sortByDate = (arr) =>
+      arr.sort((a, b) => {
         const dateA = new Date(a.published_at || a.created_at);
         const dateB = new Date(b.published_at || b.created_at);
         return dateB - dateA;
       });
-      setResults(sorted);
+
+    // Если есть initialResults и они не пустые — используем их
+    const hasInitial =
+      initialResults &&
+      Object.values(initialResults).some(arr => arr?.length > 0);
+
+    if (hasInitial) {
+      const allResults = sortByDate([
+        ...(initialResults.news || []),
+        ...(initialResults.photoReportages || []),
+        ...(initialResults.videos || []),
+        ...(initialResults.documents || []),
+      ]);
+      setResults(allResults);
       setIsSearching(false);
       return;
     }
 
-    // Если initialResults пустые, делаем запрос
-    axios.get(route('search.index', { query: query.trim().toLowerCase() }))
+    // Иначе — запрос на бэкенд
+    axios
+      .get(route('search.index', { query: query.trim().toLowerCase() }))
       .then(response => {
-        const allResults = [
+        const allResults = sortByDate([
           ...(response.data.news || []),
           ...(response.data.photoReportages || []),
           ...(response.data.videos || []),
           ...(response.data.documents || []),
-        ];
-        // Сортируем по дате
-        const sorted = allResults.sort((a, b) => {
-          const dateA = new Date(a.published_at || a.created_at);
-          const dateB = new Date(b.published_at || b.created_at);
-          return dateB - dateA;
-        });
-        setResults(sorted);
+        ]);
+        setResults(allResults);
       })
       .catch(console.error)
       .finally(() => setIsSearching(false));
   }, [query, initialResults]);
 
-  // Фильтрация результатов
+  // Фильтрация результатов по активному табу
   const filteredResults = useMemo(() => {
     if (!results.length) return [];
+    if (!activeFilter || activeFilter === 'all') return results;
 
-    if (!activeFilter || activeFilter === 'all') {
-      return results;
-    }
+    const type = FILTER_TYPE_MAP[activeFilter];
+    if (!type) return results;
 
-    // Фильтруем по типу
-    return results.filter(item => {
-      switch(activeFilter) {
-        case 'news': return item.type === 'news' || item.category_type === 'Новость';
-        case 'documents': return item.type === 'document' || item.category_type === 'Документ';
-        case 'videos': return item.type === 'video' || item.category_type === 'Видео';
-        case 'photoReportages': return item.type === 'photo' || item.category_type === 'Фоторепортаж';
-        default: return true;
-      }
-    });
+    return results.filter(item => item.type === type);
   }, [results, activeFilter]);
 
   const filterResults = (category) => {
@@ -102,7 +102,7 @@ export default function Results() {
     setVisibleCount(prevCount => prevCount + 11);
   };
 
-  // Функция для получения названия категории
+  // Название категории для отображения
   const getCategoryTitle = (item) => {
     if (item.category_type) return item.category_type;
     if (item.category) {
@@ -114,72 +114,64 @@ export default function Results() {
     return 'Новость';
   };
 
-  // Обработчик открытия поста
-  const handlePost = (post) => {
-    setIsLoading(true);
+  // Форматирование даты
+  const formatDate = (item) => {
+    const dateString = item.published_at || item.created_at;
+    if (!dateString) return 'Дата не указана';
 
-    // Если у поста есть все данные - открываем сразу
-    if (post.content && post.category) {
-      setCurrentPost(post);
-      setIsModalOpen(true);
-      setIsLoading(false);
-      window.history.pushState({}, "", `/post/${post.url}`);
-      return;
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return 'Дата не указана';
+      return date.toLocaleDateString('ru-RU', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      });
+    } catch {
+      return 'Дата не указана';
     }
-
-    // Ищем полную версию поста в результатах
-    const fullPost = results.find(r => r.id === post.id && r.content);
-
-    if (fullPost) {
-      setCurrentPost(fullPost);
-      setIsModalOpen(true);
-      setIsLoading(false);
-      window.history.pushState({}, "", `/post/${post.url}`);
-      return;
-    }
-
-    // Если не нашли, используем то что есть
-    setCurrentPost(post);
-    setIsModalOpen(true);
-    setIsLoading(false);
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setCurrentPost(null);
-    // Возвращаемся на страницу результатов поиска
-    window.history.pushState({}, "", `/search/page?query=${query}`);
-  };
-
-  const tabs = [
-    { title: 'Все', id: 'all' },
-    { title: 'Новости', id: 'news' },
-    { title: 'Документы', slug: 'documents' },
-    { title: 'Видео', id: 'videos' },
-    { title: 'Фоторепортажи', id: 'photoReportages' },
-  ];
-
+  // Ссылка на полную страницу по типу контента
   const getResultLink = (result) => {
-    switch(result.type || result.category_type) {
+    switch (result.type) {
       case 'news':
-      case 'Новость':
         return `/news/${result.slug || result.url}`;
       case 'document':
-      case 'Документ':
         return `/documents/${result.id}`;
       case 'video':
-      case 'Видео':
         return `/videos/${result.id}`;
       case 'photo':
-      case 'Фоторепортаж':
         return `/photo-reportages/${result.id}`;
       default:
         return `/post/${result.url}`;
     }
   };
 
-  // Проверяем, есть ли результаты
-  const hasResults = results.length > 0;
+  // Открытие поста в модальном окне
+  const handlePost = (post) => {
+    setIsLoading(true);
+    setCurrentPost(post);
+    setIsModalOpen(true);
+    setIsLoading(false);
+
+    if (post.url || post.slug) {
+      window.history.pushState({}, "", `/post/${post.url || post.slug}`);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setCurrentPost(null);
+    window.history.pushState({}, "", `/search/page?query=${query}`);
+  };
+
+  const tabs = [
+    { title: 'Новости', id: 'news' },
+    { title: 'Документы', id: 'documents' },
+    { title: 'Видео', id: 'videos' },
+    { title: 'Фоторепортажи', id: 'photoReportages' },
+  ];
 
   return (
     <>
@@ -191,12 +183,8 @@ export default function Results() {
           <input
             type="text"
             value={inputQuery}
-            onChange={(e) => {
-              setInputQuery(e.target.value);
-              // Обновляем URL при вводе
-              router.replace(route('search.page', { query: e.target.value }));
-            }}
-            onKeyPress={(e) => {
+            onChange={(e) => setInputQuery(e.target.value)}
+            onKeyDown={(e) => {
               if (e.key === 'Enter') {
                 router.get(route('search.page', { query: inputQuery }));
               }
@@ -214,11 +202,13 @@ export default function Results() {
 
       <div className="results__container">
         <Tabs selected={activeFilter} tabs={tabs} onTab={filterResults} />
+
         <div className="results__count-wrapper">
           <div className="results__count">
-            {isSearching ? 'Поиск...' : `Найдено ${filteredResults.length} результатов`}
+            {isSearching
+              ? 'Поиск...'
+              : `Найдено ${filteredResults.length} результатов`}
           </div>
-          <FilterButton isActive={isFiltersOpened} onChange={setFiltersOpened} />
         </div>
 
         <div className="results__wrapper">
@@ -227,7 +217,7 @@ export default function Results() {
               <div className="loading-results">Загрузка результатов...</div>
             ) : filteredResults.length > 0 ? (
               filteredResults.slice(0, visibleCount).map((result, index) => (
-                <div className="result" key={result.id || index}>
+                <div className="result" key={`${result.type}-${result.id}-${index}`}>
                   <Link
                     className="result__title"
                     href={getResultLink(result)}
@@ -239,32 +229,7 @@ export default function Results() {
                     {result.title}
                   </Link>
                   <div className="result__footer">
-                    <div className="result__date">
-                      {(() => {
-                        // Для новостей всегда используем published_at
-                        let dateString;
-                        if (result.type === 'news' || result.category_type === 'Новость') {
-                          dateString = result.published_at;
-                          console.log('News date:', dateString); // Временный лог для проверки
-                        } else {
-                          dateString = result.published_at || result.created_at;
-                        }
-
-                        if (!dateString) return 'Дата не указана';
-
-                        try {
-                          const date = new Date(dateString);
-                          if (isNaN(date.getTime())) return 'Дата не указана';
-                          return date.toLocaleDateString('ru-RU', {
-                            day: 'numeric',
-                            month: 'long',
-                            year: 'numeric'
-                          });
-                        } catch {
-                          return 'Дата не указана';
-                        }
-                      })()}
-                    </div>
+                    <div className="result__date">{formatDate(result)}</div>
                     <div className="result__category">
                       {getCategoryTitle(result)}
                     </div>
@@ -291,7 +256,7 @@ export default function Results() {
         handleClose={handleCloseModal}
         breadcrumbs={[
           { title: "Поиск", path: `/search/page?query=${query}` },
-          { title: currentPost?.title }
+          { title: currentPost?.title },
         ]}
       >
         {isLoading ? (

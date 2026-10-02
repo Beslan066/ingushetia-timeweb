@@ -119,6 +119,8 @@ class SearchController extends Controller
             'content' => $item->content ?? null,
             'lead' => $item->lead ?? null,
             'image_main' => $item->image ?? null,
+            'file' => $item->file ?? null,
+            'document_type' => $item->type ?? null,
             'agency_id' => $item->agency_id,
             'category' => null,
             'tags' => [],
