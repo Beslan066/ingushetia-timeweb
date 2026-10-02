@@ -20,10 +20,20 @@ class SearchController extends Controller
       // Поиск новостей (уже с agency_id = 5)
       $news = News::where('agency_id', 5)
         ->whereRaw('LOWER(title) LIKE ?', ["%{$query}%"])
-        ->with(['category', 'tags'])
+        ->with(['category', 'tags', 'video', 'reportage'])
         ->orderBy('published_at', 'desc')
         ->get()
         ->map(function ($item) {
+          // Похожие новости — как в HomeController@index
+          $relatedPosts = News::query()
+            ->where('category_id', $item->category_id)
+            ->where('id', '!=', $item->id)
+            ->where('agency_id', $item->agency_id)
+            ->select(['id', 'title', 'lead', 'url', 'category_id', 'image_main', 'published_at'])
+            ->orderBy('published_at', 'desc')
+            ->limit(3)
+            ->get();
+
           return [
             'id' => $item->id,
             'title' => $item->title,
@@ -41,12 +51,15 @@ class SearchController extends Controller
               'title' => $item->category->title,
               'slug' => $item->category->slug,
             ] : null,
-            'tags' => $item->tags->map(function($tag) {
+            'tags' => $item->tags->map(function ($tag) {
               return [
                 'id' => $tag->id,
                 'name' => $tag->name,
               ];
             }),
+            'video' => $item->video,
+            'reportage' => $item->reportage,
+            'relatedPosts' => $relatedPosts,
             'type' => 'news',
             'category_type' => 'Новость',
           ];
@@ -54,7 +67,7 @@ class SearchController extends Controller
 
       // Поиск фоторепортажей
       $photoReportages = PhotoReportage::where('agency_id', 5)
-        ->where(function($q) use ($query) {
+        ->where(function ($q) use ($query) {
           $q->whereRaw('LOWER(title) LIKE ?', ["%{$query}%"])
             ->orWhereRaw('LOWER(lead) LIKE ?', ["%{$query}%"]);
         })
@@ -80,7 +93,7 @@ class SearchController extends Controller
 
       // Поиск видео
       $videos = Video::where('agency_id', 5)
-        ->where(function($q) use ($query) {
+        ->where(function ($q) use ($query) {
           $q->whereRaw('LOWER(title) LIKE ?', ["%{$query}%"])
             ->orWhereRaw('LOWER(lead) LIKE ?', ["%{$query}%"]);
         })
@@ -147,7 +160,7 @@ class SearchController extends Controller
         'photoReportages' => $photoReportages,
         'videos' => $videos,
         'documents' => $documents,
-        'all' => $sortedResults, // Добавляем общий список
+        'all' => $sortedResults,
       ];
 
     } catch (\Exception $e) {
