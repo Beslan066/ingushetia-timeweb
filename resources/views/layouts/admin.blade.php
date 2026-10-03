@@ -192,34 +192,14 @@
             <i class="mdi mdi-chevron-down d-none d-sm-inline-block"></i>
           </button>
           <div class="dropdown-menu dropdown-menu-right">
-            <a class="dropdown-item d-flex align-items-center justify-content-between"
-               href="javascript:void(0)">
-              <span>Inbox</span>
-              <span>
-                                    <span class="badge badge-pill badge-info">3</span>
-                                </span>
-            </a>
-            <a class="dropdown-item d-flex align-items-center justify-content-between"
-               href="javascript:void(0)">
-              <span>Profile</span>
-              <span>
-                                    <span class="badge badge-pill badge-warning">1</span>
-                                </span>
-            </a>
-            <a class="dropdown-item d-flex align-items-center justify-content-between"
-               href="javascript:void(0)">
-              Settings
-            </a>
-            <a class="dropdown-item d-flex align-items-center justify-content-between"
-               href="javascript:void(0)">
-              <span>Lock Account</span>
-            </a>
 
             <form action="{{route('logout')}}" method="post">
               @csrf
               @method('post')
 
-              <button type="submit">Выйти</button>
+              <div class="flex justify-center">
+                <button type="submit" class="btn btn-outline-danger">Выйти</button>
+              </div>
             </form>
           </div>
         </div>
