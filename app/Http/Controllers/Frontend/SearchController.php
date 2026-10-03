@@ -18,7 +18,7 @@ class SearchController extends Controller
   {
     try {
       // Поиск новостей (уже с agency_id = 5)
-      $news = News::where('agency_id', 5)
+      $news = News::query() //where('agency_id', 5)
         ->whereRaw('LOWER(title) LIKE ?', ["%{$query}%"])
         ->with(['category', 'tags', 'video', 'reportage'])
         ->orderBy('published_at', 'desc')
@@ -28,7 +28,7 @@ class SearchController extends Controller
           $relatedPosts = News::query()
             ->where('category_id', $item->category_id)
             ->where('id', '!=', $item->id)
-            ->where('agency_id', $item->agency_id)
+            //->where('agency_id', $item->agency_id)
             ->select(['id', 'title', 'lead', 'url', 'category_id', 'image_main', 'published_at'])
             ->orderBy('published_at', 'desc')
             ->limit(3)
@@ -45,7 +45,7 @@ class SearchController extends Controller
             'lead' => $item->lead,
             'image_main' => $item->image_main,
             'image_description' => $item->image_description,
-            'agency_id' => $item->agency_id,
+            //'agency_id' => $item->agency_id,
             'category' => $item->category ? [
               'id' => $item->category->id,
               'title' => $item->category->title,
