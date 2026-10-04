@@ -122,7 +122,7 @@ class NewsController extends Controller
         'dateTo' => $dateTo,
       ],
       'meta' => $meta,
-      'currentAgency' => 6 // Передаем ID текущего агентства
+      'currentAgency' => 2 // Передаем ID текущего агентства
     ]);
   }
 

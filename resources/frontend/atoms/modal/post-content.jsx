@@ -149,7 +149,7 @@ const PostContent = ({post, onPost}) => {
             <img
               src={post.agency_id === 5
                 ? '/storage/' + post.image_main
-                : '/storage/news/' + post.image_main}
+                : '/storage/' + post.image_main}
               alt={post.title}
               className="post__image-main"
               loading="lazy"
