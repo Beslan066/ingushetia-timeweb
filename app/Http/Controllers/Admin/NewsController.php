@@ -181,14 +181,19 @@ class NewsController extends Controller
      * Update the specified resource in storage.
      */
   public function update(UpdateRequest $request, News $news)
-  {
+{
     $data = $request->validated();
 
     if ($request->hasFile('image_main')) {
-      Storage::delete([$news->image_main, $news->image_webp]);
-      $paths = $this->processImage($request->file('image_main'));
-      $data['image_main'] = $paths['original'];
-      $data['image_webp'] = $paths['webp'];
+        // Удаляем только существующие файлы (фильтруем null)
+        $filesToDelete = array_filter([$news->image_main, $news->image_webp]);
+        if (!empty($filesToDelete)) {
+            Storage::delete($filesToDelete);
+        }
+
+        $paths = $this->processImage($request->file('image_main'));
+        $data['image_main'] = $paths['original'];
+        $data['image_webp'] = $paths['webp'];
     }
 
     $data['url'] = Str::slug($data['title']);
@@ -198,31 +203,36 @@ class NewsController extends Controller
 
     // Обработка тегов
     if ($request->has('tags')) {
-      $tagIds = [];
-      foreach ($request->tags as $tagInput) {
-        if (is_string($tagInput) && !is_numeric($tagInput)) {
-          $tag = Tag::firstOrCreate([
-            'name' => $tagInput,
-            'slug' => Str::slug($tagInput),
-          ]);
-          $tagIds[] = $tag->id;
-        } else {
-          $tagIds[] = $tagInput;
+        $tagIds = [];
+        foreach ($request->tags as $tagInput) {
+            if (is_string($tagInput) && !is_numeric($tagInput)) {
+                $tag = Tag::firstOrCreate([
+                    'name' => $tagInput,
+                    'slug' => Str::slug($tagInput),
+                ]);
+                $tagIds[] = $tag->id;
+            } else {
+                $tagIds[] = $tagInput;
+            }
         }
-      }
-      $news->tags()->sync($tagIds);
+        $news->tags()->sync($tagIds);
     }
 
     return redirect()->route('admin.news.index')->with('success', 'News updated successfully');
-  }
+}
 
 
   /**
      * Remove the specified resource from storage.
      */
     public function destroy(News $news)
-    {
-        $news->delete();
-        return to_route('admin.news.index');
+{
+    $files = array_filter([$news->image_main, $news->image_webp]);
+    if (!empty($files)) {
+        Storage::delete($files);
     }
+
+    $news->delete();
+    return to_route('admin.news.index');
+}
 }
