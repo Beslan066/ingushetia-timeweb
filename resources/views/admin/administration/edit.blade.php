@@ -36,22 +36,30 @@
 
 
 
-                            <div class="row w-50">
-                                <div class="col-12">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <input type="file" class="dropify" data-height="300" name="image_main" @if($administration->image_main)
-                                                data-default-file="{{ asset('storage/' . $administration->image_main) }}"
-                                                @endif/>
+                          {{-- ===== Изображение ===== --}}
+                          <div class="row w-50">
+                            <div class="col-12">
+                              <div class="card">
+                                <div class="card-body">
+                                  <h4 class="card-title">Изображение</h4>
+                                  <input type="file"
+                                         class="dropify"
+                                         id="image_main"
+                                         data-height="300"
+                                         name="image_main"
+                                         data-default-file="{{ $administration->image_main ? Storage::disk('public')->url($administration->image_main) : '' }}"/>
 
-                                        </div>
-                                    </div>
+                                  {{-- Флаг "удалить текущее фото" --}}
+                                  <input type="hidden" name="remove_image" id="remove_image" value="0">
                                 </div>
+                              </div>
                             </div>
+                          </div>
+                          @error('image_main')
+                          <div class="text-danger">{{ $message }}</div>
+                          @enderror
 
-                            @error('image_main')
-                            <div class="text-danger">{{ $message }}</div>
-                            @enderror
+
                         </div>
 
                       <div class="form-group w-50">
@@ -102,7 +110,7 @@
 
                         <div class="btn-group">
                             <button class="btn btn-light mr-2">Назад</button>
-                            <button type="submit" class="btn btn-primary">Создать</button>
+                            <button type="submit" class="btn btn-primary">Обновить</button>
                         </div>
 
                     </div>
@@ -110,3 +118,23 @@
             </div>
         </div>
 @endsection
+
+      @push('scripts')
+        <script>
+          $(document).ready(function () {
+
+            // Клик по кнопке "Удалить" в dropify (dropify сам создаёт .dropify-clear)
+            $(document).on('click', '.dropify-clear', function () {
+              console.log('DROPIFY CLEAR');
+              $('#remove_image').val('1');
+            });
+
+            // Если пользователь выбрал новый файл — сбрасываем флаг
+            $(document).on('change', '#image_main', function () {
+              console.log('FILE CHANGED');
+              $('#remove_image').val('0');
+            });
+
+          });
+        </script>
+    @endpush

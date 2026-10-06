@@ -30,6 +30,7 @@ class UpdateRequest extends FormRequest
           'priority' => 'nullable',
           'image_main' => 'nullable|image|mimes:jpg,jpeg,webp,png',
           'administration_types_id' => 'nullable',
+          'remove_image'             => 'nullable|in:0,1',
         ];
     }
 
