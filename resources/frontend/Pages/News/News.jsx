@@ -8,7 +8,7 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import Filters from "#/molecules/filters/filters.jsx";
 import FilterButton from "#/atoms/filters/filter-button.jsx";
 import AgencyNewsItem from "#/atoms/news/agency-news-item.jsx";
-import {Head, Link, router, usePage} from "@inertiajs/react";
+import { Head, Link, router, usePage } from "@inertiajs/react";
 import Modal from "#/atoms/modal/modal.jsx";
 import PostContent from "#/atoms/modal/post-content.jsx";
 import PopularSpotlights from "#/molecules/spotlights/popular-spotlights.jsx";
@@ -29,7 +29,7 @@ const getSlidesCount = (slides) => {
   if (!slides) return null;
   const arr = JSON.parse(slides);
   return arr.length ? arr.length + ' фото' : null;
-}
+};
 
 export default function News({
                                news,
@@ -39,11 +39,18 @@ export default function News({
                                pages: totalPages,
                                filters: initialFilters,
                                meta,
-                               total: totalItems = 0 // Добавляем общее количество записей
+                               total: totalItems = 0
                              }) {
   const { props } = usePage();
+
+  // Инициализируем фильтры из initialFilters, чтобы при загрузке с URL фильтры не терялись
   const [selectedCategory, setSelectedCategory] = useState(initialFilters?.category || null);
-  const [filters, setFilters] = useState(null);
+  const [filters, setFilters] = useState(
+    initialFilters?.dateFrom || initialFilters?.dateTo
+      ? { dateFrom: initialFilters.dateFrom || null, dateTo: initialFilters.dateTo || null }
+      : null
+  );
+
   const [isFiltersOpened, setFiltersOpened] = useState(false);
   const [slide, isSlideOpen, setSlide] = useModal(undefined);
   const [currentPage, setCurrentPage] = useState(pageNumber);
@@ -56,51 +63,72 @@ export default function News({
   const scrollPositionRef = useRef(0);
   const currentPageRef = useRef(pageNumber);
 
-  // Количество записей на странице (должно совпадать с пагинацией в контроллере)
   const itemsPerPage = 12;
 
-  // Обновление мета-тегов при изменении страницы
+  // Вспомогательная функция: собирает все query-параметры в один объект
+  const buildQueryParams = useCallback((overrides = {}) => {
+    const params = {};
+
+    const category = overrides.category !== undefined ? overrides.category : selectedCategory;
+    const dateFrom = overrides.dateFrom !== undefined ? overrides.dateFrom : filters?.dateFrom;
+    const dateTo = overrides.dateTo !== undefined ? overrides.dateTo : filters?.dateTo;
+
+    if (overrides.page !== undefined) params.page = overrides.page;
+    if (category) params.category = category;
+    if (dateFrom) params.dateFrom = dateFrom;
+    if (dateTo) params.dateTo = dateTo;
+
+    return params;
+  }, [selectedCategory, filters]);
+
+  // Обновление title
   useEffect(() => {
-    // Обновляем title в Head через Inertia
     const title = currentPage > 1
       ? `Новости Ингушетии - страница ${currentPage}`
       : 'Новости Ингушетии';
-
     document.title = title;
   }, [currentPage]);
+
+  // Синхронизация с пропсами, если пользователь перешел по URL с другими фильтрами
+  useEffect(() => {
+    if (pageNumber !== currentPage) {
+      setCurrentPage(pageNumber);
+      currentPageRef.current = pageNumber;
+    }
+    setCurrentNews(news);
+  }, [pageNumber, news]);
+
+  // Синхронизация фильтров при изменении initialFilters (например, прямой заход по ссылке)
+  useEffect(() => {
+    setSelectedCategory(initialFilters?.category || null);
+    setFilters(
+      initialFilters?.dateFrom || initialFilters?.dateTo
+        ? { dateFrom: initialFilters.dateFrom || null, dateTo: initialFilters.dateTo || null }
+        : null
+    );
+  }, [initialFilters?.category, initialFilters?.dateFrom, initialFilters?.dateTo]);
 
   // Обработчик изменения категории
   const onCategorySwitch = useCallback((categoryId) => {
     const newCategory = categoryId !== null ? String(categoryId) : null;
     setSelectedCategory(newCategory);
-
-    // Загружаем первую страницу с новой категорией
     setIsLoading(true);
+
+    const requestData = buildQueryParams({ page: 1, category: newCategory });
 
     router.visit('/news', {
       method: 'get',
-      data: {
-        page: 1,
-        category: newCategory,
-        ...filters
-      },
+      data: requestData,
       preserveScroll: true,
       preserveState: false,
       onSuccess: ({ props: data }) => {
         setCurrentNews(data.news);
         setCurrentPage(data.page);
         currentPageRef.current = data.page;
-
-        // Обновляем URL
-        const searchParams = new URLSearchParams();
-        if (newCategory) searchParams.set('category', newCategory);
-        if (filters?.dateFrom) searchParams.set('dateFrom', filters.dateFrom);
-        if (filters?.dateTo) searchParams.set('dateTo', filters.dateTo);
-        window.history.pushState({}, "", `/news?${searchParams.toString()}`);
       },
       onFinish: () => setIsLoading(false),
     });
-  }, [filters]);
+  }, [buildQueryParams]);
 
   const handlePost = (post) => {
     scrollPositionRef.current = window.scrollY;
@@ -117,7 +145,6 @@ export default function News({
   };
 
   const handlePopularPost = (postData) => {
-    // postData может быть как id (число/строка), так и объектом с полем id
     const postId = typeof postData === 'object' ? postData.id : postData;
     const post = spotlights.find(item => item.id === postId);
     if (post) {
@@ -129,13 +156,8 @@ export default function News({
     setIsModalOpen(false);
     setCurrentPost(null);
 
-    const searchParams = new URLSearchParams();
-    if (selectedCategory) searchParams.set('category', selectedCategory);
-    if (filters?.dateFrom) searchParams.set('dateFrom', filters.dateFrom);
-    if (filters?.dateTo) searchParams.set('dateTo', filters.dateTo);
-    searchParams.set('page', currentPageRef.current);
-
-    const newUrl = `/news?${searchParams.toString()}`;
+    const params = buildQueryParams({ page: currentPageRef.current });
+    const newUrl = `/news?${new URLSearchParams(params).toString()}`;
     window.history.pushState({}, "", newUrl);
 
     setTimeout(() => {
@@ -151,92 +173,20 @@ export default function News({
   }, [props.showNews]);
 
   // Обработчик смены страницы через пагинацию
-const handlePageChange = useCallback((page) => {
-  if (isLoading || page === currentPage) {
-    console.log('Page change prevented:', { isLoading, page, currentPage });
-    return;
-  }
-
-  console.log('Changing to page:', page);
-  setIsLoading(true);
-  currentPageRef.current = page;
-
-  // Формируем данные для запроса
-  const requestData = {
-    page: page, // Отправляем именно номер страницы, который получили
-  };
-
-  if (selectedCategory) {
-    requestData.category = selectedCategory;
-  }
-
-  if (filters?.dateFrom) {
-    requestData.dateFrom = filters.dateFrom;
-  }
-
-  if (filters?.dateTo) {
-    requestData.dateTo = filters.dateTo;
-  }
-
-  router.visit('/news', {
-    method: 'get',
-    data: requestData,
-    preserveScroll: true,
-    preserveState: false,
-    onSuccess: ({ props: data }) => {
-      console.log('Page change success. New page from server:', data.page);
-      console.log('Requested page was:', page);
-
-      setCurrentNews(data.news);
-      setCurrentPage(data.page); // Устанавливаем страницу из ответа сервера
-
-      // Обновляем URL
-      const searchParams = new URLSearchParams();
-      if (selectedCategory) searchParams.set('category', selectedCategory);
-      if (filters?.dateFrom) searchParams.set('dateFrom', filters.dateFrom);
-      if (filters?.dateTo) searchParams.set('dateTo', filters.dateTo);
-      searchParams.set('page', data.page); // Используем страницу из ответа
-      window.history.replaceState({}, "", `/news?${searchParams.toString()}`);
-
-      // Прокрутка к началу новостей при смене страницы
-      setTimeout(() => {
-        document.getElementById('news-feed-start')?.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
-    },
-    onError: (errors) => {
-      console.error('Page change error:', errors);
-      setIsLoading(false);
-    },
-    onFinish: () => {
-      setIsLoading(false);
-    },
-  });
-}, [isLoading, currentPage, selectedCategory, filters]);
-
-// Синхронизация с пропсами при начальной загрузке
-useEffect(() => {
-  console.log('Props page:', pageNumber, 'Current page:', currentPage);
-  if (pageNumber !== currentPage) {
-    setCurrentPage(pageNumber);
-    setCurrentNews(news);
-  }
-}, [pageNumber, news]);
-
-  const onFilters = (dateFrom, dateTo, selected) => {
-    const newCategory = selected !== null ? String(selected) : null;
-    const newFilters = { dateFrom, dateTo };
+  const handlePageChange = useCallback((page) => {
+    if (isLoading || page === currentPage) {
+      return;
+    }
 
     setIsLoading(true);
-    setSelectedCategory(newCategory);
-    setFilters(newFilters);
+    currentPageRef.current = page;
+
+    // buildQueryParams автоматически возьмет актуальные selectedCategory и filters
+    const requestData = buildQueryParams({ page });
 
     router.visit('/news', {
       method: 'get',
-      data: {
-        page: 1,
-        category: newCategory,
-        ...newFilters
-      },
+      data: requestData,
       preserveScroll: true,
       preserveState: false,
       onSuccess: ({ props: data }) => {
@@ -244,12 +194,42 @@ useEffect(() => {
         setCurrentPage(data.page);
         currentPageRef.current = data.page;
 
-        // Обновляем URL
-        const searchParams = new URLSearchParams();
-        if (newCategory) searchParams.set('category', newCategory);
-        if (dateFrom) searchParams.set('dateFrom', dateFrom);
-        if (dateTo) searchParams.set('dateTo', dateTo);
-        window.history.pushState({}, "", `/news?${searchParams.toString()}`);
+        // Скролл к началу новостей (при желании можно закомментировать)
+        setTimeout(() => {
+          document.getElementById('news-feed-start')?.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      },
+      onError: (errors) => {
+        console.error('Page change error:', errors);
+      },
+      onFinish: () => setIsLoading(false),
+    });
+  }, [isLoading, currentPage, buildQueryParams]);
+
+  const onFilters = (dateFrom, dateTo, selected) => {
+    const newCategory = selected !== null ? String(selected) : null;
+    const newFilters = { dateFrom: dateFrom || null, dateTo: dateTo || null };
+
+    setIsLoading(true);
+    setSelectedCategory(newCategory);
+    setFilters(newFilters);
+
+    const requestData = buildQueryParams({
+      page: 1,
+      category: newCategory,
+      dateFrom: newFilters.dateFrom,
+      dateTo: newFilters.dateTo,
+    });
+
+    router.visit('/news', {
+      method: 'get',
+      data: requestData,
+      preserveScroll: true,
+      preserveState: false,
+      onSuccess: ({ props: data }) => {
+        setCurrentNews(data.news);
+        setCurrentPage(data.page);
+        currentPageRef.current = data.page;
       },
       onFinish: () => {
         setIsLoading(false);
@@ -280,18 +260,12 @@ useEffect(() => {
             <div className="news-wrapper">
               {/* Переключатель между агентствами */}
               <div className="agency-switcher">
-                <Link href={'/news'}
-                      className={`agency-switcher__btn active`}
-
-                >
+                <Link href={'/news'} className={`agency-switcher__btn active`}>
                   Администрация Главы
                 </Link>
-                <Link href={route('government.news.index')}
-                      className={`agency-switcher__btn`}
-                >
+                <Link href={route('government.news.index')} className={`agency-switcher__btn`}>
                   Правительство
                 </Link>
-
               </div>
               <div className={'tab-row'}>
                 <Tabs
@@ -329,7 +303,7 @@ useEffect(() => {
               </div>
             </div>
 
-            {/* Компонент пагинации с информацией о количестве записей */}
+            {/* Пагинация */}
             {totalPages > 1 && (
               <Pagination
                 currentPage={currentPage}

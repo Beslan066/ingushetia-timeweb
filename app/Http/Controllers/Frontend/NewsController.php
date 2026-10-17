@@ -15,116 +15,130 @@ class NewsController extends Controller
 {
 
   public function index()
-  {
-    $currentPage = (int)request()->input('page', 1);
+{
+    $currentPage = (int) request()->input('page', 1);
     $currentPage = max(1, $currentPage);
 
-    $dateFrom = request()->input('dateFrom') ? Carbon::parse(request()->input('dateFrom')) : null;
-    $dateTo = request()->input('dateTo') ? Carbon::parse(request()->input('dateTo')) : null;
+    $dateFrom = request()->input('dateFrom')
+        ? Carbon::parse(request()->input('dateFrom'))->startOfDay()
+        : null;
+    $dateTo = request()->input('dateTo')
+        ? Carbon::parse(request()->input('dateTo'))->endOfDay()
+        : null;
 
     $categories = Category::all();
 
     $news = News::query()
-      ->with('category')
-      ->where('agency_id', 5)
-      ->filterCategory(request()->input('category'))
-      ->publishedBetween($dateFrom, $dateTo)
-      ->orderBy('published_at', 'desc')
-      ->paginate(12, ['*'], 'page', $currentPage);
+        ->with('category')
+        ->where('agency_id', 5)
+        ->filterCategory(request()->input('category'))
+        ->publishedBetween($dateFrom, $dateTo)
+        ->orderBy('published_at', 'desc')
+        ->paginate(12, ['*'], 'page', $currentPage)
+        ->withQueryString();
 
     $popularNews = News::query()
-      ->where('agency_id', 5)
-      ->whereNotNull('published_at')
-      ->orderBy('views', 'desc')
-      ->take(8)
-      ->get();
+        ->where('agency_id', 5)
+        ->whereNotNull('published_at')
+        ->orderBy('views', 'desc')
+        ->take(8)
+        ->get();
 
     $meta = [
-      'title' => 'Новости Администрации Главы',
-      'description' => 'Новости Администрации Главы Республики Ингушетия. Официальная информация и события.',
-      'keywords' => 'администрация главы Ингушетии, новости администрации, официальные новости',
-      'og_image' => asset('path/to/default/og-image.jpg'),
-      'canonical' => route('news.index')
+        'title' => 'Новости Администрации Главы',
+        'description' => 'Новости Администрации Главы Республики Ингушетия. Официальная информация и события.',
+        'keywords' => 'администрация главы Ингушетии, новости администрации, официальные новости',
+        'og_image' => asset('path/to/default/og-image.jpg'),
+        'canonical' => route('news.index')
     ];
 
     if (request()->has('page')) {
-      $page = request()->input('page');
-      $meta['title'] = 'Новости Администрации Главы - страница ' . $page;
-      $meta['canonical'] = route('news.index', ['page' => $page]);
+        $page = request()->input('page');
+        $meta['title'] = 'Новости Администрации Главы - страница ' . $page;
+        $meta['canonical'] = route('news.index', ['page' => $page]);
     }
 
     return Inertia::render('News/News', [
-      'news' => $news->items(),
-      'categories' => $categories,
-      'spotlights' => $popularNews,
-      'page' => $news->currentPage(),
-      'pages' => $news->lastPage(),
-      'total' => $news->total(),
-      'filters' => [
-        'category' => request()->input('category'),
-        'dateFrom' => $dateFrom,
-        'dateTo' => $dateTo,
-      ],
-      'meta' => $meta,
-      'currentAgency' => 5 // Передаем ID текущего агентства
+        'news' => $news->items(),
+        'categories' => $categories,
+        'spotlights' => $popularNews,
+        'page' => $news->currentPage(),
+        'pages' => $news->lastPage(),
+        'total' => $news->total(),
+        'filters' => [
+            'category' => request()->input('category'),
+            // Передаем строки из запроса, а не Carbon-объекты.
+            // Иначе React получит ISO-формат ("2025-04-30T00:00:00.000000Z")
+            // и input type="date" не сможет его отобразить.
+            'dateFrom' => request()->input('dateFrom'),
+            'dateTo'   => request()->input('dateTo'),
+        ],
+        'meta' => $meta,
+        'currentAgency' => 5 // Передаем ID текущего агентства
     ]);
-  }
+}
 
-  public function governmentNews()
-  {
-    $currentPage = (int)request()->input('page', 1);
+public function governmentNews()
+{
+    $currentPage = (int) request()->input('page', 1);
     $currentPage = max(1, $currentPage);
 
-    $dateFrom = request()->input('dateFrom') ? Carbon::parse(request()->input('dateFrom')) : null;
-    $dateTo = request()->input('dateTo') ? Carbon::parse(request()->input('dateTo')) : null;
+    $dateFrom = request()->input('dateFrom')
+        ? Carbon::parse(request()->input('dateFrom'))->startOfDay()
+        : null;
+    $dateTo = request()->input('dateTo')
+        ? Carbon::parse(request()->input('dateTo'))->endOfDay()
+        : null;
 
     $categories = Category::all();
 
     $news = News::query()
-      ->with('category')
-      ->where('agency_id', 2) // ID для правительства
-      ->filterCategory(request()->input('category'))
-      ->publishedBetween($dateFrom, $dateTo)
-      ->orderBy('published_at', 'desc')
-      ->paginate(12, ['*'], 'page', $currentPage);
+        ->with('category')
+        ->where('agency_id', 2) // ID для правительства
+        ->filterCategory(request()->input('category'))
+        ->publishedBetween($dateFrom, $dateTo)
+        ->orderBy('published_at', 'desc')
+        ->paginate(12, ['*'], 'page', $currentPage)
+        ->withQueryString();
 
     $popularNews = News::query()
-      ->where('agency_id', 2)
-      ->whereNotNull('published_at')
-      ->orderBy('views', 'desc')
-      ->take(8)
-      ->get();
+        ->where('agency_id', 2)
+        ->whereNotNull('published_at')
+        ->orderBy('views', 'desc')
+        ->take(8)
+        ->get();
 
     $meta = [
-      'title' => 'Новости Правительства',
-      'description' => 'Новости Правительства Республики Ингушетия. Официальная информация и события.',
-      'keywords' => 'правительство Ингушетии, новости правительства, официальные новости',
-      'og_image' => asset('path/to/default/og-image.jpg'),
-      'canonical' => route('government.news.index')
+        'title' => 'Новости Правительства',
+        'description' => 'Новости Правительства Республики Ингушетия. Официальная информация и события.',
+        'keywords' => 'правительство Ингушетии, новости правительства, официальные новости',
+        'og_image' => asset('path/to/default/og-image.jpg'),
+        'canonical' => route('government.news.index')
     ];
 
     if (request()->has('page')) {
-      $page = request()->input('page');
-      $meta['title'] = 'Новости Правительства - страница ' . $page;
-      $meta['canonical'] = route('government.news.index', ['page' => $page]);
+        $page = request()->input('page');
+        $meta['title'] = 'Новости Правительства - страница ' . $page;
+        $meta['canonical'] = route('government.news.index', ['page' => $page]);
     }
 
     return Inertia::render('News/NewsGovernment', [
-      'news' => $news->items(),
-      'categories' => $categories,
-      'spotlights' => $popularNews,
-      'page' => $news->currentPage(),
-      'pages' => $news->lastPage(),
-      'total' => $news->total(),
-      'filters' => [
-        'category' => request()->input('category'),
-        'dateFrom' => $dateFrom,
-        'dateTo' => $dateTo,
-      ],
-      'meta' => $meta,
-      'currentAgency' => 2 // Передаем ID текущего агентства
+        'news' => $news->items(),
+        'categories' => $categories,
+        'spotlights' => $popularNews,
+        'page' => $news->currentPage(),
+        'pages' => $news->lastPage(),
+        'total' => $news->total(),
+        'filters' => [
+            'category' => request()->input('category'),
+            // Строки — для корректного отображения в UI на фронте
+            'dateFrom' => request()->input('dateFrom'),
+            'dateTo'   => request()->input('dateTo'),
+        ],
+        'meta' => $meta,
+        'currentAgency' => 2 // Передаем ID текущего агентства
     ]);
-  }
+}
 
 
   public function show($url)
@@ -144,14 +158,15 @@ class NewsController extends Controller
     $dateTo   = request()->input('dateTo')   ? Carbon::parse(request()->input('dateTo'))   : null;
     $category = request()->input('category');
 
-    // ⚠️ Реальный список новостей, как в index()
+    // Реальный список новостей, как в index()
     $news = News::query()
         ->with('category')
         ->where('agency_id', $newsItem->agency_id)
         ->filterCategory($category)
         ->publishedBetween($dateFrom, $dateTo)
         ->orderBy('published_at', 'desc')
-        ->paginate(12, ['*'], 'page', $currentPage);
+        ->paginate(12, ['*'], 'page', $currentPage)
+        ->withQueryString();
 
     // Популярные
     $popularNews = News::query()
