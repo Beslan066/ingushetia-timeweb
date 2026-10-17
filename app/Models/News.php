@@ -47,6 +47,9 @@ class News extends Model
   protected $dates = ['deleted_at'];
   protected $appends = ['related_posts'];
 
+  protected $casts = [
+    'published_at' => 'datetime',
+  ];
 
   public function translate()
   {

@@ -20,11 +20,18 @@ class NewsController extends Controller
     $currentPage = max(1, $currentPage);
 
     $dateFrom = request()->input('dateFrom')
-        ? Carbon::parse(request()->input('dateFrom'))->startOfDay()
-        : null;
-    $dateTo = request()->input('dateTo')
-        ? Carbon::parse(request()->input('dateTo'))->endOfDay()
-        : null;
+    ? Carbon::parse(request()->input('dateFrom'))->startOfDay()
+    : null;
+$dateTo = request()->input('dateTo')
+    ? Carbon::parse(request()->input('dateTo'))->endOfDay()
+    : null;
+
+   // Если пользователь перепутал местами "От" и "До", меняем их
+if ($dateFrom && $dateTo && $dateFrom->greaterThan($dateTo)) {
+    $tempFrom = $dateFrom->copy()->startOfDay();
+    $dateFrom = $dateTo->copy()->startOfDay();
+    $dateTo = $tempFrom->copy()->endOfDay();
+}
 
     $categories = Category::all();
 
