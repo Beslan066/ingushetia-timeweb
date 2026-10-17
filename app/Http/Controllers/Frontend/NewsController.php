@@ -128,57 +128,68 @@ class NewsController extends Controller
 
 
   public function show($url)
-  {
+{
     $newsItem = News::where('url', $url)
-      ->with(['category', 'video', 'reportage', 'tags'])
-      ->firstOrFail();
+        ->with(['category', 'video', 'reportage', 'tags'])
+        ->firstOrFail();
 
-    // Увеличиваем счетчик просмотров
     $newsItem->incrementViews();
 
-    // Определяем, какой компонент использовать в зависимости от agency_id
+    // Определяем компонент
     $component = $newsItem->agency_id == 5 ? 'News/News' : 'News/NewsGovernment';
 
-    // Получаем популярные новости для этого же агентства
+    // Фильтры из query
+    $currentPage = max(1, (int) request()->input('page', 1));
+    $dateFrom = request()->input('dateFrom') ? Carbon::parse(request()->input('dateFrom')) : null;
+    $dateTo   = request()->input('dateTo')   ? Carbon::parse(request()->input('dateTo'))   : null;
+    $category = request()->input('category');
+
+    // ⚠️ Реальный список новостей, как в index()
+    $news = News::query()
+        ->with('category')
+        ->where('agency_id', $newsItem->agency_id)
+        ->filterCategory($category)
+        ->publishedBetween($dateFrom, $dateTo)
+        ->orderBy('published_at', 'desc')
+        ->paginate(12, ['*'], 'page', $currentPage);
+
+    // Популярные
     $popularNews = News::query()
-      ->where('id', '!=', $newsItem->id)
-      ->where('agency_id', $newsItem->agency_id)
-      ->whereNotNull('published_at')
-      ->orderBy('views', 'desc')
-      ->take(8)
-      ->get();
+        ->where('id', '!=', $newsItem->id)
+        ->where('agency_id', $newsItem->agency_id)
+        ->whereNotNull('published_at')
+        ->orderBy('views', 'desc')
+        ->take(8)
+        ->get();
 
-    // Определяем базовый URL для канонической ссылки в зависимости от агентства
     $canonicalRoute = $newsItem->agency_id == 5
-      ? route('post.show.news', ['url' => $url])
-      : route('government.post.show.news', ['url' => $url]);
+        ? route('post.show.news', ['url' => $url])
+        : route('government.post.show.news', ['url' => $url]);
 
-    // Метаданные для новости
     $meta = [
-      'title' => $newsItem->title . ' | Новости Ингушетии',
-      'description' => Str::limit(strip_tags($newsItem->lead), 160),
-      'canonical' => $canonicalRoute
+        'title'       => $newsItem->title . ' | Новости Ингушетии',
+        'description' => Str::limit(strip_tags($newsItem->lead), 160),
+        'canonical'   => $canonicalRoute,
     ];
 
-    // Для правительства возвращаем пустой массив новостей, но с правильным currentAgency
     return Inertia::render($component, [
-      'showNews' => $newsItem,
-      'news' => [], // Пустой массив, так как это модальное окно
-      'categories' => Category::query()->take(10)->get(),
-      'media' => [],
-      'spotlights' => $popularNews,
-      'page' => 1,
-      'pages' => 1,
-      'total' => 0,
-      'filters' => [
-        'category' => null,
-        'dateFrom' => null,
-        'dateTo' => null,
-      ],
-      'meta' => $meta,
-      'currentAgency' => $newsItem->agency_id // Передаем ID агентства
+        'showNews'      => $newsItem,
+        'news'          => $news->items(),          // ← реальный список
+        'categories'    => Category::all(),          // ← как в index(), а не take(10)
+        'media'         => [],
+        'spotlights'    => $popularNews,
+        'page'          => $news->currentPage(),
+        'pages'         => $news->lastPage(),
+        'total'         => $news->total(),
+        'filters'       => [
+            'category' => $category,
+            'dateFrom' => $dateFrom,
+            'dateTo'   => $dateTo,
+        ],
+        'meta'          => $meta,
+        'currentAgency' => $newsItem->agency_id,
     ]);
-  }
+}
 
 
   public function getPostsByCategory($categoryId)

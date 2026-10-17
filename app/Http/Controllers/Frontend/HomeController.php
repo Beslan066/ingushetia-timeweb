@@ -195,89 +195,107 @@ class HomeController extends Controller
   }
 
   public function showPost(Request $request, $url)
-  {
-    // Используем те же ключи кэша, что и в index()
+{
     $cacheTimeShort = 150;
-    $cacheTimeLong = 300;
+    $cacheTimeLong  = 300;
 
-    $cacheKeys = [
-      'categories' => 'categories_data',
-      'resources' => 'resources_data_agency_5',
-      'photoReportages' => 'photo_reportages_last_4',
-      'videos' => 'videos_last_4',
-      'cities' => 'municipalities_type_2',
-      'districts' => 'municipalities_type_20',
-      'mountains' => 'mountains_with_reportage',
-      'mainPosts' => 'main_posts_agency_5',
-      'posts' => 'news_last_12_agency_5',
-      'related' => 'related_news_for_last_6_agency_5',
-    ];
-
-    // Получаем основные данные из кэша
-    $categories = Cache::remember($cacheKeys['categories'], $cacheTimeLong, function () {
-      return Category::select('id', 'title')->get()->toArray();
+    // ⚠️ Те же ключи, что и в index() — иначе Cache::get() вернёт null
+    $categories = Cache::remember('categories_data_v2', $cacheTimeLong, function () {
+        return Category::select('id', 'title')->get()->toArray();
     });
 
-    $mainPosts = Cache::remember($cacheKeys['mainPosts'], $cacheTimeShort, function () {
-      return News::query()
-        ->with(['category:id,title', 'video:id,url', 'reportage:id,title'])
-        ->where('main_material', 1)
-        ->where('agency_id', 5)
-        ->orderBy('published_at', 'desc')
-        ->take(7)
-        ->get();
+    $resources = Cache::remember('resources_data_agency_5_v2', $cacheTimeLong, function () {
+        return Resource::query()->where('agency_id', 5)->select('title', 'link')->get();
     });
 
-    $posts = Cache::remember($cacheKeys['posts'], $cacheTimeShort, function () {
-      return News::query()
-        ->with('category', 'video', 'reportage')
-        ->where('main_material', 0)
-        ->where('agency_id', 5)
-        ->orderBy('published_at', 'desc')
-        ->take(6)
-        ->get();
+    $photoReportages = PhotoReportage::query()
+        ->take(4)->orderBy('published_at', 'desc')->get();
+
+    $videos = Video::query()
+        ->take(4)->orderBy('published_at', 'desc')->get();
+
+    $cities = Cache::remember('municipalities_type_2_v2', $cacheTimeLong, function () {
+        return Municipality::query()->with('supervisor')->where('type', 2)->get();
     });
 
-    // Получаем открываемую новость (без кэширования, так как нужно актуальное состояние)
+    $districts = Cache::remember('municipalities_type_20_v2', $cacheTimeLong, function () {
+        return Municipality::query()->with('supervisor')->where('type', 20)->get();
+    });
+
+    $mountains = Cache::remember('mountains_with_reportage_v2', $cacheTimeLong, function () {
+        return Mountain::query()->with('reportage')->orderBy('id', 'desc')->get();
+    });
+
+    $mainPosts = Cache::remember('main_posts_agency_5_v2', $cacheTimeShort, function () {
+        return News::query()
+            ->with(['category:id,title', 'video:id,url', 'reportage:id,title'])
+            ->where('main_material', 1)
+            ->where('agency_id', 5)
+            ->orderBy('published_at', 'desc')
+            ->take(7)->get();
+    });
+
+    // Открытая новость
     $openedNews = News::where('url', $url)
-      ->with(['category', 'video', 'reportage', 'tags'])
-      ->firstOrFail();
+        ->with(['category', 'video', 'reportage', 'tags'])
+        ->firstOrFail();
 
-    // Увеличиваем счетчик просмотров
     $openedNews->incrementViews();
 
-    // Получаем связанные новости
-    $openedNews->relatedPosts = News::where('category_id', $openedNews->category_id)
-      ->where('id', '!=', $openedNews->id)
-      ->where('agency_id', $openedNews->agency_id)
-      ->select(['id', 'title', 'url', 'category_id', 'image_main', 'published_at'])
-      ->orderBy('published_at', 'desc')
-      ->limit(3)
-      ->get();
+    $openedNews->relatedPosts = News::query()
+        ->where('category_id', $openedNews->category_id)
+        ->where('id', '!=', $openedNews->id)
+        ->where('agency_id', $openedNews->agency_id)
+        ->select(['id', 'title', 'lead', 'url', 'category_id', 'image_main', 'published_at'])
+        ->orderBy('published_at', 'desc')
+        ->limit(3)->get();
 
-    // Метаданные
+    // Список новостей как на главной
+    $news = News::query()
+        ->with('category', 'video', 'reportage', 'tags')
+        ->where('agency_id', 5)
+        ->orderBy('published_at', 'desc')
+        ->take(12)->get();
+
+    $spotlights = Cache::remember('spotlights_news_agency_5_v3', $cacheTimeShort, function () {
+        return News::query()
+            ->with('category', 'video', 'reportage', 'tags')
+            ->where('main_material', 0)
+            ->where('agency_id', 5)
+            ->orderBy('published_at', 'desc')
+            ->take(6)->get();
+    });
+
+    $vectors = Vector::query()
+        ->orderBy('created_at', 'desc')
+        ->with(['sections' => fn($q) => $q->orderBy('created_at', 'desc')->take(3)])
+        ->take(4)->get();
+
     $meta = [
-      'title' => $openedNews->title . ' | Республика Ингушетия',
-      'description' => Str::limit(strip_tags($openedNews->lead), 160),
-      'canonical' => route('post.show.home', ['url' => $url])
+        'title'       => $openedNews->title . ' | Республика Ингушетия',
+        'description' => Str::limit(strip_tags($openedNews->lead), 160),
+        'keywords'    => $openedNews->tags->pluck('name')->join(', '),
+        'og_image'    => $openedNews->image_main ? asset($openedNews->image_main) : asset('path/to/default/og-image.jpg'),
+        'canonical'   => route('post.show.home', ['url' => $url]),
     ];
 
+    // ⚠️ Тот же набор пропсов, что и в index()
     return Inertia::render('Index', [
-      'posts' => $posts,
-      'categories' => $categories,
-      'mainPosts' => $mainPosts,
-      'resources' => Cache::get($cacheKeys['resources']),
-      'photoReportages' => Cache::get($cacheKeys['photoReportages']),
-      'videos' => Cache::get($cacheKeys['videos']),
-      'media' => collect(Cache::get($cacheKeys['photoReportages']))->merge(Cache::get($cacheKeys['videos']))->sortByDesc('published_at'),
-      'cities' => Cache::get($cacheKeys['cities']),
-      'districts' => Cache::get($cacheKeys['districts']),
-      'mountains' => Cache::get($cacheKeys['mountains']),
-      'showNews' => $openedNews,
-      'anniversary' => config('app.anniversary'),
-      'meta' => $meta // Добавляем метаданные
+        'news'          => $news,
+        'spotlights'    => $spotlights,
+        'categories'    => $categories,
+        'mainPosts'     => $mainPosts,
+        'resources'     => $resources,
+        'media'         => collect($photoReportages)->merge($videos)->sortByDesc('published_at')->values()->all(),
+        'cities'        => $cities,
+        'districts'     => $districts,
+        'mountains'     => $mountains,
+        'vectors'       => $vectors,
+        'showNews'      => $openedNews,
+        'anniversary'   => config('app.anniversary'),
+        'meta'          => $meta,
     ]);
-  }
+}
 
   public function svoSupport()
   {
