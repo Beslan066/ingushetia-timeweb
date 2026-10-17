@@ -55,18 +55,12 @@
                     <th class="sorting" tabindex="0" aria-controls="selection-datatable" rowspan="1" colspan="1"
                         style="width: 394px;" aria-label="Position: activate to sort column ascending">Автор
                     </th>
-                    <th class="sorting" tabindex="0" aria-controls="selection-datatable" rowspan="1" colspan="1"
-                        style="width: 200px;" aria-label="Office: activate to sort column ascending">Категория
-                    </th>
-                    <th class="sorting" tabindex="0" aria-controls="selection-datatable" rowspan="1" colspan="1"
-                        style="width: 200px;" aria-label="Office: activate to sort column ascending">Видеорепортаж
-                    </th>
-                    <th class="sorting" tabindex="0" aria-controls="selection-datatable" rowspan="1" colspan="1"
-                        style="width: 107px; " aria-label="Age: activate to sort column ascending">Перевод
-                    </th>
                     <th class="sorting_asc" tabindex="0" aria-controls="selection-datatable" rowspan="1" colspan="1"
                         style="width: 193px;" aria-label="Start date: activate to sort column descending"
                         aria-sort="ascending">Опубликованно
+                    </th>
+                    <th class="sorting" tabindex="0" aria-controls="selection-datatable" rowspan="1" colspan="1"
+                        style="width: 394px;" aria-label="Position: activate to sort column ascending">Порядковый номер
                     </th>
                     <th class="sorting" tabindex="0" aria-controls="selection-datatable" rowspan="1" colspan="1"
                         style="width: 159px; " aria-label="Salary: activate to sort column ascending">Действие
@@ -82,6 +76,10 @@
                         <td class="" tabindex="0">{{$item->id}}</td>
                         <td class="" tabindex="0">{{mb_substr($item->title, 0, 80)}}</td>
                         <td>{{$item->user->name}}</td>
+                        <td>{{$item->created_at}}</td>
+                        @if (isset($item->position))
+                          <td>{{$item->position}}</td>
+                        @endif
                         <td style="">
                           <div class="btn-group">
                             <a href="{{route('admin.mountains.edit', $item->id)}}"

@@ -38,6 +38,7 @@ class StoreRequest extends FormRequest
             'image_description' => 'nullable|string|max:255',
             'user_id' => 'nullable',
             'reportage_id' => 'nullable',
+            'position' => 'required|integer'
         ];
     }
 
@@ -68,7 +69,7 @@ class StoreRequest extends FormRequest
             'content.required' => 'Заполните содержимое новости.',
             'image_main.required' => 'Необходимо выбрать изображение.',
             'image_main.image' => 'Файл должен быть изображением.',
-            'image_main.mimes' => 'Изображение должно быть в формате: jpg, jpeg, webp, png.',
+            'image_main.mimes' => 'Изображение должно быть в формате: webp',
 
             'image_author.string' => 'Краткое image_author должно быть строкой.',
             'image_author.max' => 'Длина краткого image_author не должна превышать 255 символов.',
@@ -77,6 +78,9 @@ class StoreRequest extends FormRequest
             'image_description.max' => 'Длина краткого image_description не должна превышать 255 символов.',
 
             'user_id.required' => 'Ошибка при определении пользователя.',
+
+            'position.required' => 'Позиция обязательна для заполнения.',
+            'position.integer' => 'Позиция должна быть числом.',
         ];
     }
 }

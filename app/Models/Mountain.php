@@ -23,7 +23,8 @@ class Mountain extends Model
         'see_height',
         'structure',
         'reportage_id',
-        'user_id'
+        'user_id',
+        'position'
     ];
 
     public  function user() {

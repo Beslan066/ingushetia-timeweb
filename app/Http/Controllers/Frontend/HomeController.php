@@ -90,10 +90,10 @@ class HomeController extends Controller
         ->get();
     });
 
-    $mountains = Cache::remember($cacheKeys['mountains'], $cacheTimeLong, function () {
+    $mountains = Cache::remember($cacheKeys['mountains'], $cacheTimeShort, function () {
       return Mountain::query()
         ->with('reportage')
-        ->orderBy('id', 'desc')
+        ->orderBy('position', 'desc')
         ->get();
     });
 

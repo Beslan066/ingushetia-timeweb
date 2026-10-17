@@ -35,6 +35,7 @@ class UpdateRequest extends FormRequest
             'image_description' => 'nullable|string|max:255',
             'user_id' => 'required',
             'reportage_id' => 'nullable',
+            'position' => 'required|integer'
         ];
     }
 
@@ -72,6 +73,9 @@ class UpdateRequest extends FormRequest
             'image_description.max' => 'Длина краткого image_description не должна превышать 255 символов.',
 
             'user_id.required' => 'Ошибка при определении пользователя.',
+
+            'position.required' => 'Позиция обязательна для заполнения.',
+            'position.integer' => 'Позиция должна быть числом.',
         ];
     }
 }

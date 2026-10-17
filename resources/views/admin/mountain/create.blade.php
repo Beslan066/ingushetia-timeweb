@@ -89,6 +89,16 @@
                             </select>
                         </div>
 
+                        <div class="form-row w-50 mb-4">
+                            <div class="col">
+                                <input type="text" class="form-control" placeholder="Порядковый номер" name="position">
+                            </div>
+                        </div>
+
+                        @error('position')
+                        <div class="text-danger">{{ $message }}</div>
+                        @enderror
+
                         <div class="form-group w-50">
                             <label for="exampleFormControlSelect1">Автор</label>
                             <select class="form-control" id="exampleFormControlSelect1" name="user_id">
