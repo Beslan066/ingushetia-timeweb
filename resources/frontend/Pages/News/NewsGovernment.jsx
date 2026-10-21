@@ -46,8 +46,17 @@ export default function NewsGovernment({
                                          currentAgency = 6
                                        }) {
   const { props } = usePage();
+
   const [selectedCategory, setSelectedCategory] = useState(initialFilters?.category || null);
-  const [filters, setFilters] = useState(null);
+  
+  // Инициализируем фильтры из initialFilters, чтобы при загрузке по ссылке с фильтрами
+  // они не терялись при клике на пагинацию.
+  const [filters, setFilters] = useState(
+    initialFilters?.dateFrom || initialFilters?.dateTo
+      ? { dateFrom: initialFilters.dateFrom || null, dateTo: initialFilters.dateTo || null }
+      : null
+  );
+
   const [isFiltersOpened, setFiltersOpened] = useState(false);
   const [slide, isSlideOpen, setSlide] = useModal(undefined);
   const [currentPage, setCurrentPage] = useState(pageNumber);
@@ -81,6 +90,16 @@ export default function NewsGovernment({
     categoryRef.current = selectedCategory;
     currentPageRef.current = currentPage;
   }, [currentNews, filters, selectedCategory, currentPage]);
+
+  // Синхронизация фильтров при изменении initialFilters (например, прямой заход по ссылке)
+  useEffect(() => {
+    setSelectedCategory(initialFilters?.category || null);
+    setFilters(
+      initialFilters?.dateFrom || initialFilters?.dateTo
+        ? { dateFrom: initialFilters.dateFrom || null, dateTo: initialFilters.dateTo || null }
+        : null
+    );
+  }, [initialFilters?.category, initialFilters?.dateFrom, initialFilters?.dateTo]);
 
   // Обработка showNews из пропсов
   useEffect(() => {
@@ -216,7 +235,7 @@ export default function NewsGovernment({
 
   const onFilters = (dateFrom, dateTo, selected) => {
     const newCategory = selected !== null ? String(selected) : null;
-    const newFilters = { dateFrom, dateTo };
+    const newFilters = { dateFrom: dateFrom || null, dateTo: dateTo || null };
 
     setIsLoading(true);
     setSelectedCategory(newCategory);
@@ -224,8 +243,8 @@ export default function NewsGovernment({
 
     const searchParams = new URLSearchParams();
     if (newCategory) searchParams.set('category', newCategory);
-    if (dateFrom) searchParams.set('dateFrom', dateFrom);
-    if (dateTo) searchParams.set('dateTo', dateTo);
+    if (newFilters.dateFrom) searchParams.set('dateFrom', newFilters.dateFrom);
+    if (newFilters.dateTo) searchParams.set('dateTo', newFilters.dateTo);
 
     router.visit(`${baseUrl}?${searchParams.toString()}`, {
       method: 'get',

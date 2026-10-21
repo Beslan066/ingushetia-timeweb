@@ -93,7 +93,7 @@ class HomeController extends Controller
     $mountains = Cache::remember($cacheKeys['mountains'], $cacheTimeShort, function () {
       return Mountain::query()
         ->with('reportage')
-        ->orderBy('position', 'desc')
+        ->orderBy('position', 'asc')
         ->get();
     });
 

@@ -97,6 +97,13 @@ public function governmentNews()
         ? Carbon::parse(request()->input('dateTo'))->endOfDay()
         : null;
 
+    // Если пользователь перепутал местами "От" и "До", меняем их
+    if ($dateFrom && $dateTo && $dateFrom->greaterThan($dateTo)) {
+        $tempFrom = $dateFrom->copy()->startOfDay();
+        $dateFrom = $dateTo->copy()->startOfDay();
+        $dateTo = $tempFrom->copy()->endOfDay();
+    }
+
     $categories = Category::all();
 
     $news = News::query()
@@ -138,7 +145,7 @@ public function governmentNews()
         'total' => $news->total(),
         'filters' => [
             'category' => request()->input('category'),
-            // Строки — для корректного отображения в UI на фронте
+            // Передаем строки, а не Carbon — для корректного отображения в UI
             'dateFrom' => request()->input('dateFrom'),
             'dateTo'   => request()->input('dateTo'),
         ],
