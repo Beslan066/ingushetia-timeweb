@@ -18,7 +18,7 @@ class AgencyController extends Controller
   public function index()
   {
     $agencies = Agency::query()
-      ->whereNotIn('id', [5])
+      ->where('id', [2])
       ->with('supervisor')
       ->get();
 
@@ -68,9 +68,8 @@ class AgencyController extends Controller
       ->take(10)
       ->get();
 
-    $posts = News::query()
+    $spotlights = News::query()
       ->with('category', 'video', 'reportage')
-      ->where('main_material', 0)
       ->where('agency_id', $agency->id)
       ->take(6)
       ->orderBy('published_at', 'desc')
@@ -98,7 +97,7 @@ class AgencyController extends Controller
     return Inertia::render('Agency/Agency', [
       'agencys' => $agencys,
       'agency' => $agency,
-      'posts' => $posts,
+      'spotlights' => $spotlights,
       'mainPosts' => $mainPosts,
       'videos' => $videos,
       'photoReportages' => $photoReportages,

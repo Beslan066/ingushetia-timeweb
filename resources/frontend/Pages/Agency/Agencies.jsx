@@ -14,7 +14,16 @@ export default function Agencies({ agencies }) {
       <div className="agency-page-content__wrapper">
         <div className="page-content__content">
           {
-            agencies && agencies.map((agency) => <ExternalResourceInline key={ agency.id } title={ agency.name } highlightedDescription={ agency.supervisor.name } link={ `/agencies/${agency.slug}` }/>)
+            agencies && agencies.map((agency) => 
+              agency.name ? (
+                <ExternalResourceInline 
+                  key={ agency.id } 
+                  title={ agency.name } 
+                  highlightedDescription={ agency.supervisor?.name } 
+                  link={ `/agencies/${agency.slug}` }
+                />
+              ) : null
+            )
           }
         </div>
       </div>
