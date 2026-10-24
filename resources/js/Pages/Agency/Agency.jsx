@@ -140,34 +140,7 @@ export default function Agency({search, mainPosts, posts, categories, resources,
                                 </div>
                             </div>
 
-                            <div className="important p-24">
-                                <div className="important-title">
-                                    <h2>Важное</h2>
-                                </div>
-                                <ul>
-                                    <li>
-                                        <Link href={route('natProjects')}>Нац. проекты</Link>
-                                    </li>
-                                    <li>
-                                        <Link href={route('svoSupport')}>Поддержка семей участников СВО</Link>
-                                    </li>
-                                    <li>
-                                        <Link href="">Инвестиции</Link>
-                                    </li>
-                                    <li>
-                                        <Link href="">Противодействие коррупции</Link>
-                                    </li>
-                                    <li>
-                                        <Link href="">Помощь нуждающимся</Link>
-                                    </li>
-                                </ul>
-                                <div className="important-application d-flex align-items-center">
-                                    <MailIcon/>
-                                    <span className={'ml-2'}>
-                                        Написать обращение
-                                    </span>
-                                </div>
-                            </div>
+                            
                         </div>
                     </div>
                 </main>

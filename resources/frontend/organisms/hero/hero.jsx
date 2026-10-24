@@ -9,14 +9,15 @@ import Important from "#/atoms/important/important.jsx";
 import Modal from "#/atoms/modal/modal.jsx";
 import PostContent from "#/atoms/modal/post-content.jsx";
 import "./hero.css";
+import GovernmentNavigation from "#/molecules/navigation/government-navigation";
 
-export default function Hero ({
-                categories = [],
-                slides = [],
-                news = [],
-                showNews = null,
-                spotlights = []
-              }) {
+export default function Hero({
+  categories = [],
+  slides = [],
+  news = [],
+  showNews = null,
+  spotlights = []
+}) {
   const { props } = usePage();
   const [isModalOpen, setIsModalOpen] = useState(!!showNews);
   const [currentPost, setCurrentPost] = useState(showNews || null);
@@ -26,6 +27,9 @@ export default function Hero ({
   );
   const [isLoading, setIsLoading] = useState(false);
   const [isPostLoading, setIsPostLoading] = useState(false);
+
+  const { url } = usePage();
+
 
   // Обработчик смены категории
   const onCategorySwitch = (categoryId) => {
@@ -54,20 +58,20 @@ export default function Hero ({
   };
 
   // Обработчик открытия новости (альтернатива)
-const handlePost = (post) => {
-  if (!post?.url) return;
+  const handlePost = (post) => {
+    if (!post?.url) return;
 
-  router.get(`/post/${post.url}`, {}, {
-    preserveState: true, // Сохраняем состояние
-    preserveScroll: true, // Сохраняем прокрутку
-    only: ['showNews'], // Загружаем только данные для модального окна
-    onSuccess: () => {
-      setCurrentPost(props.showNews);
-      setIsModalOpen(true);
-      window.history.pushState({}, "", `/post/${post.url}`);
-    }
-  });
-};
+    router.get(`/post/${post.url}`, {}, {
+      preserveState: true, // Сохраняем состояние
+      preserveScroll: true, // Сохраняем прокрутку
+      only: ['showNews'], // Загружаем только данные для модального окна
+      onSuccess: () => {
+        setCurrentPost(props.showNews);
+        setIsModalOpen(true);
+        window.history.pushState({}, "", `/post/${post.url}`);
+      }
+    });
+  };
 
   // Эффект для обработки открытой новости при загрузке
   useEffect(() => {
@@ -82,7 +86,7 @@ const handlePost = (post) => {
     setIsModalOpen(false);
     setCurrentPost(null);
     setIsPostLoading(false);
-    
+
     // Восстанавливаем URL без перезагрузки страницы
     const searchParams = new URLSearchParams(window.location.search);
     if (selectedCategory) {
@@ -140,6 +144,9 @@ const handlePost = (post) => {
             <div className="spotlights-placeholder">Нет рекомендуемых новостей</div>
           )}
           <Important />
+
+          {/* Рендерим навигацию, только если URL содержит нужный путь */}
+          {url.includes('/agencies/pravitelstvo') && <GovernmentNavigation />}
         </div>
       </div>
 
