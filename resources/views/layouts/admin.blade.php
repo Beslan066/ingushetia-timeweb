@@ -229,8 +229,7 @@
                     <li><a href="{{route('admin.news.index')}}" class=" waves-effect"><i class="bx bx-news"></i><span>Новости</span></a></li>
                     <!--                    <li><a href="{{route('admin.newsIng.index')}}" class=" waves-effect"><i class="bx bx-globe"></i><span>Переводы</span></a></li>
  -->
-                    <li><a href="{{route('admin.documents.index')}}" class=" waves-effect"><i
-                          class="bx bx-file"></i><span>Документы</span></a></li>
+                   
 
                     <li><a href="{{route('admin.photoReportage.index')}}" class=" waves-effect"><i
                           class="bx bx-news"></i><span>Фоторепортажи</span></a></li>
@@ -240,7 +239,11 @@
 
 
 
-                    @if(auth()->user()->agency_id !== 5)
+                    @if(auth()->user()->agency_id == 2)
+                     <li><a href="{{route('admin.governmentDocumentCategorys.index')}}" class=" waves-effect"><i
+                          class="bx bx-file"></i><span>Виды документов</span></a></li>
+                           <li><a href="{{route('admin.governmentDocuments.index')}}" class=" waves-effect"><i
+                          class="bx bx-file"></i><span>Документы</span></a></li>
                     <li><a href="{{route('admin.agenciesActivity.index')}}" class=" waves-effect"><i
                           class="bx bx-buildings"></i><span>Деятельность министерств</span></a></li>
                   @endif
