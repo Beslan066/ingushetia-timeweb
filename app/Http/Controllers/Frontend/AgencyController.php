@@ -110,19 +110,12 @@ class AgencyController extends Controller
       return [$type['id'] => $type];
     })->all();
 
-    $documents = Document::where('agency_id', $agency->id)
-      ->orderBy('published_at', 'desc')
-      ->take(3) // или 5
+    $documents = GovernmentDocument::query()
+      ->take(10)
       ->get()
-      ->map(function ($document) {
-        return [
-          'id' => $document->id,
-          'title' => $document->title,
-          'type' => $document->type, // тут можно подтянуть title из getTypes(), если нужно
-          'published_at' => $document->published_at,
-          'file' => $document->file,
-          'size' => $this->getFileSize($document->file),
-        ];
+      ->map(function ($document) use ($documentTypes) {
+        $document->type_label = $documentTypes[$document->type] ?? null;
+        return $document;
       });
 
 
@@ -151,36 +144,32 @@ class AgencyController extends Controller
   public function documents(Agency $agency)
   {
     $documentTypes = Document::getTypes();
-    $documentTypesMapped = collect($documentTypes)->mapWithKeys(fn($type) => [$type['id'] => $type])->toArray();
+    $documentTypes = collect($documentTypes)->mapWithKeys(fn($type) => [$type['id'] => $type])->toArray();
 
     $query = Document::query()
       ->where('agency_id', $agency->id)
       ->orderBy('published_at', 'desc');
 
-    // Фильтр по типу документа (если выбран в сайдбаре)
     if (request()->has('type_id')) {
       $query->where('type', request()->input('type_id'));
     }
 
-    $documents = $query->paginate(15)->through(function ($document) use ($documentTypesMapped) {
+    $documents = $query->paginate(15)->through(function ($document) use ($documentTypes) {
       return [
         'id' => $document->id,
         'title' => $document->title,
-        'type' => $documentTypesMapped[$document->type]['title'] ?? 'Неизвестный тип',
+        'type' => $documentTypes[$document->type]['title'] ?? null,
         'published_at' => $document->published_at,
         'file' => $document->file,
         'size' => $this->getFileSize($document->file),
       ];
     });
 
+    // ВОЗВРАЩАЕМ INERTIA КОМПОНЕНТ, А НЕ JSON
     return Inertia::render('Agency/AgencyDocuments', [
       'agency' => $agency,
       'documents' => $documents,
-      'documentTypes' => $documentTypes, // Для компонента навигации
-      'meta' => [
-        'title' => "Документы — {$agency->title}",
-        'description' => "Список документов агентства {$agency->title}",
-      ]
     ]);
   }
+
 }
