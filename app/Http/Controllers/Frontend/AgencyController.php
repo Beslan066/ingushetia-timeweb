@@ -146,11 +146,12 @@ class AgencyController extends Controller
     $documentTypes = Document::getTypes();
     $documentTypesMapped = collect($documentTypes)->mapWithKeys(fn($type) => [$type['id'] => $type])->toArray();
 
-    $query = Document::query()
-      ->where('agency_id', $agency->id)
+    // ИСПОЛЬЗУЕМ ТУ ЖЕ МОДЕЛЬ, ЧТО И НА ГЛАВНОЙ СТРАНИЦЕ
+    $query = GovernmentDocument::query()
+      // Если у GovernmentDocument есть связь с агентством, раскомментируй эту строку:
+      // ->where('agency_id', $agency->id)
       ->orderBy('published_at', 'desc');
 
-    // Фильтр по типу документа (если выбран в сайдбаре)
     if (request()->has('type_id')) {
       $query->where('type', request()->input('type_id'));
     }
@@ -169,12 +170,11 @@ class AgencyController extends Controller
     return Inertia::render('Agency/AgencyDocuments', [
       'agency' => $agency,
       'documents' => $documents,
-      'documentTypes' => $documentTypes, // Для компонента навигации
+      'documentTypes' => $documentTypes,
       'meta' => [
         'title' => "Документы — {$agency->title}",
         'description' => "Список документов агентства {$agency->title}",
       ]
     ]);
   }
-
 }
