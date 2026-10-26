@@ -8,6 +8,7 @@ use App\Models\AgencyActivity;
 use App\Models\Category;
 use App\Models\Document;
 use App\Models\GovernmentDocument;
+use App\Models\GovernmentDocumentCategoty;
 use App\Models\News;
 use App\Models\PhotoReportage;
 use App\Models\Resource;
@@ -105,7 +106,7 @@ class AgencyController extends Controller
       ->orderBy('published_at', 'desc')
       ->get();
 
-    $documentTypes = Document::getTypes();
+    $documentTypes = GovernmentDocumentCategoty::all();
     $documentTypes = collect($documentTypes)->mapWithKeys(function ($type) {
       return [$type['id'] => $type];
     })->all();
@@ -143,7 +144,7 @@ class AgencyController extends Controller
 
   public function documents(Agency $agency)
   {
-    $documentTypes = Document::getTypes();
+    $documentTypes = GovernmentDocumentCategoty::getTypes();
     $documentTypesMapped = collect($documentTypes)->mapWithKeys(fn($type) => [$type['id'] => $type])->toArray();
 
     // ИСПОЛЬЗУЕМ ТУ ЖЕ МОДЕЛЬ, ЧТО И НА ГЛАВНОЙ СТРАНИЦЕ
