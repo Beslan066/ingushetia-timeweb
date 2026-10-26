@@ -140,4 +140,31 @@ class AgencyController extends Controller
       ],
     ]);
   }
+
+  public function documents(Agency $agency)
+  {
+    $documentTypes = Document::getTypes();
+    $documentTypes = collect($documentTypes)->mapWithKeys(fn($type) => [$type['id'] => $type])->toArray();
+
+    $query = Document::query()
+      ->where('agency_id', $agency->id)
+      ->orderBy('published_at', 'desc');
+
+    if (request()->has('type_id')) {
+      $query->where('type', request()->input('type_id'));
+    }
+
+    $documents = $query->paginate(15)->through(function ($document) use ($documentTypes) {
+      return [
+        'id' => $document->id,
+        'title' => $document->title,
+        'type' => $documentTypes[$document->type]['title'] ?? null,
+        'published_at' => $document->published_at,
+        'file' => $document->file,
+        'size' => $this->getFileSize($document->file),
+      ];
+    });
+
+    return response()->json($documents);
+  }
 }

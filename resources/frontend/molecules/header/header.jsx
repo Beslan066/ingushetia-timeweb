@@ -124,7 +124,7 @@ export default function AppHeader({anniversary, logo, title}) {
                   <ul className="submenu">
                     <li className="menu-item"><a href="/president">Глава Республики</a></li>
                     <li className="menu-item"><a href="/president-administration">Администрация Главы</a></li>
-                    <li className="menu-item"><a href="/agencies/pravitelstvo">Правительство</a></li>
+                    <li className="menu-item"><a href="/agencies/pravitelstvo" target="_blank">Правительство</a></li>
                   </ul>
                 </li>
                 <li className="menu-item"><a href={route('media')}>Медиа</a></li>

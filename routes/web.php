@@ -66,6 +66,8 @@ Route::get('/history', [RegionController::class, 'history'])->name('history');
 
 Route::get('/agencies', [AgencyController::class, 'index'])->name('agencies.index');
 Route::get('/agencies/{agency:slug}', [AgencyController::class, 'singleAgency'])->name('agencies.single');
+Route::get('/agencies/{agency:slug}/documents', [AgencyController::class, 'documents'])->name('agency.documents');
+
 
 
 // Страница культура
