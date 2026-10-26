@@ -8,7 +8,7 @@ use App\Models\AgencyActivity;
 use App\Models\Category;
 use App\Models\Document;
 use App\Models\GovernmentDocument;
-use App\Models\GovernmentDocumentCategoty;
+use App\Models\GovernmentDocumentCategory; // Исправил опечатку
 use App\Models\News;
 use App\Models\PhotoReportage;
 use App\Models\Resource;
@@ -31,7 +31,6 @@ class AgencyController extends Controller
 
   public function singleAgency($slug)
   {
-
     $dateFrom = request()->input('dateFrom')
       ? Carbon::parse(request()->input('dateFrom'))->startOfDay()
       : null;
@@ -39,7 +38,6 @@ class AgencyController extends Controller
       ? Carbon::parse(request()->input('dateTo'))->endOfDay()
       : null;
 
-    // Если пользователь перепутал местами "От" и "До", меняем их
     if ($dateFrom && $dateTo && $dateFrom->greaterThan($dateTo)) {
       $tempFrom = $dateFrom->copy()->startOfDay();
       $dateFrom = $dateTo->copy()->startOfDay();
@@ -47,7 +45,6 @@ class AgencyController extends Controller
     }
 
     $agency = Agency::where('slug', $slug)->firstOrFail();
-
 
     $agencys = Agency::query()
       ->where('id', $agency->id)
@@ -62,20 +59,17 @@ class AgencyController extends Controller
       ->where('agency_id', $agency->id)
       ->get();
 
-
     $photoReportages = PhotoReportage::query()
       ->take(4)
       ->where('agency_id', $agency->id)
       ->orderBy('published_at', 'desc')
       ->get();
 
-
     $videos = Video::query()
       ->take(4)
       ->where('agency_id', $agency->id)
       ->orderBy('published_at', 'desc')
       ->get();
-
 
     $mainPosts = News::query()
       ->with('category')
@@ -99,26 +93,26 @@ class AgencyController extends Controller
 
     $news = News::query()
       ->with('category')
-      ->where('agency_id', $agency->id) // ID для правительства
+      ->where('agency_id', $agency->id)
       ->filterCategory(request()->input('category'))
       ->publishedBetween($dateFrom, $dateTo)
       ->take(3)
       ->orderBy('published_at', 'desc')
       ->get();
 
-    $documentTypes = GovernmentDocumentCategoty::all();
-    $documentTypes = collect($documentTypes)->mapWithKeys(function ($type) {
+    // ИСПРАВЛЕНО: используем GovernmentDocumentCategory вместо опечатки
+    $documentTypes = GovernmentDocumentCategory::all();
+    $documentTypesMapped = collect($documentTypes)->mapWithKeys(function ($type) {
       return [$type['id'] => $type];
     })->all();
 
     $documents = GovernmentDocument::query()
       ->take(10)
       ->get()
-      ->map(function ($document) use ($documentTypes) {
-        $document->type_label = $documentTypes[$document->type] ?? null;
+      ->map(function ($document) use ($documentTypesMapped) {
+        $document->type_label = $documentTypesMapped[$document->type] ?? null;
         return $document;
       });
-
 
     return Inertia::render('Agency/Agency', [
       'agencys' => $agencys,
@@ -133,9 +127,9 @@ class AgencyController extends Controller
       'activities' => $activities,
       'news' => $news,
       'documents' => $documents,
+      'slug' => $slug, // ДОБАВЛЕНО: передаем slug для компонента <Documents>
       'filters' => [
         'category' => request()->input('category'),
-        // Передаем строки, а не Carbon — для корректного отображения в UI
         'dateFrom' => request()->input('dateFrom'),
         'dateTo'   => request()->input('dateTo'),
       ],
@@ -144,12 +138,13 @@ class AgencyController extends Controller
 
   public function documents(Agency $agency)
   {
-    $documentTypes = GovernmentDocumentCategoty::getTypes();
+    // Берем категории из правильной модели
+    $documentTypes = GovernmentDocumentCategory::all();
     $documentTypesMapped = collect($documentTypes)->mapWithKeys(fn($type) => [$type['id'] => $type])->toArray();
 
-    // ИСПОЛЬЗУЕМ ТУ ЖЕ МОДЕЛЬ, ЧТО И НА ГЛАВНОЙ СТРАНИЦЕ
     $query = GovernmentDocument::query()
-      // Если у GovernmentDocument есть связь с агентством, раскомментируй эту строку:
+      // Если у GovernmentDocument НЕТ agency_id, этот фильтр вернет пустоту.
+      // Оставляю закомментированным, так как на главной ты выводишь все подряд.
       // ->where('agency_id', $agency->id)
       ->orderBy('published_at', 'desc');
 
@@ -171,11 +166,33 @@ class AgencyController extends Controller
     return Inertia::render('Agency/AgencyDocuments', [
       'agency' => $agency,
       'documents' => $documents,
-      'documentTypes' => $documentTypes,
+      'documentTypes' => $documentTypes->map(fn($type) => ['id' => $type->id, 'title' => $type->title]), // Приводим к массиву для фронтенда
       'meta' => [
         'title' => "Документы — {$agency->title}",
         'description' => "Список документов агентства {$agency->title}",
       ]
     ]);
+  }
+
+  /**
+   * Получение размера файла в байтах (добавлено, чтобы не было ошибки)
+   */
+  private function getFileSize($file)
+  {
+    if (!$file) {
+      return 0;
+    }
+
+    $path = storage_path('app/public/' . $file);
+    if (file_exists($path)) {
+      return filesize($path);
+    }
+
+    $publicPath = public_path('storage/' . $file);
+    if (file_exists($publicPath)) {
+      return filesize($publicPath);
+    }
+
+    return 0;
   }
 }
