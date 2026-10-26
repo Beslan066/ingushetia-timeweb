@@ -1,25 +1,42 @@
-﻿import AppHeader from "#/molecules/header/header.jsx";
+﻿import React from "react";
+import AppHeader from "#/molecules/header/header.jsx";
 import Hero from "#/organisms/hero/hero.jsx";
 import AppFooter from "#/organisms/footer/footer.jsx";
-import React from "react";
 import Activities from "#/atoms/agency/activities.jsx";
 import MediaCollection from "#/molecules/news/mediaCollection.jsx";
 import Documents from "#/organisms/documents/documents.jsx";
 import ExternalResources from "#/organisms/documents/external-resources.jsx";
 
-export default function Agency({ agency, mainPosts: slides, categories, news: news, activities, media, resources, documents, spotlights: spotlights, slug}) {
+export default function Agency({
+                                 agency,
+                                 mainPosts: slides,
+                                 categories,
+                                 news,
+                                 activities,
+                                 media,
+                                 resources,
+                                 documents,
+                                 spotlights,
+                                 slug
+                               }) {
+  const logo = agency.logo ? '/storage/' + agency.logo : null;
 
-
-  const logo = '/storage/' + agency.logo;
   return (
     <>
-      <AppHeader logo={ logo } title={ agency.full_title }/>
-      <Hero categories={ categories } slides={ slides } news={news} spotlights={spotlights}/>
-      <Activities activities={activities}/>
-      <MediaCollection media={ media }/>
-      <Documents documents={ documents } agencySlug={slug} />
-      <ExternalResources resources={ resources }/>
-      <AppFooter/>
+      <AppHeader logo={logo} title={agency.full_title} />
+
+      <Hero categories={categories} slides={slides} news={news} spotlights={spotlights} />
+
+      <Activities activities={activities} />
+
+      <MediaCollection media={media} />
+
+      {/* Передаем массив документов и слаг агентства */}
+      <Documents documents={documents} agencySlug={slug} />
+
+      <ExternalResources resources={resources} />
+
+      <AppFooter />
     </>
-  )
+  );
 }

@@ -1,8 +1,9 @@
-import './documents.css'
+import './documents.css';
 import DocumentLink from "#/atoms/links/document-link.jsx";
 import AppLink from "#/atoms/buttons/link.jsx";
 
 export default function Documents({ documents, agencySlug }) {
+  // Если документов нет — ничего не рендерим
   if (!documents || !documents.length) {
     return null;
   }
@@ -10,6 +11,7 @@ export default function Documents({ documents, agencySlug }) {
   return (
     <div className="documents__wrapper">
       <h2 className="documents__title">Документы</h2>
+
       <div className="documents">
         {documents.map((document) => (
           <DocumentLink
@@ -20,10 +22,14 @@ export default function Documents({ documents, agencySlug }) {
           />
         ))}
       </div>
-      <AppLink
-        to={`/agencies/${agencySlug}/documents`}
-        title="Все документы"
-      />
+
+      {/* Ведем на страницу всех документов конкретного агентства */}
+      {agencySlug && (
+        <AppLink
+          to={`/agencies/${agencySlug}/documents`}
+          title="Все документы"
+        />
+      )}
     </div>
-  )
+  );
 }
