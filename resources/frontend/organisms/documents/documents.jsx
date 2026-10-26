@@ -23,13 +23,10 @@ export default function Documents({ documents, agencySlug }) {
         ))}
       </div>
 
-      {/* Ведем на страницу всех документов конкретного агентства */}
-      {agencySlug && (
-        <AppLink
-          to={`/agencies/${agencySlug}/documents`}
-          title="Все документы"
-        />
-      )}
+      <AppLink
+        to={`/agencies/${agencySlug}/documents`}
+        title="Все документы"
+      />
     </div>
   );
 }
