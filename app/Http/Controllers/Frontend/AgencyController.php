@@ -7,10 +7,12 @@ use App\Models\Agency;
 use App\Models\AgencyActivity;
 use App\Models\Category;
 use App\Models\Document;
+use App\Models\GovernmentDocument;
 use App\Models\News;
 use App\Models\PhotoReportage;
 use App\Models\Resource;
 use App\Models\Video;
+use Carbon\Carbon;
 use Inertia\Inertia;
 
 class AgencyController extends Controller
@@ -19,7 +21,6 @@ class AgencyController extends Controller
   {
     $agencies = Agency::query()
       ->where('id', [2])
-      ->with('supervisor')
       ->get();
 
     return Inertia::render('Agency/Agencies', [
@@ -29,6 +30,21 @@ class AgencyController extends Controller
 
   public function singleAgency($slug)
   {
+
+    $dateFrom = request()->input('dateFrom')
+      ? Carbon::parse(request()->input('dateFrom'))->startOfDay()
+      : null;
+    $dateTo = request()->input('dateTo')
+      ? Carbon::parse(request()->input('dateTo'))->endOfDay()
+      : null;
+
+    // Если пользователь перепутал местами "От" и "До", меняем их
+    if ($dateFrom && $dateTo && $dateFrom->greaterThan($dateTo)) {
+      $tempFrom = $dateFrom->copy()->startOfDay();
+      $dateFrom = $dateTo->copy()->startOfDay();
+      $dateTo = $tempFrom->copy()->endOfDay();
+    }
+
     $agency = Agency::where('slug', $slug)->firstOrFail();
 
 
@@ -80,19 +96,28 @@ class AgencyController extends Controller
       ->take(7)
       ->get();
 
+    $news = News::query()
+      ->with('category')
+      ->where('agency_id', $agency->id) // ID для правительства
+      ->filterCategory(request()->input('category'))
+      ->publishedBetween($dateFrom, $dateTo)
+      ->take(3)
+      ->orderBy('published_at', 'desc')
+      ->get();
+
     $documentTypes = Document::getTypes();
     $documentTypes = collect($documentTypes)->mapWithKeys(function ($type) {
       return [$type['id'] => $type];
     })->all();
 
-    $documents = Document::query()
-      ->where('agency_id', $agency->id)
+    $documents = GovernmentDocument::query()
       ->take(10)
       ->get()
       ->map(function ($document) use ($documentTypes) {
         $document->type = $documentTypes[$document->type]['title'];
         return $document;
       });
+
 
     return Inertia::render('Agency/Agency', [
       'agencys' => $agencys,
@@ -105,7 +130,14 @@ class AgencyController extends Controller
       'categories' => $categories,
       'resources' => $resources,
       'activities' => $activities,
+      'news' => $news,
       'documents' => $documents,
+      'filters' => [
+        'category' => request()->input('category'),
+        // Передаем строки, а не Carbon — для корректного отображения в UI
+        'dateFrom' => request()->input('dateFrom'),
+        'dateTo'   => request()->input('dateTo'),
+      ],
     ]);
   }
 }

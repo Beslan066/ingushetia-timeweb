@@ -7,7 +7,9 @@ import MediaCollection from "#/molecules/news/mediaCollection.jsx";
 import Documents from "#/organisms/documents/documents.jsx";
 import ExternalResources from "#/organisms/documents/external-resources.jsx";
 
-export default function Agency({ agency, mainPosts: slides, categories, posts: news, activities, media, resources, documents, spotlights: spotlights,}) {
+export default function Agency({ agency, mainPosts: slides, categories, news: news, activities, media, resources, documents, spotlights: spotlights,}) {
+
+
   const logo = '/storage/' + agency.logo;
   return (
     <>
