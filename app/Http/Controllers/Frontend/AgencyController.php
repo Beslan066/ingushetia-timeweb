@@ -114,7 +114,7 @@ class AgencyController extends Controller
       ->take(10)
       ->get()
       ->map(function ($document) use ($documentTypes) {
-        $document->type = $documentTypes[$document->type]['title'];
+        $document->type = $documentTypes[$document->type->name];
         return $document;
       });
 
