@@ -83,8 +83,8 @@ export default function AppFooter({ anniversary = false, logo }) {
           <Button text="Задать вопрос" handleClick={ () => setModal(true) } />
         </div>
         <div className="footer__judical">
-          <Link>Политика конфиденциальности</Link>
-          <Link>Согласие на обработку персональных данных</Link>
+          <a href={'/data_privacy_policy.pdf'}>Политика конфиденциальности и
+          Согласие на обработку персональных данных</a>
         </div>
       </footer>
       <footer className="copyright">&copy; 2026, Все права защищены</footer>
