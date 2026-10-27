@@ -54,7 +54,7 @@ Route::prefix('/pravitelstvo')->group(function () {
   Route::get('/plans', [GovernmentController::class, 'plan'])->name('plan');
   Route::get('/colleagues', [GovernmentController::class, 'colleagues'])->name('colleagues');
   Route::get('/directories', [GovernmentController::class, 'directories'])->name('directories');
-  Route::get('/contacts', [GovernmentController::class, 'contacts'])->name('directories');
+  Route::get('/contacts', [GovernmentController::class, 'contacts'])->name('directorigovernment.contactses');
 });
 
 Route::get('/documents', [HomeController::class, 'documents'])->name('documents');
