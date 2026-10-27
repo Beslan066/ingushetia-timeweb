@@ -47,7 +47,7 @@ class PageController extends Controller
     public function store(StoreRequest $request)
     {
         $data = $request->validated();
-        $data['url'] = Str::slug($data['title']);
+        $data['slug'] = Str::slug($data['title']);
         // Обработка значения чекбокса
         $data['important'] = $request->has('important') ? 1 : 0;
 
@@ -82,7 +82,7 @@ class PageController extends Controller
     public function update(UpdateRequest $request, Page $page)
     {
         $data = $request->validated();
-        $data['url'] = Str::slug($data['title']);
+        $data['slug'] = Str::slug($data['title']);
         // Обработка значения чекбокса
         $data['important'] = $request->has('important') ? 1 : 0;
 

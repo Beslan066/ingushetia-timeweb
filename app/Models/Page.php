@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 class Page extends Model
 {
     use HasFactory;
-    protected $fillable = ['title', 'url', 'content', 'user_id', 'agency_id', 'parent_id', 'important'];
+    protected $fillable = ['title', 'slug', 'content', 'user_id', 'agency_id', 'parent_id', 'important'];
 
     protected $dates = ['deleted_at'];
 
@@ -25,7 +25,7 @@ class Page extends Model
     public function setTitleAttribute($value)
     {
         $this->attributes['title'] = $value;
-        $this->attributes['url'] = Str::slug($value); // Генерация slug'а на основе названия
+        $this->attributes['slug'] = Str::slug($value); // Генерация slug'а на основе названия
     }
 
 
