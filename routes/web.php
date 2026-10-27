@@ -407,18 +407,6 @@ Route::get('/civil-service', [HomeController::class, 'civilService'])->name('civ
 Route::get('/president', [HomeController::class, 'president'])->name('president');
 Route::get('/president-administration', [AdministrationController::class, 'index'])->name('presidentAdministration');
 
-Route::get('/{pravitelstvo}', [AgencyController::class, 'singleAgency'])->name('government.index');
-Route::prefix('/pravitelstvo')->group(function () {
-
-    Route::get('/info', [GovernmentController::class, 'government'])->name('government');
-    Route::get('/structure', [GovernmentController::class, 'structure'])->name('structure');
-    Route::get('/abilities', [GovernmentController::class, 'abilities'])->name('abilities');
-    Route::get('/sessions', [GovernmentController::class, 'sessions'])->name('sessions');
-    Route::get('/plans', [GovernmentController::class, 'plan'])->name('plan');
-    Route::get('/colleagues', [GovernmentController::class, 'colleagues'])->name('colleagues');
-    Route::get('/directories', [GovernmentController::class, 'directories'])->name('directories');
-    Route::get('/contacts', [GovernmentController::class, 'contacts'])->name('directorigovernment.contactses');
-});
 
 Route::get('/documents', [HomeController::class, 'documents'])->name('documents');
 
@@ -445,7 +433,7 @@ Route::get('/nation-projects', [RegionController::class, 'nationalProjects'])->n
 
 
 Route::get('/sostav-pravitelstva', function () {
-    return Inertia::render('Authority/GovernmentTeam');
+  return Inertia::render('Authority/GovernmentTeam');
 });
 
 Route::get('/pravitelstvo/news', [NewsController::class, 'governmentNews'])->name('government.news.index');
@@ -453,17 +441,34 @@ Route::get('/pravitelstvo/news/{url}', [NewsController::class, 'show'])->name('g
 
 // Список новостей по категории
 Route::get('/news-by-category/{categoryId}', [NewsController::class, 'getPostsByCategory'])
-    ->where('categoryId', '[0-9]+')
-    ->name('posts.by.tag');
+  ->where('categoryId', '[0-9]+')
+  ->name('posts.by.tag');
 
 // Конкретная новость (с /post/ в URL, как у вас в правительстве)
 Route::get('/news-by-category/post/{url}', [NewsController::class, 'showNewsByTag'])
-    ->name('posts.by.tag.show');
+  ->name('posts.by.tag.show');
 
 // Оставить существующие маршруты
 Route::get('/news/{url}', [NewsController::class, 'show'])->name('post.show.news');
 
 Route::post('/support', [SupportController::class, 'store'])->name('support.store');
+
+Route::get('/{pravitelstvo}', [AgencyController::class, 'singleAgency'])->name('government.index');
+Route::prefix('/pravitelstvo')->group(function () {
+
+    Route::get('/info', [GovernmentController::class, 'government'])->name('government');
+    Route::get('/structure', [GovernmentController::class, 'structure'])->name('structure');
+    Route::get('/abilities', [GovernmentController::class, 'abilities'])->name('abilities');
+    Route::get('/sessions', [GovernmentController::class, 'sessions'])->name('sessions');
+    Route::get('/plans', [GovernmentController::class, 'plan'])->name('plan');
+    Route::get('/colleagues', [GovernmentController::class, 'colleagues'])->name('colleagues');
+    Route::get('/directories', [GovernmentController::class, 'directories'])->name('directories');
+    Route::get('/contacts', [GovernmentController::class, 'contacts'])->name('pravitelstvo.contactses');
+    Route::get('/{page}', [AgencyController::class, 'page'])->name('pravitelstvo.pageSingle');
+
+});
+
+
 
 /*
 |--------------------------------------------------------------------------

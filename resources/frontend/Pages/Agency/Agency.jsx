@@ -17,13 +17,14 @@ export default function Agency({
                                  resources,
                                  documents,
                                  spotlights,
-                                 slug
+                                 slug,
+                                 sidebarPages
                                }) {
   const logo = agency.logo ? '/storage/' + agency.logo : null;
 
   return (
     <>
-      <AppHeader logo={logo} title={agency.full_title} />
+      <AppHeader logo={logo} title={agency.full_title} sidebarPages={sidebarPages}/>
 
       <Hero categories={categories} slides={slides} news={news} spotlights={spotlights} />
 

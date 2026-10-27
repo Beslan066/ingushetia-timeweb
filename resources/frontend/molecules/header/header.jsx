@@ -23,6 +23,7 @@ export default function AppHeader({
   // Получаем текущий URL из Inertia (например, "/pravitelstvo")
   const { url } = usePage();
 
+  console.log(sidebarPages)
   // Определяем версию сайта: если пропс говорит 'government' ИЛИ URL начинается с '/pravitelstvo'
   const isGov = siteVersion === 'government' || url.startsWith('/pravitelstvo');
 

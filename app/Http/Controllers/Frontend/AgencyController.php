@@ -10,6 +10,7 @@ use App\Models\Document;
 use App\Models\GovernmentDocument;
 use App\Models\GovernmentDocumentCategory; // Исправил опечатку
 use App\Models\News;
+use App\Models\Page;
 use App\Models\PhotoReportage;
 use App\Models\Resource;
 use App\Models\Video;
@@ -114,6 +115,13 @@ class AgencyController extends Controller
         return $document;
       });
 
+    $sidebarPages = Page::query()
+      ->where('agency_id', $agency->id)
+      ->select('id', 'title', 'slug')
+      ->orderBy('id')
+      ->get()
+      ->toArray();
+
     return Inertia::render('Agency/Agency', [
       'agencys' => $agencys,
       'agency' => $agency,
@@ -133,6 +141,7 @@ class AgencyController extends Controller
         'dateFrom' => request()->input('dateFrom'),
         'dateTo'   => request()->input('dateTo'),
       ],
+      'sidebarPages' => $sidebarPages,
     ]);
   }
 
@@ -194,5 +203,32 @@ class AgencyController extends Controller
     }
 
     return 0;
+  }
+
+  public function page($pageSlug)
+  {
+    // Ищем страницу по slug.
+    // Рекомендую добавить проверку на agency_id = 2 (правительство),
+    // чтобы через этот роут не открывались страницы других ведомств.
+    $page = Page::where('slug', $pageSlug)
+      // ->where('agency_id', 2) // Раскомментируйте для безопасности
+      ->firstOrFail();
+
+    // Подгружаем страницы для сайдбара, чтобы меню не пропадало
+    $sidebarPages = Page::query()
+      ->where('agency_id', 2)
+      ->select('id', 'title', 'slug')
+      ->orderBy('id')
+      ->get()
+      ->toArray();
+
+    return Inertia::render('Agency/Page', [
+      'page' => $page,
+      'sidebarPages' => $sidebarPages,
+      'meta' => [
+        'title' => $page->title . ' | Правительство РИ',
+        'description' => $page->title . ' - официальный портал Правительства Республики Ингушетия',
+      ]
+    ]);
   }
 }

@@ -19,7 +19,9 @@ class PageController extends Controller
     public function index()
     {
 
-        $pages = Page::orderBy('id', 'desc')->paginate(10);
+        $pages = Page::query()
+        ->where('agency_id', auth()->user()->agency_id)
+        ->orderBy('id', 'desc')->paginate(10);
 
         return view('admin.page.index', compact('pages'));
     }
@@ -31,7 +33,8 @@ class PageController extends Controller
     {
 
 
-        $pages = Page::all();
+        $pages = Page::query()
+          ->where('agency_id', auth()->user()->agency_id)->paginate(20);
 
         $authors = User::query()->where('role', 10)->get();
         return view('admin.page.create', compact('authors', 'pages'));

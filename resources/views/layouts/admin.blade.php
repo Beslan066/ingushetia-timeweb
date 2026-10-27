@@ -229,7 +229,7 @@
                     <li><a href="{{route('admin.news.index')}}" class=" waves-effect"><i class="bx bx-news"></i><span>Новости</span></a></li>
                     <!--                    <li><a href="{{route('admin.newsIng.index')}}" class=" waves-effect"><i class="bx bx-globe"></i><span>Переводы</span></a></li>
  -->
-                   
+
 
                     <li><a href="{{route('admin.photoReportage.index')}}" class=" waves-effect"><i
                           class="bx bx-news"></i><span>Фоторепортажи</span></a></li>
@@ -246,6 +246,17 @@
                           class="bx bx-file"></i><span>Документы</span></a></li>
                     <li><a href="{{route('admin.agenciesActivity.index')}}" class=" waves-effect"><i
                           class="bx bx-buildings"></i><span>Деятельность министерств</span></a></li>
+                    <li>
+                      <a href="javascript: void(0);" class="has-arrow waves-effect"><i
+                          class="bx bx-file"></i><span>Страницы меню</span></a>
+                      <ul class="sub-menu" aria-expanded="false">
+                        <li>
+                          <a href="{{route('admin.page.index')}}" class="waves-effect">
+                            <span>Типовые страницы</span>
+                          </a>
+                        </li>
+                      </ul>
+                    </li>
                   @endif
 
                   @if(auth()->user()->role == 10 )
