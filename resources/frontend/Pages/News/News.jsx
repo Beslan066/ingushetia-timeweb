@@ -263,9 +263,6 @@ export default function News({
                 <Link href={'/news'} className={`agency-switcher__btn active`}>
                   Администрация Главы
                 </Link>
-                <Link href={route('government.news.index')} className={`agency-switcher__btn`}>
-                  Правительство
-                </Link>
               </div>
               <div className={'tab-row'}>
                 <Tabs
