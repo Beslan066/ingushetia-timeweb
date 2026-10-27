@@ -46,14 +46,15 @@ Route::get('/civil-service', [HomeController::class, 'civilService'])->name('civ
 Route::get('/president', [HomeController::class, 'president'])->name('president');
 Route::get('/president-administration', [AdministrationController::class, 'index'])->name('presidentAdministration');
 
-Route::prefix('government')->group(function () {
-  Route::get('/', [GovernmentController::class, 'government'])->name('government');
+Route::prefix('/pravitelstvo')->group(function () {
+  Route::get('/info', [GovernmentController::class, 'government'])->name('government');
   Route::get('/structure', [GovernmentController::class, 'structure'])->name('structure');
   Route::get('/abilities', [GovernmentController::class, 'abilities'])->name('abilities');
   Route::get('/sessions', [GovernmentController::class, 'sessions'])->name('sessions');
   Route::get('/plans', [GovernmentController::class, 'plan'])->name('plan');
   Route::get('/colleagues', [GovernmentController::class, 'colleagues'])->name('colleagues');
   Route::get('/directories', [GovernmentController::class, 'directories'])->name('directories');
+  Route::get('/contacts', [GovernmentController::class, 'contacts'])->name('directories');
 });
 
 Route::get('/documents', [HomeController::class, 'documents'])->name('documents');
@@ -65,8 +66,8 @@ Route::get('/municipalities', [RegionController::class, 'municipalities'])->name
 Route::get('/history', [RegionController::class, 'history'])->name('history');
 
 Route::get('/agencies', [AgencyController::class, 'index'])->name('agencies.index');
-Route::get('/agencies/{agency:slug}', [AgencyController::class, 'singleAgency'])->name('agencies.single');
-Route::get('/agencies/{agency:slug}/documents', [AgencyController::class, 'documents'])->name('agency.documents');
+Route::get('/{agency:slug}', [AgencyController::class, 'singleAgency'])->name('agencies.single');
+Route::get('/{agency:slug}/documents', [AgencyController::class, 'documents'])->name('agency.documents');
 
 
 
@@ -95,8 +96,8 @@ Route::get('/sostav-pravitelstva', function () {
 
 
 Route::get('/news', [NewsController::class, 'index'])->name('news.index');
-Route::get('/government-news', [NewsController::class, 'governmentNews'])->name('government.news.index');
-Route::get('/government-news/{url}', [NewsController::class, 'show'])->name('government.post.show.news');
+Route::get('/pravitelstvo/news', [NewsController::class, 'governmentNews'])->name('government.news.index');
+Route::get('/pravitelstvo/news/{url}', [NewsController::class, 'show'])->name('government.post.show.news');
 
 
 // Список новостей по категории

@@ -19,13 +19,13 @@ import AccessibilityPanel from "#/molecules/header/AccessibilityPanel.jsx";
  * Замените title/href на реальные разделы сайта Правительства.
  */
 const GOVERNMENT_MENU = [
-  { title: "Правительство",  href: "/agencies/pravitelstvo" },
-  { title: "Состав",        href: "/agencies/pravitelstvo/structure" },
-  { title: "Полномочия",     href: "/agencies/pravitelstvo/ministries" },
-  { title: "Новости",          href: "/government-news" },
-  { title: "Медиа",         href: "/agencies/pravitelstvo/media" },
-  { title: "Документы",        href: "/agencies/pravitelstvo/documents" },
-  { title: "Контакты",         href: "/agencies/pravitelstvo/contacts" },
+  { title: "Правительство",  href: "/pravitelstvo/info" },
+  { title: "Состав",        href: "/pravitelstvo/structure" },
+  { title: "Полномочия",     href: "/pravitelstvo/abilities" },
+  { title: "Новости",          href: "/pravitelstvo/news" },
+  { title: "Медиа",         href: "/pravitelstvo/media" },
+  { title: "Документы",        href: "/pravitelstvo/documents" },
+  { title: "Контакты",         href: "/pravitelstvo/contacts" },
 ];
 
 export default function AppHeader({ anniversary, logo, title }) {
@@ -41,7 +41,7 @@ export default function AppHeader({ anniversary, logo, title }) {
   // Текущий роут через Inertia
   const { url } = usePage();
   const pathname = (url || "/").split("?")[0];
-  const isGovernmentPage = pathname.startsWith("/agencies/pravitelstvo");
+  const isGovernmentPage = pathname.startsWith("/pravitelstvo");
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
@@ -123,7 +123,7 @@ export default function AppHeader({ anniversary, logo, title }) {
         <ul className="submenu">
           <li className="menu-item"><a href="/president">Глава Республики</a></li>
           <li className="menu-item"><a href="/president-administration">Администрация Главы</a></li>
-          <li className="menu-item"><a href="/agencies/pravitelstvo" target="_blank">Правительство</a></li>
+          <li className="menu-item"><a href="/pravitelstvo" target="_blank">Правительство</a></li>
         </ul>
       </li>
       <li className="menu-item"><a href={route('media')}>Медиа</a></li>
@@ -157,7 +157,7 @@ export default function AppHeader({ anniversary, logo, title }) {
         <ul className="submenu">
           <li className="menu-item"><a href="/president">Глава Республики</a></li>
           <li className="menu-item"><a href="/president-administration">Администрация Главы</a></li>
-          <li className="menu-item"><a href="/agencies/pravitelstvo">Правительство</a></li>
+          <li className="menu-item"><a href="/pravitelstvo">Правительство</a></li>
         </ul>
       </li>
       <li className="menu-item"><a href={route('media')}>Медиа</a></li>

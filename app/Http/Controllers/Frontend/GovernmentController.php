@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Contact;
 use App\Models\GovernmentAuthority;
 use App\Models\GovernmentAuthoritySection;
 use App\Models\GovernmentDocument;
@@ -147,6 +148,21 @@ class GovernmentController extends Controller
 
     return Inertia::render('Government/Directories', [
       'meta' => $meta,
+    ]);
+  }
+
+  public function contacts()
+  {
+    $contacts = Contact::where('agency_id', request()->input('agency_id', 2))->get();
+
+    $meta = [
+      'title' => 'Контакты Правительства РИ',
+      'description' => ''
+    ];
+
+    return Inertia::render('Government/Contacts', [
+      'contacts' => $contacts,
+      'meta' => $meta
     ]);
   }
 }

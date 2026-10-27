@@ -48,7 +48,7 @@ export default function NewsGovernment({
   const { props } = usePage();
 
   const [selectedCategory, setSelectedCategory] = useState(initialFilters?.category || null);
-  
+
   // Инициализируем фильтры из initialFilters, чтобы при загрузке по ссылке с фильтрами
   // они не терялись при клике на пагинацию.
   const [filters, setFilters] = useState(
@@ -287,12 +287,7 @@ export default function NewsGovernment({
           <div className="news-hero__news-wrapper">
             <div className="news-wrapper">
               <div className="agency-switcher">
-                <Link
-                  href="/news"
-                  className="agency-switcher__btn"
-                >
-                  Администрация Главы
-                </Link>
+
                 <Link
                   href="/government-news"
                   className="agency-switcher__btn active"
