@@ -9,7 +9,7 @@ export default function GovernmentNavigation() {
     <nav className="regions-nav">
       <ul>
         <li>
-          <Link className={ `regions-nav__link ${ component === 'Government/Government' ? 'active' : ''}` } href="/agencies/pravitelstvo">Правительство</Link>
+          <Link className={ `regions-nav__link ${ component === 'Government/Government' ? 'active' : ''}` } href="/pravitelstvo">Правительство</Link>
           {
             <ul>
               <li><Link className={ `regions-nav__link ${ component === 'Government/GovernmentStructure' ? 'active' : '' }` } href="/pravitelstvo/info">Информация о правительстве</Link></li>

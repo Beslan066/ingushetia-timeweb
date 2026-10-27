@@ -146,7 +146,7 @@ export default function Hero({
           <Important />
 
           {/* Рендерим навигацию, только если URL содержит нужный путь */}
-          {url.includes('/agencies/pravitelstvo') && <GovernmentNavigation />}
+          {url.includes('/pravitelstvo') && <GovernmentNavigation />}
         </div>
       </div>
 

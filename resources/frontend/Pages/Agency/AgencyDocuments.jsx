@@ -98,7 +98,7 @@ export default function AgencyDocuments({ agency, documents: initialDocuments, d
       {/* Ссылка назад к агентству */}
       <div className="page-content__wrapper" style={{ paddingBottom: 0, marginBottom: 0, marginTop: '20px' }}>
         <div className="page-content__content" style={{ paddingBottom: 0 }}>
-          <Link href={`/agencies/${agency.slug}`} className="back-link">
+          <Link href={`/${agency.slug}`} className="back-link">
             ← Вернуться назад
           </Link>
         </div>

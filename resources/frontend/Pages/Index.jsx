@@ -25,7 +25,9 @@ export default function Index({
                                 anniversary,
                                 vectors,
                                 spotlights,
-                                meta
+                                meta,
+                                siteVersion,
+                                sidebarPages,
                               }) {
 
   return (
@@ -42,7 +44,11 @@ export default function Index({
         <link rel="canonical" href={meta.canonical} />
       </Head>
 
-      <AppHeader anniversary={anniversary} />
+      <AppHeader
+        anniversary={anniversary}
+        siteVersion={siteVersion}
+        sidebarPages={sidebarPages}
+      />
       <Hero
         categories={categories}
         slides={slides}

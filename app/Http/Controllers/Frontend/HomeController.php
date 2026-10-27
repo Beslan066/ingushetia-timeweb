@@ -42,18 +42,35 @@ class HomeController extends Controller
   public function index(Request $request)
   {
     $cacheTimeShort = 150;
-    $cacheTimeLong = 300;
+    $cacheTimeLong  = 300;
 
     $cacheKeys = [
       'categories' => 'categories_data_v2',
-      'resources' => 'resources_data_agency_5_v2',
-      'cities' => 'municipalities_type_2_v2',
-      'districts' => 'municipalities_type_20_v2',
-      'mountains' => 'mountains_with_reportage_v2',
-      'mainPosts' => 'main_posts_agency_5_v2',
-      'posts' => 'news_last_12_agency_5_v2',
+      'resources'  => 'resources_data_agency_5_v2',
+      'cities'     => 'municipalities_type_2_v2',
+      'districts'  => 'municipalities_type_20_v2',
+      'mountains'  => 'mountains_with_reportage_v2',
+      'mainPosts'  => 'main_posts_agency_5_v2',
+      'posts'      => 'news_last_12_agency_5_v2',
       'spotlights' => 'spotlights_news_agency_5_v3',
     ];
+
+    // --- определяем версию сайта ---
+    $isGovernment = $request->is('pravitelstvo') || $request->is('pravitelstvo/*');
+    $siteVersion  = $isGovernment ? 'government' : 'main';
+
+    // --- страницы для сайдбара правительства (agency_id = 2) ---
+    $sidebarPages = [];
+    if ($isGovernment) {
+      $sidebarPages = Cache::remember('gov_sidebar_pages_agency_2_v1', $cacheTimeLong, function () {
+        return \App\Models\Page::query()
+          ->where('agency_id', 2)
+          ->select('id', 'title', 'slug')
+          ->orderBy('id')
+          ->get()
+          ->toArray();
+      });
+    }
 
     $categories = Cache::remember($cacheKeys['categories'], $cacheTimeLong, function () {
       return Category::select('id', 'title')->get()->toArray();
@@ -141,11 +158,11 @@ class HomeController extends Controller
 
     $openedNews = null;
     $meta = [
-      'title' => 'Республика Ингушетия официальный портал',
+      'title'       => 'Республика Ингушетия официальный портал',
       'description' => 'Официальный сайт Республики Ингушетия. Новости, документы, информация о регионе.',
-      'keywords' => 'Ингушетия, официальный сайт, новости Ингушетии',
-      'og_image' => asset('path/to/default/og-image.jpg'),
-      'canonical' => url('/')
+      'keywords'    => 'Ингушетия, официальный сайт, новости Ингушетии',
+      'og_image'    => asset('path/to/default/og-image.jpg'),
+      'canonical'   => url('/'),
     ];
 
     if ($request->route('url')) {
@@ -165,32 +182,36 @@ class HomeController extends Controller
         ->get();
 
       $meta = [
-        'title' => $openedNews->title . ' | Республика Ингушетия',
+        'title'       => $openedNews->title . ' | Республика Ингушетия',
         'description' => Str::limit(strip_tags($openedNews->lead), 160),
-        'keywords' => $openedNews->tags->pluck('name')->join(', '),
-        'og_image' => $openedNews->image_main ? asset($openedNews->image_main) : asset('path/to/default/og-image.jpg'),
-        'canonical' => route('post.show.home', ['url' => $request->route('url')])
+        'keywords'    => $openedNews->tags->pluck('name')->join(', '),
+        'og_image'    => $openedNews->image_main ? asset($openedNews->image_main) : asset('path/to/default/og-image.jpg'),
+        'canonical'   => route('post.show.home', ['url' => $request->route('url')]),
       ];
     }
 
     return Inertia::render('Index', [
-      'news' => $news,
-      'spotlights' => $spotlights,
-      'categories' => $categories,
-      'mainPosts' => $mainPosts,
-      'resources' => $resources,
-      'media' => collect($photoReportages)
+      'news'         => $news,
+      'spotlights'   => $spotlights,
+      'categories'   => $categories,
+      'mainPosts'    => $mainPosts,
+      'resources'    => $resources,
+      'media'        => collect($photoReportages)
         ->merge($videos)
         ->sortByDesc('published_at')
         ->values()
         ->all(),
-      'cities' => $cities,
-      'districts' => $districts,
-      'mountains' => $mountains,
-      'showNews' => $openedNews,
-      'anniversary' => config('app.anniversary'),
-      'vectors' => $vectors,
-      'meta' => $meta
+      'cities'       => $cities,
+      'districts'    => $districts,
+      'mountains'    => $mountains,
+      'showNews'     => $openedNews,
+      'anniversary'  => config('app.anniversary'),
+      'vectors'      => $vectors,
+      'meta'         => $meta,
+
+      // --- новое ---
+      'siteVersion'  => $siteVersion,
+      'sidebarPages' => $sidebarPages,
     ]);
   }
 
