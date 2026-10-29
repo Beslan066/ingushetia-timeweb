@@ -110,14 +110,20 @@
 
                         <div class="form-group w-50">
                             <label for="exampleFormControlSelect1">Тип</label>
-                            <select class="form-control" id="exampleFormControlSelect1" name="type">
-
+                            @if(isset($municipality->type))
+                                <span>{{$municipality->getTypes()}}</span>
+                            @endif
+                            <select class="form-control" id="exampleFormControlSelect1" >
                                 @foreach($types as $id => $type)
-                                    <option value="{{$id}}" >{{ $type}}</option>
+                                    <option value="{{ $id }}" {{ old('type') == $id ? 'selected' : '' }}>
+                                        {{ $type }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
-                        @error('user_id')
+
+                        
+                        @error('type')
                         <div class="text-danger">{{ $message }}</div>
                         @enderror
 
@@ -160,7 +166,7 @@
 
                         <div class="btn-group">
                             <button class="btn btn-light mr-2">Назад</button>
-                            <button type="submit" class="btn btn-primary">Создать</button>
+                            <button type="submit" class="btn btn-primary">Обновить</button>
                         </div>
 
                     </div>

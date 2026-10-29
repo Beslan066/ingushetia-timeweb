@@ -12,12 +12,12 @@ import "./hero.css";
 import GovernmentNavigation from "#/molecules/navigation/government-navigation";
 
 export default function Hero({
-  categories = [],
-  slides = [],
-  news = [],
-  showNews = null,
-  spotlights = []
-}) {
+                               categories = [],
+                               slides = [],
+                               news = [],
+                               showNews = null,
+                               spotlights = []
+                             }) {
   const { props } = usePage();
   const [isModalOpen, setIsModalOpen] = useState(!!showNews);
   const [currentPost, setCurrentPost] = useState(showNews || null);
@@ -30,18 +30,23 @@ export default function Hero({
 
   const { url } = usePage();
 
-
   // Обработчик смены категории
   const onCategorySwitch = (categoryId) => {
     const newCategory = categoryId !== null ? String(categoryId) : null;
     setSelectedCategory(newCategory);
     setIsLoading(true);
 
+    // Определяем, находимся ли мы на странице правительства
+    const isGovernmentPage = url.includes('/pravitelstvo');
+
     router.reload({
       method: 'get',
       data: {
         category: newCategory,
-        from: 'main_page'
+        // Передаем from: 'main_page' ТОЛЬКО для главной страницы администрации.
+        // Для страницы правительства этот параметр не нужен, чтобы не срабатывала
+        // логика из Index контроллера и AgencyController корректно фильтровал по своему agency_id.
+        ...(isGovernmentPage ? {} : { from: 'main_page' }),
       },
       preserveScroll: true,
       only: ['news'],
@@ -51,7 +56,13 @@ export default function Hero({
 
         const searchParams = new URLSearchParams();
         if (newCategory) searchParams.set('category', newCategory);
-        window.history.pushState({}, "", `/?${searchParams.toString()}`);
+
+        // Сохраняем текущий путь (будь то / или /pravitelstvo/...) и добавляем параметры
+        const newUrl = searchParams.toString()
+          ? `${window.location.pathname}?${searchParams.toString()}`
+          : window.location.pathname;
+
+        window.history.pushState({}, "", newUrl);
       },
       onFinish: () => setIsLoading(false),
     });
