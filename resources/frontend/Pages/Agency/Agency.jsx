@@ -30,7 +30,7 @@ export default function Agency({
 
       <Activities activities={activities} />
 
-      <MediaCollection media={media} />
+      <MediaCollection media={media} allLink="/pravitelstvo/media"/>
 
       {/* Передаем массив документов и слаг агентства */}
       <Documents documents={documents} agencySlug={slug} />

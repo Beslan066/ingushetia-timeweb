@@ -59,7 +59,7 @@ export default function Index({
 
       <Vectors vectors={vectors} />
       <Districts settlements={settlements} districts={districts} />
-      <MediaCollection media={media} headTitle='Медиа'/>
+      <MediaCollection media={media} headTitle='Медиа' allLink="/media" />
       {anniversary && <AnniversaryBanner />}
       <Mountains mountains={mountains} />
       <ExternalResources resources={resources} />

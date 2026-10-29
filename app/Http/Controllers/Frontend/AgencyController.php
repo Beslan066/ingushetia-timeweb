@@ -15,6 +15,8 @@ use App\Models\PhotoReportage;
 use App\Models\Resource;
 use App\Models\Video;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Inertia\Inertia;
 
 class AgencyController extends Controller
@@ -180,6 +182,75 @@ class AgencyController extends Controller
         'title' => "Документы — {$agency->title}",
         'description' => "Список документов агентства {$agency->title}",
       ]
+    ]);
+  }
+
+  public function media(Request $request)
+  {
+    $category = $request->input('category');
+    $page = $request->input('page', 1);
+    $perPage = 12;
+
+    $agency = Agency::where('slug', 'pravitelstvo')->firstOrFail();
+
+    $videos = Video::query()->where('agency_id', $agency->id)->get()->map(function ($video) {
+      return [
+        'id' => $video->id,
+        'type' => 'video',
+        'title' => $video->title,
+        'lead' => $video->lead,
+        'image_main' => $video->image_main,
+        'video' => $video->video,
+        'published_at' => $video->published_at,
+        'timestamp' => Carbon::parse($video->published_at)->timestamp,
+      ];
+    });
+
+    $photoReportages = PhotoReportage::query()->where('agency_id', $agency->id)->get()->map(function ($photo) {
+      return [
+        'id' => $photo->id,
+        'type' => 'photo',
+        'title' => $photo->title,
+        'lead' => $photo->lead,
+        'slides' => $photo->slides,
+        'image_main' => $photo->image_main,
+        'published_at' => $photo->published_at,
+        'timestamp' => Carbon::parse($photo->published_at)->timestamp,
+      ];
+    });
+
+    $media = collect();
+
+    switch ($category) {
+      case 'video':
+        $media = $videos->sortByDesc('timestamp')->values();
+        break;
+      case 'photo':
+        $media = $photoReportages->sortByDesc('timestamp')->values();
+        break;
+      default:
+        $media = $photoReportages->merge($videos)->sortByDesc('timestamp')->values();
+        break;
+    }
+
+    $paginated = new LengthAwarePaginator(
+      $media->forPage($page, $perPage)->values(),
+      $media->count(),
+      $perPage,
+      $page,
+      ['path' => $request->url(), 'query' => $request->except(['page', 'dateFrom', 'dateTo'])]
+    );
+
+    $meta = [
+      'title' => 'Фото и видеорепортажи Правительства Ингушетия',
+      'description' => 'Страница медиа(фото и видео) Правительство Ингушетия'
+    ];
+
+    return Inertia::render('Agency/Media', [
+      'media' => $paginated,
+      'selectedCategory' => $category,
+      'meta' => $meta,
+      'basePath' => '/pravitelstvo/media',
     ]);
   }
 

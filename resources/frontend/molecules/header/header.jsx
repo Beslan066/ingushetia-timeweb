@@ -127,7 +127,7 @@ export default function AppHeader({
       <li className="menu-item"><a href="/pravitelstvo/info">О правительстве</a></li>
       <li className="menu-item"><a href="/pravitelstvo/news">Новости</a></li>
       <li className="menu-item"><a href="/pravitelstvo/structure">Состав</a></li>
-      <li className="menu-item"><a href="/pravitelstvo/structure">Медиа</a></li>
+      <li className="menu-item"><a href="/pravitelstvo/media">Медиа</a></li>
       <li className="menu-item"><a href="/pravitelstvo/documents">Документы</a></li>
       <li className="menu-item"><a href="/pravitelstvo/contacts">Контакты</a></li>
     </ul>
@@ -177,6 +177,7 @@ export default function AppHeader({
         <li className="menu-item"><a href="/pravitelstvo/info">О правительстве</a></li>
         <li className="menu-item"><a href="/pravitelstvo/news">Новости</a></li>
         <li className="menu-item"><a href="/pravitelstvo/structure">Структура</a></li>
+        <li className="menu-item"><a href="/pravitelstvo/media">Медиа</a></li>
         <li className="menu-item"><a href="/pravitelstvo/documents">Документы</a></li>
         <li className="menu-item"><a href="/pravitelstvo/contacts">Контакты</a></li>
       </ul>

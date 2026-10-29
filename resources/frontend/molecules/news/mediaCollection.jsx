@@ -8,7 +8,7 @@ import useModal from "#/hooks/useModal.js";
 import { parseISO, format, isWithinInterval, startOfYear, endOfYear } from 'date-fns';
 import { ru } from 'date-fns/locale';
 
-export default function MediaCollection({ media, headTitle }) {
+export default function MediaCollection({ media, headTitle, allLink }) {
   if (!media?.length) {
     return null;
   }
@@ -110,7 +110,7 @@ export default function MediaCollection({ media, headTitle }) {
           );
         })}
       </div>
-      <AppLink to="/media" title="Все репортажи" className="media__details"/>
+      <AppLink to={allLink} title="Все репортажи" className="media__details"/>
 
       <Modal
         breadcrumbs={[

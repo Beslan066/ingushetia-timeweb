@@ -459,6 +459,7 @@ Route::prefix('/pravitelstvo')->group(function () {
     Route::get('/info', [GovernmentController::class, 'government'])->name('government');
     Route::get('/structure', [GovernmentController::class, 'structure'])->name('structure');
     Route::get('/abilities', [GovernmentController::class, 'abilities'])->name('abilities');
+    Route::get('/media', [AgencyController::class, 'media'])->name('pravitelstvo.media');
     Route::get('/sessions', [GovernmentController::class, 'sessions'])->name('sessions');
     Route::get('/plans', [GovernmentController::class, 'plan'])->name('plan');
     Route::get('/colleagues', [GovernmentController::class, 'colleagues'])->name('colleagues');
