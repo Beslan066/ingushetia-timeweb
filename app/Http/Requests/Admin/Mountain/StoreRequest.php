@@ -33,7 +33,7 @@ class StoreRequest extends FormRequest
             'see_height' => 'nullable|string|max:255',
             'structure' => 'nullable|string|max:255',
             'content' => 'required',
-            'image_main' => 'nullable|image|mimes:webp|max:130',
+            'image_main' => 'nullable|image|max:230',
             'image_author' => 'nullable|string|max:255',
             'image_description' => 'nullable|string|max:255',
             'user_id' => 'nullable',
@@ -69,7 +69,6 @@ class StoreRequest extends FormRequest
             'content.required' => 'Заполните содержимое новости.',
             'image_main.required' => 'Необходимо выбрать изображение.',
             'image_main.image' => 'Файл должен быть изображением.',
-            'image_main.mimes' => 'Изображение должно быть в формате: webp',
 
             'image_author.string' => 'Краткое image_author должно быть строкой.',
             'image_author.max' => 'Длина краткого image_author не должна превышать 255 символов.',
