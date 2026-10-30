@@ -26,7 +26,7 @@ export default function Agency({
     <>
       <AppHeader logo={logo} title={agency.full_title} sidebarPages={sidebarPages}/>
 
-      <Hero categories={categories} slides={slides} news={news} spotlights={spotlights} />
+      <Hero categories={categories} slides={slides} news={news} spotlights={spotlights} newsRoute={'/pravitelstvo/news'}/>
 
       <Activities activities={activities} />
 

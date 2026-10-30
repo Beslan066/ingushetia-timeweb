@@ -16,7 +16,8 @@ export default function Hero({
                                slides = [],
                                news = [],
                                showNews = null,
-                               spotlights = []
+                               spotlights = [],
+                                newsRoute
                              }) {
   const { props } = usePage();
   const [isModalOpen, setIsModalOpen] = useState(!!showNews);
@@ -137,7 +138,11 @@ export default function Hero({
               <>
                 <News news={filteredNews} onPost={handlePost} />
                 <AppLink
-                  to={selectedCategory ? `/news?category=${selectedCategory}` : "/news"}
+                  to={
+                    selectedCategory
+                      ? `${newsRoute}?category=${selectedCategory}`
+                      : newsRoute
+                  }
                   title="Все новости"
                 />
               </>

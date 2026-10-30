@@ -55,6 +55,7 @@ export default function Index({
         news={news}
         showNews={openedNews}
         spotlights={spotlights}
+        newsRoute={'/news'}
       />
 
       <Vectors vectors={vectors} />

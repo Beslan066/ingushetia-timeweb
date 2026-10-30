@@ -53,9 +53,7 @@ class AgencyController extends Controller
       ->where('id', $agency->id)
       ->get();
 
-    $categories = Category::query()
-      ->take(10)
-      ->get();
+    $categories = Category::all();
 
     $resources = Resource::query()
       ->take(4)
