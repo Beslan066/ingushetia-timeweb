@@ -490,7 +490,7 @@ class HomeController extends Controller
       'description' => 'Акты, Законы, Отчеты, Указы, Распоряжения Республики Ингушетия'
     ];
 
-    return Inertia::render('AgencyDocuments/AgencyDocuments', [
+    return Inertia::render('Documents/Documents', [
       'documents' => $documents, // Отдаём всю пагинацию
       'documentTypes' => array_values($documentTypes),
       'meta' => $meta
