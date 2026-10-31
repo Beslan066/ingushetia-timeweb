@@ -88,7 +88,6 @@ export default function MountainContent({ mountain }) {
           <a href="" type="button"><img src="/img/icons/social/telegram (1).png" alt=""/></a>
           <a href="" type="button"><img src="/img/icons/social/VK.png" alt=""/></a>
           <a href="" type="button"><img src="/img/icons/social/ok.png" alt=""/></a>
-          <a href="" type="button"><img src="/img/icons/social/Whatsapp.png" alt=""/></a>
           <a href="" type="button"><img src="/img/icons/social/Link.png" alt=""/></a>
         </div>
       </div>

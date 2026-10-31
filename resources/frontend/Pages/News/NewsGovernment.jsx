@@ -7,7 +7,7 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import Filters from "#/molecules/filters/filters.jsx";
 import FilterButton from "#/atoms/filters/filter-button.jsx";
 import AgencyNewsItem from "#/atoms/news/agency-news-item.jsx";
-import {Head, Link, router, usePage} from "@inertiajs/react";
+import { Head, Link, router, usePage } from "@inertiajs/react";
 import Modal from "#/atoms/modal/modal.jsx";
 import PostContent from "#/atoms/modal/post-content.jsx";
 import PopularSpotlights from "#/molecules/spotlights/popular-spotlights.jsx";
@@ -33,6 +33,17 @@ const getSlidesCount = (slides) => {
     return null;
   }
 }
+
+// Безопасно извлекает slug из url (убирает query/hash, берёт последний сегмент)
+const extractSlug = (post) => {
+  const raw = post?.url || post?.slug || '';
+  if (!raw) return '';
+  // убираем query и hash
+  const clean = String(raw).split('#')[0].split('?')[0];
+  // берём последний непустой сегмент
+  const parts = clean.split('/').filter(Boolean);
+  return parts.length ? parts[parts.length - 1] : '';
+};
 
 export default function NewsGovernment({
                                          news,
@@ -73,7 +84,7 @@ export default function NewsGovernment({
   const categoryRef = useRef(selectedCategory);
 
   // Базовый URL для правительства
-  const baseUrl = '/government-news';
+  const baseUrl = '/pravitelstvo/news';
 
   // Обновление мета-тегов
   useEffect(() => {
@@ -103,12 +114,9 @@ export default function NewsGovernment({
 
   // Обработка showNews из пропсов
   useEffect(() => {
-    if (props.showNews) {
-      console.log('showNews received:', props.showNews);
-      if (props.showNews && typeof props.showNews === 'object') {
-        setCurrentPost(props.showNews);
-        setIsModalOpen(true);
-      }
+    if (props.showNews && typeof props.showNews === 'object') {
+      setCurrentPost(props.showNews);
+      setIsModalOpen(true);
     } else {
       // Если нет showNews, закрываем модалку
       setIsModalOpen(false);
@@ -134,14 +142,16 @@ export default function NewsGovernment({
     categoryRef.current = selectedCategory;
     currentPageRef.current = currentPage;
 
-    // Извлекаем только slug из URL если пришел полный URL
-    let postSlug = post.url;
-    if (postSlug && postSlug.includes('/')) {
-      postSlug = postSlug.split('/').pop();
+    const postSlug = extractSlug(post);
+
+    if (!postSlug) {
+      console.error('Не удалось извлечь slug из поста:', post);
+      return;
     }
 
     // Используем правильный URL для новости правительства
-    router.visit(`/government-news/${postSlug}`, {
+    // router.get — семантически правильнее для GET + only
+    router.get(`/pravitelstvo/news/${postSlug}`, {}, {
       preserveScroll: true,
       preserveState: true,
       only: ['showNews'],
@@ -289,7 +299,7 @@ export default function NewsGovernment({
               <div className="agency-switcher">
 
                 <Link
-                  href="/government-news"
+                  href="/pravitelstvo/news"
                   className="agency-switcher__btn active"
                 >
                   Правительство

@@ -290,14 +290,7 @@ const PostContent = ({post, onPost}) => {
           >
             <img src="/img/icons/social/ok.png" alt="OK"/>
           </a>
-          <a
-            href="#"
-            onClick={shareToWhatsApp}
-            type="button"
-            title="Поделиться в WhatsApp"
-          >
-            <img src="/img/icons/social/Whatsapp.png" alt="WhatsApp"/>
-          </a>
+          
           <a
             href="#"
             onClick={copyLink}

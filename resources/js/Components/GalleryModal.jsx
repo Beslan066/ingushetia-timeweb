@@ -87,9 +87,7 @@ export default function GalleryModal({ active, onClose, title, slides, reportage
                         <a href="/" type="button">
                             <img src="/img/icons/social/ok.png" alt="Одноклассники"/>
                         </a>
-                        <a href="/" type="button">
-                            <img src="/img/icons/social/Whatsapp.png" alt="WhatsApp"/>
-                        </a>
+                        
                         <a href="/" type="button">
                             <img src="/img/icons/social/Link.png" alt="Ссылка"/>
                         </a>

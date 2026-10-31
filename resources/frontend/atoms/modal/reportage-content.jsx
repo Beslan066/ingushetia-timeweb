@@ -106,7 +106,6 @@ export default function ReportageContent({ reportage }) {
           <a href="" type="button"><img src="/img/icons/social/telegram (1).png" alt="Telegram" /></a>
           <a href="" type="button"><img src="/img/icons/social/VK.png" alt="VK" /></a>
           <a href="" type="button"><img src="/img/icons/social/ok.png" alt="OK" /></a>
-          <a href="" type="button"><img src="/img/icons/social/Whatsapp.png" alt="Whatsapp" /></a>
           <a href="" type="button"><img src="/img/icons/social/Link.png" alt="Link" /></a>
         </div>
       </div>
