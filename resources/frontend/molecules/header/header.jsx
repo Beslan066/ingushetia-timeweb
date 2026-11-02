@@ -104,7 +104,6 @@ export default function AppHeader({
   // ================= ВЕРХНЕЕ МЕНЮ =================
   const renderMainTopNav = () => (
     <ul>
-      <li className="menu-item"><a href="/news">Новости</a></li>
       <li className="menu-item"><a href="/region">Регион</a></li>
       <li className="menu-item"><a href="/pravitelstvo">Правительство</a></li>
       <li className="menu-item">
@@ -176,7 +175,10 @@ export default function AppHeader({
   const renderGovernmentSidebar = () => (
     <>
       <ul className="menu main-menu">
-        <li className="menu-item"><a href="/">Главная</a></li>
+        <li className="menu-item">
+            <a href={route('government.index', { pravitelstvo: 'pravitelstvo' })}>Главная</a>
+        </li>
+
         <li className="menu-item"><a href="/pravitelstvo/info">О правительстве</a></li>
         <li className="menu-item"><a href="/pravitelstvo/news">Новости</a></li>
         <li className="menu-item"><a href="/pravitelstvo/structure">Структура</a></li>

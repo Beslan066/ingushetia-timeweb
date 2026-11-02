@@ -459,6 +459,8 @@ Route::prefix('/pravitelstvo')->group(function () {
     Route::get('/info', [GovernmentController::class, 'government'])->name('government');
     Route::get('/structure', [GovernmentController::class, 'structure'])->name('structure');
     Route::get('/abilities', [GovernmentController::class, 'abilities'])->name('abilities');
+    Route::get('/documents', [AgencyController::class, 'documents'])->name('agency.documents');
+
     Route::get('/media', [AgencyController::class, 'media'])->name('pravitelstvo.media');
     Route::get('/sessions', [GovernmentController::class, 'sessions'])->name('sessions');
     Route::get('/plans', [GovernmentController::class, 'plan'])->name('plan');
@@ -494,4 +496,3 @@ Route::middleware('auth')->group(function () {
 | Они должны быть В САМОМ КОНЦЕ.
 */
 Route::get('/{agency:slug}', [AgencyController::class, 'singleAgency'])->name('agencies.single');
-Route::get('/{agency:slug}/documents', [AgencyController::class, 'documents'])->name('agency.documents');

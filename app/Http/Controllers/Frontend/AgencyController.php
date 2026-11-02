@@ -145,7 +145,7 @@ class AgencyController extends Controller
     ]);
   }
 
-  public function documents(Agency $agency)
+  public function documents()
   {
     // Берем категории из правильной модели
     $documentTypes = GovernmentDocumentCategory::all();
@@ -155,6 +155,7 @@ class AgencyController extends Controller
       // Если у GovernmentDocument НЕТ agency_id, этот фильтр вернет пустоту.
       // Оставляю закомментированным, так как на главной ты выводишь все подряд.
       // ->where('agency_id', $agency->id)
+      ->where('agency_id', 2)
       ->orderBy('published_at', 'desc');
 
     if (request()->has('type_id')) {
@@ -173,12 +174,11 @@ class AgencyController extends Controller
     });
 
     return Inertia::render('Agency/AgencyDocuments', [
-      'agency' => $agency,
       'documents' => $documents,
       'documentTypes' => $documentTypes->map(fn($type) => ['id' => $type->id, 'title' => $type->title]), // Приводим к массиву для фронтенда
       'meta' => [
-        'title' => "Документы — {$agency->title}",
-        'description' => "Список документов агентства {$agency->title}",
+        'title' => "Документы правительсва РИ",
+        'description' => "Список документов правительства РИ",
       ]
     ]);
   }

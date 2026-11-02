@@ -9,7 +9,7 @@ import { ru } from "date-fns/locale";
 import { Head, router, Link, usePage } from "@inertiajs/react";
 import './agency-documents.css';
 
-export default function AgencyDocuments({ agency, documents: initialDocuments, documentTypes, meta = {} }) {
+export default function AgencyDocuments({ documents: initialDocuments, documentTypes, meta = {} }) {
   const { url } = usePage();
 
   const [documents, setDocuments] = useState(initialDocuments.data);
@@ -95,14 +95,7 @@ export default function AgencyDocuments({ agency, documents: initialDocuments, d
 
       <AppHeader anniversary={false} />
 
-      {/* Ссылка назад к агентству */}
-      <div className="page-content__wrapper" style={{ paddingBottom: 0, marginBottom: 0, marginTop: '20px' }}>
-        <div className="page-content__content" style={{ paddingBottom: 0 }}>
-          <Link href={`/${agency.slug}`} className="back-link">
-            ← Вернуться назад
-          </Link>
-        </div>
-      </div>
+    
 
       <PageTitle title="Документы" />
 
