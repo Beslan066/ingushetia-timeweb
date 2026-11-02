@@ -124,7 +124,7 @@ export default function AppHeader({
 
   const renderGovernmentTopNav = () => (
     <ul>
-      <li className="menu-item"><a href="/pravitelstvo">Главная</a></li>
+      <li className="menu-item"><a href={route('home')}>Главная</a></li>
       <li className="menu-item"><a href="/pravitelstvo/info">О правительстве</a></li>
       <li className="menu-item"><a href="/pravitelstvo/news">Новости</a></li>
       <li className="menu-item"><a href="/pravitelstvo/structure">Состав</a></li>
@@ -176,7 +176,7 @@ export default function AppHeader({
     <>
       <ul className="menu main-menu">
         <li className="menu-item">
-            <a href={route('government.index', { pravitelstvo: 'pravitelstvo' })}>Главная</a>
+            <a href={route('home')}>Главная</a>
         </li>
 
         <li className="menu-item"><a href="/pravitelstvo/info">О правительстве</a></li>
