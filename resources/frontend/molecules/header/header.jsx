@@ -107,13 +107,14 @@ export default function AppHeader({
       <li className="menu-item"><a href="/news">Новости</a></li>
       <li className="menu-item"><a href="/region">Регион</a></li>
       <li className="menu-item">
+      <li className="menu-item"><a href="/pravitelstvo">Правительство</a></li>
+
         <button onClick={e => e.target.parentNode.classList.toggle('menu-item--opened')}
                 style={{ backgroundImage: 'img/icons/dropdown.svg' }}>Органы власти
         </button>
         <ul className="submenu">
           <li className="menu-item"><a href="/president">Глава Республики</a></li>
           <li className="menu-item"><a href="/president-administration">Администрация Главы</a></li>
-          <li className="menu-item"><a href="/pravitelstvo">Правительство</a></li>
         </ul>
       </li>
       <li className="menu-item"><a href={route('media')}>Медиа</a></li>
@@ -124,6 +125,7 @@ export default function AppHeader({
 
   const renderGovernmentTopNav = () => (
     <ul>
+      <li className="menu-item"><a href="/pravitelstvo">Главная</a></li>
       <li className="menu-item"><a href="/pravitelstvo/info">О правительстве</a></li>
       <li className="menu-item"><a href="/pravitelstvo/news">Новости</a></li>
       <li className="menu-item"><a href="/pravitelstvo/structure">Состав</a></li>
@@ -139,6 +141,7 @@ export default function AppHeader({
       <ul className="menu main-menu">
         <li className="menu-item"><a href="/news">Новости</a></li>
         <li className="menu-item"><a href="/region">Регион</a></li>
+        <li className="menu-item"><a href="/pravitelstvo">Правительство</a></li>
         <li className="menu-item">
           <button onClick={e => e.currentTarget.parentNode.classList.toggle('menu-item--opened')}>
             Органы власти
@@ -146,7 +149,6 @@ export default function AppHeader({
           <ul className="submenu">
             <li className="menu-item"><a href="/president">Глава Республики</a></li>
             <li className="menu-item"><a href="/president-administration">Администрация Главы</a></li>
-            <li className="menu-item"><a href="/pravitelstvo">Правительство</a></li> {/* Исправлена ссылка */}
           </ul>
         </li>
         <li className="menu-item"><a href={route('media')}>Медиа</a></li>
@@ -174,6 +176,7 @@ export default function AppHeader({
   const renderGovernmentSidebar = () => (
     <>
       <ul className="menu main-menu">
+        <li className="menu-item"><a href="/">Главная</a></li>
         <li className="menu-item"><a href="/pravitelstvo/info">О правительстве</a></li>
         <li className="menu-item"><a href="/pravitelstvo/news">Новости</a></li>
         <li className="menu-item"><a href="/pravitelstvo/structure">Структура</a></li>
