@@ -106,8 +106,8 @@ export default function AppHeader({
     <ul>
       <li className="menu-item"><a href="/news">Новости</a></li>
       <li className="menu-item"><a href="/region">Регион</a></li>
-      <li className="menu-item">
       <li className="menu-item"><a href="/pravitelstvo">Правительство</a></li>
+      <li className="menu-item">
 
         <button onClick={e => e.target.parentNode.classList.toggle('menu-item--opened')}
                 style={{ backgroundImage: 'img/icons/dropdown.svg' }}>Органы власти
