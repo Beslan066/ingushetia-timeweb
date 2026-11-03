@@ -92,10 +92,10 @@
 {{--                              </button>--}}
                               <a href="{{route('admin.news.edit', $item->url)}}"
                                  class="btn btn-outline-primary waves-effect waves-light">Редактировать</a>
-                              <form action="{{route('admin.news.delete', $item->id)}}" method="post">
+                              <form action="{{route('admin.news.delete', $item->url)}}" method="post">
                                 @csrf
                                 @method('delete')
-                                <button type="submit" class="btn btn-outline-danger waves-effect waves-light">Удалить
+                                <button type="submit" class="btn btn-outline-danger waves-effect waves-light" onclick="return confirm('Вы уверены, что хотите продолжить?')">Удалить
                                 </button>
                               </form>
 
