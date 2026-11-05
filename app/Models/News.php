@@ -40,6 +40,7 @@ class News extends Model
     'url',
     'image_webp',
     'news_uid',
+    'is_published'
   ];
 
   protected $with = ['tags'];

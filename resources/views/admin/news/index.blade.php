@@ -43,10 +43,9 @@
                     </th>
                     <th class="sorting" tabindex="0" aria-controls="selection-datatable" rowspan="1" colspan="1"
                         style="width: 200px;" aria-label="Office: activate to sort column ascending">Видеорепортаж
+                    <th class="sorting" tabindex="0" aria-controls="selection-datatable" rowspan="1" colspan="1"
+                        style="width: 107px;" aria-label="Age: activate to sort column ascending">Опубликована
                     </th>
-{{--                    <th class="sorting" tabindex="0" aria-controls="selection-datatable" rowspan="1" colspan="1"--}}
-{{--                        style="width: 107px; " aria-label="Age: activate to sort column ascending">Перевод--}}
-{{--                    </th>--}}
                     <th class="sorting_asc" tabindex="0" aria-controls="selection-datatable" rowspan="1" colspan="1"
                         style="width: 193px;" aria-label="Start date: activate to sort column descending"
                         aria-sort="ascending">Опубликованно
@@ -83,6 +82,13 @@
                               {{$item->video->title}}
                             @else
                               Нет видео
+                            @endif
+                          </td>
+                          <td>
+                            @if($item->is_published)
+                              Да
+                            @else
+                              Нет
                             @endif
                           </td>
                           <td class="sorting_1">{{$item->published_at}}</td>

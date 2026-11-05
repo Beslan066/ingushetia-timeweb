@@ -29,6 +29,7 @@ class UpdateRequest extends FormRequest
             'category_id' => 'nullable',
             'news_ing' => 'nullable',
             'main_material' => 'nullable',
+            'is_published' => 'nullable',
             'user_id' => 'required',
             'agency_id' => 'required',
             'image_author' => 'nullable|string|max:255',

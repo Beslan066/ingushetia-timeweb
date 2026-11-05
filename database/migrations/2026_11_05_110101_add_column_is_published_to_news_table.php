@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('government_document_categoties', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        Schema::table('news', function (Blueprint $table) {
+            $table->smallInteger('is_published')->default(0);
         });
     }
 
@@ -22,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('government_document_categoties');
+        Schema::table('news', function (Blueprint $table) {
+            Schema::dropColumn('is_published');
+        });
     }
 };

@@ -92,20 +92,6 @@
                       </div>
 
 
-                      <div class="form-group w-50 mt-2">
-                            <select class="form-control" id="exampleFormControlSelect1" name="news_ing">
-
-                                <option value="">Выберите перевод</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                            </select>
-                        </div>
-                        @error('news_ing')
-                        <div class="text-danger">{{ $message }}</div>
-                        @enderror
-
-
                         <div class="form-group w-50">
                             <label for="exampleFormControlSelect1">Видеорепортаж</label>
                             <select class="form-control" id="exampleFormControlSelect1" name="video_id">
@@ -119,7 +105,7 @@
                         <div class="form-group w-50">
                             <label for="exampleFormControlSelect1">Фоторепортаж</label>
                             <select class="form-control" id="exampleFormControlSelect1" name="reportage_id">
-                                <option value="">Выберите видео</option>
+                                <option value="">Выберите фоторепортаж</option>
                                 @foreach($reportages as $reportage)
                                     <option value="{{$reportage->id}}">{{$reportage->title}}</option>
                                 @endforeach
@@ -158,6 +144,13 @@
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="main_material">
                                 <label class="form-check-label">Главный материал</label>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-10 mb-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="is_published" checked="true">
+                                <label class="form-check-label">Опубликовать</label>
                             </div>
                         </div>
 

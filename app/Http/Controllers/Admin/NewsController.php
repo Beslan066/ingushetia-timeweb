@@ -127,6 +127,7 @@ class NewsController extends Controller
 
       $data['url'] = Str::slug($data['title']);
       $data['main_material'] = $request->has('main_material') ? 1 : 0;
+      $data['is_published'] = $request->has('is_published') ? 1 : 0;
 
       // Создаем новость
       $news = News::create($data);
@@ -198,6 +199,7 @@ class NewsController extends Controller
 
     $data['url'] = Str::slug($data['title']);
     $data['main_material'] = $request->has('main_material') ? 1 : 0;
+    $data['is_published'] = $request->has('is_published') ? 1 : 0;
 
     $news->update($data);
 

@@ -117,6 +117,7 @@ class HomeController extends Controller
     $mainPosts = Cache::remember($cacheKeys['mainPosts'], $cacheTimeShort, function () {
       return News::query()
         ->with(['category:id,title', 'video:id,url', 'reportage:id,title'])
+        ->where('is_published', 1)
         ->where('main_material', 1)
         ->where('agency_id', 5)
         ->orderBy('published_at', 'desc')
@@ -126,6 +127,7 @@ class HomeController extends Controller
 
     $newsQuery = News::query()
       ->with('category', 'video', 'reportage', 'tags')
+      ->where('is_published', 1)
       ->where('agency_id', 5)
       ->orderBy('published_at', 'desc');
 
@@ -141,6 +143,7 @@ class HomeController extends Controller
     $spotlights = Cache::remember($cacheKeys['spotlights'], $cacheTimeShort, function () {
       return News::query()
         ->with('category', 'video', 'reportage', 'tags')
+        ->where('is_published', 1)
         ->where('main_material', 0)
         ->where('agency_id', 5)
         ->orderBy('published_at', 'desc')
@@ -168,12 +171,14 @@ class HomeController extends Controller
     if ($request->route('url')) {
       $openedNews = News::where('url', $request->route('url'))
         ->with(['category', 'video', 'reportage', 'tags'])
+        ->where('is_published', 1)
         ->firstOrFail();
 
       $openedNews->incrementViews();
 
       $openedNews->relatedPosts = News::query()
         ->where('category_id', $openedNews->category_id)
+        ->where('is_published', 1)
         ->where('id', '!=', $openedNews->id)
         ->where('agency_id', $openedNews->agency_id)
         ->select(['id', 'title', 'lead', 'url', 'category_id', 'image_main', 'published_at'])
@@ -251,6 +256,7 @@ class HomeController extends Controller
         return News::query()
             ->with(['category:id,title', 'video:id,url', 'reportage:id,title'])
             ->where('main_material', 1)
+            ->where('is_published', 1)
             ->where('agency_id', 5)
             ->orderBy('published_at', 'desc')
             ->take(7)->get();
@@ -259,6 +265,7 @@ class HomeController extends Controller
     // Открытая новость
     $openedNews = News::where('url', $url)
         ->with(['category', 'video', 'reportage', 'tags'])
+        ->where('is_published', 1)
         ->firstOrFail();
 
     $openedNews->incrementViews();
@@ -266,6 +273,7 @@ class HomeController extends Controller
     $openedNews->relatedPosts = News::query()
         ->where('category_id', $openedNews->category_id)
         ->where('id', '!=', $openedNews->id)
+        ->where('is_published', 1)
         ->where('agency_id', $openedNews->agency_id)
         ->select(['id', 'title', 'lead', 'url', 'category_id', 'image_main', 'published_at'])
         ->orderBy('published_at', 'desc')
@@ -275,6 +283,7 @@ class HomeController extends Controller
     $news = News::query()
         ->with('category', 'video', 'reportage', 'tags')
         ->where('agency_id', 5)
+        ->where('is_published', 1)
         ->orderBy('published_at', 'desc')
         ->take(12)->get();
 
@@ -282,6 +291,7 @@ class HomeController extends Controller
         return News::query()
             ->with('category', 'video', 'reportage', 'tags')
             ->where('main_material', 0)
+            ->where('is_published', 1)
             ->where('agency_id', 5)
             ->orderBy('published_at', 'desc')
             ->take(6)->get();
@@ -300,7 +310,7 @@ class HomeController extends Controller
         'canonical'   => route('post.show.home', ['url' => $url]),
     ];
 
-    // ⚠️ Тот же набор пропсов, что и в index()
+    // Тот же набор пропсов, что и в index()
     return Inertia::render('Index', [
         'news'          => $news,
         'spotlights'    => $spotlights,
