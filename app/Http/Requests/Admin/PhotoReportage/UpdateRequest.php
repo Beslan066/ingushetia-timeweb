@@ -24,7 +24,7 @@ class UpdateRequest extends FormRequest
     return [
       'title' => 'sometimes|string|max:255|min:3',
       'lead' => 'nullable|string|max:500',
-      'image_main' => 'sometimes|mimes:webp,jpeg,png,jpg|max:130',
+      'image_main' => 'sometimes|mimes:webp,jpeg,png,jpg|max:230',
       'slides' => 'sometimes|array|max:50',
       'slides.*' => 'sometimes|mimes:webp,jpeg,png,jpg|max:250',
       'user_id' => 'sometimes|exists:users,id',

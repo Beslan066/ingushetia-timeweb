@@ -23,8 +23,8 @@ class StoreRequest extends FormRequest
   {
     return [
       'title' => 'required|string|max:255|min:3',
-      'image_main' => 'required|mimes:webp|max:130',
-      'slides' => 'nullable|array|max:50',
+      'image_main' => 'required|max:230',
+      'slides' => 'nullable|array|max:60',
       'slides.*' => 'mimes:webp,jpeg,png,jpg|max:250',
       'user_id' => 'required|exists:users,id',
       'news_id' => 'nullable|exists:news,id',
