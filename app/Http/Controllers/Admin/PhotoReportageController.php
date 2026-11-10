@@ -83,6 +83,8 @@ class PhotoReportageController extends Controller
 
       $data = $request->validated();
 
+      dd($data);
+
       // Главное изображение
       if ($request->hasFile('image_main')) {
         $data['image_main'] = $request->file('image_main')->store('photo_reportages');
