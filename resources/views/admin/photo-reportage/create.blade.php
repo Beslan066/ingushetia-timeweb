@@ -49,14 +49,13 @@
               @enderror
 
               <div class="form-group w-50">
-                <label for="image_main">Главное изображение (WEBP, макс. 130KB)</label>
+                <label for="image_main">Главное изображение (макс. 230KB)</label>
                 <input type="file"
                        id="image_main"
                        name="image_main"
                        class="dropify @error('image_main') is-invalid @enderror"
                        data-height="300"
-                       data-max-file-size="130K"
-                       data-allowed-file-extensions="webp"
+                       data-max-file-size="230K"
                        data-default-file="{{ old('image_main') }}"/>
                 @error('image_main')
                 <div class="invalid-feedback d-block">{{ $message }}</div>
