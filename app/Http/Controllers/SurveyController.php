@@ -23,7 +23,7 @@ class SurveyController extends Controller
         $data = $request->validated();
         $data['ip_address'] = $request->ip();
 
-        Survey::create($data);
+        $survey = Survey::firstOrCreate($data);
 
         return redirect()->route('survey.success');
     }

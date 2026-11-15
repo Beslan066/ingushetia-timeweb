@@ -185,6 +185,8 @@ export default function AppHeader({
         <li className="menu-item"><a href="/pravitelstvo/media">Медиа</a></li>
         <li className="menu-item"><a href="/pravitelstvo/documents">Документы</a></li>
         <li className="menu-item"><a href="/pravitelstvo/contacts">Контакты</a></li>
+        <li className="menu-item"><a href="/survey">СОЦОПРОС (Социологическая анкета)</a></li>
+
       </ul>
 
       {sidebarPages.length > 0 && (
