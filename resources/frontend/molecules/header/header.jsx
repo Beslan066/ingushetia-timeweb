@@ -195,7 +195,10 @@ export default function AppHeader({
             <li className="menu-item" key={page.id ?? page.slug}>
               <a href={`/pravitelstvo/${page.slug}`}>{page.title}</a>
             </li>
+            
           ))}
+            <li className="menu-item"><a href="/survey">СОЦОПРОС (Социологическая анкета)</a></li>
+
         </ul>
       )}
     </>
