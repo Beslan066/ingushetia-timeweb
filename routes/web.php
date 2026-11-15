@@ -9,6 +9,7 @@ use App\Http\Controllers\Frontend\GovernmentController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\NewsController;
 use App\Http\Controllers\Frontend\RegionController;
+use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\Admin;
 use Illuminate\Support\Facades\Cache;
@@ -22,6 +23,11 @@ use Inertia\Inertia;
 | Должно быть в самом верху, чтобы /login не перехватывался другими маршрутами
 */
 require __DIR__.'/auth.php';
+
+
+Route::get('/survey', [SurveyController::class, 'index'])->name('survey.index');
+Route::post('/survey', [SurveyController::class, 'store'])->name('survey.store');
+Route::get('/survey/success', [SurveyController::class, 'success'])->name('survey.success');
 
 /*
 |--------------------------------------------------------------------------
