@@ -22,7 +22,7 @@ export default function Success() {
         <div className="page-content__content">
           <div className="survey__success">
             <p>Ваш ответ успешно учтён. Благодарим за участие в социологическом исследовании!</p>
-            <Link href="/" className="survey__back-link">← Вернуться на главную</Link>
+            <Link href="/pravitelstvo" className="survey__back-link">← Вернуться на главную</Link>
           </div>
         </div>
       </div>

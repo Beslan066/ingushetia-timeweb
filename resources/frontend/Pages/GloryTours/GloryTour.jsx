@@ -18,7 +18,7 @@ export default function GloryTour({meta = {}}) {
       <PageTitle title="Виртуальный тур по Залу Славы Республики Ингушетия"/>
       <div className="page-content__wrapper">
         <div className="page-content__content">
-          <iframe width="100%" src="http://openkavkaz.com/3d/?ing-magas-adm-head-gloryhall-4&iframe#,-153.4,-0.4,130.0"  style={{minHeight: '500px'}} frameborder="0" marginheight="0" marginwidth="0" scrolling="no" framespacing="0" allowfullscreen></iframe>        </div>
+          <iframe width="100%" src="https://openkavkaz.com/3d/?ing-magas-adm-head-gloryhall-4&iframe#,-153.4,-0.4,130.0"  style={{minHeight: '500px'}} frameborder="0" marginheight="0" marginwidth="0" scrolling="no" framespacing="0" allowfullscreen></iframe>        </div>
       </div>
       <AppFooter/>
     </>
