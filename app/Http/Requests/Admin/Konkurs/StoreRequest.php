@@ -24,7 +24,7 @@ class StoreRequest extends FormRequest
         return [
             'title' => 'required|string',
             'file' => 'required|file|mimes:pdf,docx',
-            'type' => 'required|integer',
+            'type' => 'nullable|integer',
             'published_at' => 'required|date_format:Y-m-d\TH:i',
             'agency_id' => 'required',
 
