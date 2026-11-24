@@ -59,7 +59,7 @@
 <div id="cookie-consent-container  "></div>
 
 
-<div class="link-groups">
+<div class="hero-wrapper">
 <!-- Yandex.Metrika informer -->
 <a href="https://metrika.yandex.ru/stat/?id=114642719&amp;from=informer" target="_blank" rel="nofollow">
     <img src="https://informer.yandex.ru/informer/114642719/3_1_FFFFFFFF_EFEFEFFF_0_pageviews"
