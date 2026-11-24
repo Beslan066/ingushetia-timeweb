@@ -86,9 +86,6 @@ export default function AppFooter({ anniversary = false, logo }) {
           <a href={'/data_privacy_policy.pdf'}>Политика конфиденциальности и
           Согласие на обработку персональных данных</a>
         </div>
-        <div>
-          <a href="https://webmaster.yandex.ru/siteinfo/?site=https://ingushetia.ru"><img width="88" height="31" alt="" border="0" border-radius="8" src="https://yandex.ru/cycounter?https://ingushetia.ru&theme=light&lang=ru"/></a>
-        </div>
       </footer>
       <footer className="copyright">&copy; 2026, Все права защищены</footer>
 

@@ -59,6 +59,7 @@
 <div id="cookie-consent-container  "></div>
 
 
+<div class="link-groups">
 <!-- Yandex.Metrika informer -->
 <a href="https://metrika.yandex.ru/stat/?id=114642719&amp;from=informer" target="_blank" rel="nofollow">
     <img src="https://informer.yandex.ru/informer/114642719/3_1_FFFFFFFF_EFEFEFFF_0_pageviews"
@@ -67,6 +68,9 @@
          title="Яндекс.Метрика: данные за сегодня (просмотры, визиты и уникальные посетители)"
         />
 </a>
+<a href="https://webmaster.yandex.ru/siteinfo/?site=https://ingushetia.ru"><img width="88" height="31" alt="" border="0" border-radius="8" src="https://yandex.ru/cycounter?https://ingushetia.ru&theme=light&lang=ru"/></a>
+
+</div>
 <!-- /Yandex.Metrika informer -->
 
 <!-- Yandex.Metrika counter -->
