@@ -12,7 +12,7 @@
 
   <link rel="stylesheet" href="{{ asset('css/reset.css') }}">
   <link rel="stylesheet" href="{{ asset('css/variables.css') }}">
-
+  <meta name="yandex-verification" content="2f8981d0e11ac6d0" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
   <link rel="icon" href="{{ asset('img/favicon.ico') }}" type="image/x-icon">
   <link rel="canonical" href={window.location.href} />
